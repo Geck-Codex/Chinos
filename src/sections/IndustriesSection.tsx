@@ -22,16 +22,16 @@ export function IndustriesSection() {
     >
       <FadeIn y={20}>
         <p
-          className="uppercase tracking-[0.2em] font-black mb-3"
-          style={{ color: '#CD0032', fontSize: 'clamp(1.1rem, 2.2vw, 1.8rem)' }}
+          className="uppercase tracking-[0.28em] font-bold mb-3"
+          style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
         >
           Uso industrial
         </p>
       </FadeIn>
       <RevealText
-        lines={['Soluciones para', 'industrias líderes']}
-        className="font-black uppercase leading-none tracking-tight mb-16 md:mb-24"
-        style={{ color: '#080403', fontSize: 'clamp(3.5rem, 12vw, 15rem)' }}
+        lines={['Industrias', 'líderes']}
+        className="font-black uppercase leading-none tracking-tight mb-8 md:mb-12"
+        style={{ color: '#080403', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
         delay={0.05}
       />
 
@@ -52,7 +52,7 @@ export function IndustriesSection() {
             >
               <span
                 className="font-black uppercase leading-tight"
-                style={{ color: '#080403', fontSize: 'clamp(0.9rem, 2vw, 1.6rem)' }}
+                style={{ color: '#080403', fontSize: 'clamp(1.2rem, 2.2vw, 1.8rem)' }}
               >
                 {industry}
               </span>

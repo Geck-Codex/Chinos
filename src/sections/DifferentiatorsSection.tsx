@@ -26,16 +26,16 @@ export function DifferentiatorsSection() {
     >
       <FadeIn y={20}>
         <p
-          className="uppercase tracking-[0.2em] font-black mb-3"
-          style={{ color: '#CD0032', fontSize: 'clamp(1.1rem, 2.2vw, 1.8rem)' }}
+          className="uppercase tracking-[0.28em] font-bold mb-3"
+          style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
         >
           Lo que nos diferencia
         </p>
       </FadeIn>
       <RevealText
-        lines={['Calidad, variedad', 'y sostenibilidad']}
-        className="font-black uppercase leading-none tracking-tight mb-16 md:mb-24"
-        style={{ color: '#FAFBFC', fontSize: 'clamp(3.5rem, 12vw, 15rem)' }}
+        lines={['Calidad y', 'sostenibilidad']}
+        className="font-black uppercase leading-none tracking-tight mb-8 md:mb-12"
+        style={{ color: '#FAFBFC', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
         delay={0.05}
       />
 
@@ -61,13 +61,13 @@ export function DifferentiatorsSection() {
               </span>
               <h3
                 className="font-black uppercase leading-tight"
-                style={{ color: '#FAFBFC', fontSize: 'clamp(1rem, 2vw, 1.6rem)' }}
+                style={{ color: '#FAFBFC', fontSize: 'clamp(1.2rem, 2.2vw, 1.8rem)' }}
               >
                 {d.title}
               </h3>
               <p
                 className="font-light leading-relaxed"
-                style={{ color: '#FAFBFC', opacity: 0.5, fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)' }}
+                style={{ color: '#FAFBFC', opacity: 0.5, fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}
               >
                 {d.desc}
               </p>

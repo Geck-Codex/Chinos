@@ -11,7 +11,7 @@ export default {
         },
       },
       fontFamily: {
-        kanit: ['Kanit', 'sans-serif'],
+        sans: ['Barlow', 'sans-serif'],
       },
     },
   },

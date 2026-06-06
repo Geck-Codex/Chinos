@@ -5,6 +5,7 @@ import type { Group } from 'three'
 
 const WHITE = '#FAFBFC'
 
+// meshPhysicalMaterial — solo para las dos superficies principales de la palma
 function Mat({ color, roughness = 0.52 }: { color: string; roughness?: number }) {
   return (
     <meshPhysicalMaterial
@@ -17,6 +18,11 @@ function Mat({ color, roughness = 0.52 }: { color: string; roughness?: number })
   )
 }
 
+// meshStandardMaterial — para todo lo demás (dedos, puño, nudillos, pulgar)
+function MatSimple({ color, roughness = 0.52 }: { color: string; roughness?: number }) {
+  return <meshStandardMaterial color={color} roughness={roughness} metalness={0.05} />
+}
+
 function Finger({ x, baseY, r, len, tiltZ = 0, color }: {
   x: number; baseY: number; r: number; len: number; tiltZ?: number; color: string
 }) {
@@ -25,7 +31,7 @@ function Finger({ x, baseY, r, len, tiltZ = 0, color }: {
     <group position={[x, centerY, 0]} rotation={[0, 0, tiltZ]}>
       <mesh>
         <capsuleGeometry args={[r, len, 8, 20]} />
-        <Mat color={color} />
+        <MatSimple color={color} />
       </mesh>
       <mesh position={[0, 0, r + 0.006]}>
         <boxGeometry args={[0.01, len * 0.75, 0.005]} />
@@ -69,7 +75,7 @@ export function GloveModel({
       {/* CUFF */}
       <mesh position={[0, -1.35, 0]}>
         <cylinderGeometry args={[0.555, 0.62, 0.8, 32]} />
-        <Mat color={cuffColor} roughness={0.65} />
+        <MatSimple color={cuffColor} roughness={0.65} />
       </mesh>
       {[-1.66, -1.52, -1.38, -1.24, -1.1, -0.97].map((y, i) => (
         <mesh key={i} position={[0, y, 0]}>
@@ -93,19 +99,19 @@ export function GloveModel({
         Array.from({ length: 4 }, (_, col) => (
           <mesh key={`${row}-${col}`} position={[-0.21 + col * 0.14, -0.3 + row * 0.16, 0.256]}>
             <sphereGeometry args={[0.024, 10, 10]} />
-            <meshPhysicalMaterial color={palmColor} roughness={0.25} clearcoat={0.6} />
+            <meshStandardMaterial color={palmColor} roughness={0.3} />
           </mesh>
         ))
       )}
 
       {/* KNUCKLE STRIP */}
       <RoundedBox args={[0.98, 0.1, 0.14]} radius={0.05} smoothness={4} position={[0, 0.49, 0.04]}>
-        <Mat color={primaryColor} />
+        <MatSimple color={primaryColor} />
       </RoundedBox>
       {[-0.24, 0, 0.24].map((x, i) => (
         <mesh key={i} position={[x, 0.52, 0.14]}>
           <sphereGeometry args={[0.068, 14, 14]} />
-          <Mat color={primaryColor} roughness={0.45} />
+          <MatSimple color={primaryColor} roughness={0.45} />
         </mesh>
       ))}
 
@@ -119,7 +125,7 @@ export function GloveModel({
       <group position={[-0.66, -0.14, 0.07]} rotation={[0.08, -0.18, -0.75]}>
         <mesh>
           <capsuleGeometry args={[0.09, 0.42, 8, 20]} />
-          <Mat color={primaryColor} />
+          <MatSimple color={primaryColor} />
         </mesh>
         <mesh position={[0, 0, 0.098]}>
           <boxGeometry args={[0.01, 0.32, 0.005]} />

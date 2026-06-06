@@ -11,9 +11,9 @@ interface RevealTextProps {
 
 export function RevealText({ lines, className, style, delay = 0, as: Tag = 'h2' }: RevealTextProps) {
   return (
-    <Tag className={className} style={style}>
+    <Tag className={className} style={{ ...style, lineHeight: 0.88 }}>
       {lines.map((line, i) => (
-        <span key={i} style={{ display: 'block', overflow: 'hidden' }}>
+        <span key={i} style={{ display: 'block', overflow: 'hidden', paddingBottom: '0.12em', marginBottom: '-0.12em' }}>
           <motion.span
             style={{ display: 'block' }}
             initial={{ y: '108%' }}

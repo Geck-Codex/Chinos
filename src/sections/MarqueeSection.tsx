@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 
 const WORDS = [
   'PROTECCIÓN', 'RESISTENCIA', 'CALIDAD', 'DURABILIDAD',
@@ -9,13 +9,14 @@ const TRACK = [...WORDS, ...WORDS, ...WORDS, ...WORDS]
 
 export function MarqueeSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const [offset, setOffset] = useState(0)
+  const trackRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!sectionRef.current) return
+      if (!sectionRef.current || !trackRef.current) return
       const top = sectionRef.current.getBoundingClientRect().top + window.scrollY
-      setOffset((window.scrollY - top + window.innerHeight) * 0.2)
+      const offset = (window.scrollY - top + window.innerHeight) * 0.2
+      trackRef.current.style.transform = `translateX(${-offset}px)`
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
@@ -33,8 +34,9 @@ export function MarqueeSection() {
       }}
     >
       <div
+        ref={trackRef}
         className="flex gap-8 items-center"
-        style={{ transform: `translateX(${-offset}px)`, willChange: 'transform' }}
+        style={{ willChange: 'transform' }}
       >
         {TRACK.map((word, i) => (
           <span
