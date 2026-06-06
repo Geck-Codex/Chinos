@@ -196,7 +196,7 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
     <>
       <motion.div
         className="fixed inset-0 z-[998]"
-        style={{ backgroundColor: 'rgba(8,4,3,0.92)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+        style={{ backgroundColor: 'rgba(8,4,3,0.85)', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
         onClick={onClose}
@@ -209,7 +209,7 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
         exit={{ clipPath: 'inset(4% 3% round 12px)', opacity: 0 }}
         transition={{ duration: 0.55, ease: EASE }}
       >
-        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 70% at 28% 50%, ${product.accentGlow}, transparent 62%)` }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 70% at 28% 50%, ${product.accentGlow}, transparent 62%)`, opacity: 0.35 }} />
 
         <motion.div
           className="relative w-full lg:w-[58%] h-[42vh] lg:h-full flex-shrink-0"
@@ -325,12 +325,12 @@ function NetflixCard({ product, index, onOpen }: { product: Product; index: numb
         }}
       />
 
-      {/* Gradiente de color — más pequeño */}
+      {/* Gradiente de color */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: `radial-gradient(ellipse 45% 70% at 15% 75%, ${product.accentColor}77, transparent 55%)`,
+        background: `radial-gradient(ellipse 45% 70% at 15% 75%, ${product.accentColor}, transparent 55%)`,
         transition: 'opacity 0.3s',
-        opacity: hovered ? 0.6 : 1,
+        opacity: hovered ? 0.25 : 0.15,
       }} />
 
       {/* Número ghost — desaparece en hover */}
@@ -420,11 +420,8 @@ function LineRow({
           </p>
         </div>
         <div
-          className="grid gap-2"
-          style={{
-            gridTemplateColumns: `repeat(${Math.min(products.length, 4)}, 1fr)`,
-            overflow: 'visible',
-          }}
+          className={`grid gap-2 grid-cols-2 ${products.length === 3 ? 'md:grid-cols-3' : products.length === 4 ? 'sm:grid-cols-2 md:grid-cols-4' : 'sm:grid-cols-3 md:grid-cols-3'}`}
+          style={{ overflow: 'visible' }}
         >
           {products.map((p, i) => (
             <NetflixCard key={p.id} product={p} index={i} onOpen={() => onOpen(p)} />
@@ -451,7 +448,7 @@ export function ProductsPage() {
         >
           <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ backgroundColor: '#CD0032' }} />
 
-          <p className="uppercase tracking-tight font-bold mb-6" style={{ color: '#CD0032', fontSize: 'clamp(2.8rem, 7vw, 9rem)' }}>
+          <p className="uppercase tracking-[0.28em] font-bold mb-6" style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}>
             Catálogo completo
           </p>
 

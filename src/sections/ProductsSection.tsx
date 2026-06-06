@@ -97,7 +97,7 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
     <>
       <motion.div
         className="fixed inset-0 z-[998]"
-        style={{ backgroundColor: 'rgba(8,4,3,0.92)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+        style={{ backgroundColor: 'rgba(8,4,3,0.85)', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
         onClick={onClose}
@@ -110,7 +110,7 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
         exit={{ clipPath: 'inset(4% 3% round 12px)', opacity: 0 }}
         transition={{ duration: 0.55, ease: EASE }}
       >
-        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 70% at 28% 50%, ${product.accentGlow}, transparent 62%)` }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 55% 70% at 28% 50%, ${product.accentGlow}, transparent 62%)`, opacity: 0.35 }} />
 
         {/* 3D canvas */}
         <motion.div
@@ -200,12 +200,12 @@ function ProductCard({ product, index, onClick }: { product: Product; index: num
     <FadeIn delay={index * 0.14} y={60}>
       <motion.div
         className="relative overflow-hidden"
-        style={{ height: '540px', backgroundColor: '#0D0806', border: '1px solid rgba(250,251,252,0.07)', cursor: 'pointer' }}
+        style={{ height: 'clamp(260px, 55vw, 540px)', backgroundColor: '#0D0806', border: '1px solid rgba(250,251,252,0.07)', cursor: 'pointer' }}
         onClick={onClick}
         whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.12 }}
       >
-        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${product.accentGlow}, transparent 68%)`, opacity: 0.7 }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${product.accentGlow}, transparent 68%)`, opacity: 0.28 }} />
 
         <div className="absolute top-5 left-6 right-6 flex justify-between items-start pointer-events-none">
           <span className="font-black leading-none" style={{ color: 'rgba(250,251,252,0.12)', fontSize: 'clamp(1.6rem, 3vw, 2.2rem)' }}>
@@ -260,10 +260,10 @@ function ProductCarousel() {
             style={{ position: 'absolute', inset: 0 }}
           >
             <div style={{
-              position: 'absolute', inset: 0,
+              position: 'absolute', inset: 0, opacity: 0.3,
               background: `
-                radial-gradient(ellipse 70% 110% at 12% 70%, ${active.accentColor}99, transparent 58%),
-                radial-gradient(ellipse 45% 65% at 82% 18%, ${active.accentColor}44, transparent 52%)
+                radial-gradient(ellipse 70% 110% at 12% 70%, ${active.accentColor}, transparent 58%),
+                radial-gradient(ellipse 45% 65% at 82% 18%, ${active.accentColor}, transparent 52%)
               `,
             }} />
             <div style={{
@@ -271,7 +271,7 @@ function ProductCarousel() {
               backgroundImage: 'linear-gradient(rgba(250,251,252,1) 1px, transparent 1px), linear-gradient(90deg, rgba(250,251,252,1) 1px, transparent 1px)',
               backgroundSize: '44px 44px',
             }} />
-            <span style={{
+            <span className="hidden md:block" style={{
               position: 'absolute', right: '2%', top: '50%', transform: 'translateY(-50%)',
               fontWeight: 900, lineHeight: 1, userSelect: 'none',
               color: 'rgba(250,251,252,0.035)',
@@ -339,7 +339,7 @@ export function ProductsSection() {
           delay={0.05}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-16">
           {PRODUCTS.map((product, i) => (
             <ProductCard key={product.id} product={product} index={i} onClick={() => setSelected(product)} />
           ))}
