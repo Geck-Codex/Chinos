@@ -1,20 +1,32 @@
-import { Suspense, useRef, useState, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Environment, ContactShadows } from '@react-three/drei'
-import { motion } from 'framer-motion'
-import { GloveModel } from '../components/GloveModel'
+import { Suspense, lazy, useRef, useState, useEffect } from 'react'
 
-function fade(delay: number, y = 30) {
-  return {
-    initial: { opacity: 0, y },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.72, delay, ease: [0.25, 0.1, 0.25, 1] as const },
-  }
-}
+const MODEL_URL = '/images/models/guante2.glb'
+
+const GloveScene = lazy(() =>
+  import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
+)
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [canvasActive, setCanvasActive] = useState(true)
+  const [show3D, setShow3D] = useState(false)
+
+  // Diferir la carga del 3D hasta después del primer paint (para no competir con
+  // el LCP del texto), pero con timeout para que arranque pronto. El modelo se
+  // precarga en paralelo con el chunk de three.js en vez de en serie.
+  useEffect(() => {
+    const start = () => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'fetch'
+      link.href = MODEL_URL
+      document.head.appendChild(link)
+      setShow3D(true)
+    }
+    const ric = window.requestIdleCallback ?? ((cb: () => void, _o?: unknown) => setTimeout(cb, 200))
+    const id = ric(start, { timeout: 1200 })
+    return () => (window.cancelIdleCallback ?? clearTimeout)(id as number)
+  }, [])
 
   useEffect(() => {
     const el = sectionRef.current
@@ -39,44 +51,40 @@ export function HeroSection() {
 
         {/* ── Left: copy ── */}
         <div className="flex-1 flex flex-col justify-center max-w-2xl">
-          <motion.p
-            {...fade(0.15)}
-            className="uppercase tracking-[0.3em] font-semibold mb-5"
-            style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
+          <p
+            className="hero-fade uppercase tracking-[0.3em] font-semibold mb-5"
+            style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)', animationDelay: '0.1s' }}
           >
             Handlove Mexico
-          </motion.p>
+          </p>
 
           <div className="overflow-hidden mb-6">
-            <motion.h1
-              {...fade(0.3, 50)}
-              className="font-black uppercase leading-[0.9] tracking-tight"
+            <h1
+              className="hero-lcp font-black uppercase leading-[0.9] tracking-tight"
               style={{ color: '#FAFBFC', fontSize: 'clamp(3.5rem, 8vw, 8.5rem)' }}
             >
               Seguridad<br />
               <span style={{ color: '#CD0032' }}>en cada</span><br />
               guante.
-            </motion.h1>
+            </h1>
           </div>
 
-          <motion.p
-            {...fade(0.48)}
-            className="font-semibold uppercase tracking-wider mb-3"
-            style={{ color: '#FAFBFC', opacity: 0.8, fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)' }}
+          <p
+            className="hero-fade font-semibold uppercase tracking-wider mb-3"
+            style={{ color: '#FAFBFC', opacity: 0.72, fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)', animationDelay: '0.28s' }}
           >
             Guantes de seguridad al por mayor para cada tarea.
-          </motion.p>
+          </p>
 
-          <motion.p
-            {...fade(0.58)}
-            className="font-light leading-relaxed max-w-[420px]"
-            style={{ color: '#FAFBFC', opacity: 0.5, fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}
+          <p
+            className="hero-fade font-light leading-relaxed max-w-[420px]"
+            style={{ color: '#FAFBFC', opacity: 0.45, fontSize: 'clamp(1rem, 1.5vw, 1.2rem)', animationDelay: '0.36s' }}
           >
             ¡Guantes seguros, de calidad y protectores! Personaliza tus guantes,
             compra al por mayor a precios competitivos y te los entregaremos puntualmente.
-          </motion.p>
+          </p>
 
-          <motion.div {...fade(0.72)} className="flex gap-4 mt-9 flex-wrap">
+          <div className="hero-fade flex gap-4 mt-9 flex-wrap" style={{ animationDelay: '0.46s' }}>
             <a
               href="#productos"
               className="uppercase tracking-widest font-bold px-8 py-4"
@@ -89,7 +97,7 @@ export function HeroSection() {
             <a
               href="#mayoreo"
               className="uppercase tracking-widest font-bold px-8 py-4 border"
-              style={{ borderColor: 'rgba(250,251,252,0.35)', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
+              style={{ borderColor: 'rgba(250,251,252,0.22)', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#FAFBFC'
                 e.currentTarget.style.color = '#080403'
@@ -101,43 +109,20 @@ export function HeroSection() {
             >
               Mayoreo
             </a>
-          </motion.div>
+          </div>
         </div>
 
         {/* ── Right: 3D glove ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.4, delay: 0.3 }}
-          className="flex-1 w-full"
-          style={{ height: 'clamp(400px, 56vw, 700px)', minWidth: 0 }}
+        <div
+          className="hero-fade flex-1 w-full"
+          style={{ height: 'clamp(400px, 56vw, 700px)', minWidth: 0, animationDelay: '0.3s', animationDuration: '1.2s' }}
         >
-          <Canvas
-            camera={{ position: [0, 0.3, 5.2], fov: 42 }}
-            dpr={[1, 1.5]}
-            frameloop={canvasActive ? 'always' : 'never'}
-            gl={{ alpha: true, antialias: true }}
-            style={{ background: 'transparent' }}
-          >
-            <ambientLight intensity={0.22} />
-            <directionalLight position={[3.5, 5, 3]} intensity={3} color="#FAFBFC" />
-            <directionalLight position={[-3, -2, 1.5]} intensity={0.9} color="#CD0032" />
-            <directionalLight position={[0, 3, -5]} intensity={0.6} color="#FAFBFC" />
-            <pointLight position={[0, 5, 1]} intensity={25} color="#FAFBFC" />
-
+          {show3D && (
             <Suspense fallback={null}>
-              <GloveModel />
-              <ContactShadows
-                position={[0, -2.4, 0]}
-                opacity={0.4}
-                scale={6}
-                blur={3}
-                color="#CD0032"
-              />
-              <Environment preset="warehouse" />
+              <GloveScene variant="hero" active={canvasActive} />
             </Suspense>
-          </Canvas>
-        </motion.div>
+          )}
+        </div>
 
       </div>
     </section>

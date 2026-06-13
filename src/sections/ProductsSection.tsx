@@ -1,15 +1,27 @@
-import { useState, Suspense, useEffect } from 'react'
+import { useState, Suspense, lazy, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { Canvas } from '@react-three/fiber'
-import { Environment, ContactShadows } from '@react-three/drei'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'
+import { Link, useNavigate } from 'react-router-dom'
 import { X, ArrowUpRight } from 'lucide-react'
-import { GloveModel } from '../components/GloveModel'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 
+const GloveScene = lazy(() =>
+  import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
+)
+
 const EASE = [0.22, 1, 0.36, 1] as const
+
+const preloaded = new Set<string>()
+function preloadModel(url?: string) {
+  if (!url || preloaded.has(url)) return
+  preloaded.add(url)
+  const link = document.createElement('link')
+  link.rel = 'preload'
+  link.as = 'fetch'
+  link.href = url
+  document.head.appendChild(link)
+}
 
 const PRODUCTS = [
   {
@@ -22,6 +34,9 @@ const PRODUCTS = [
     palmColor: '#8B001E',
     cuffColor: '#111111',
     accentGlow: 'rgba(205,0,50,0.22)',
+    model: '/images/models/guante1.glb',
+    modelTint: '#CD0032',
+    image: '/images/products/dexterityultra.webp',
     specs: [
       { label: 'Material', value: 'Poliéster' },
       { label: 'Calibre', value: '15G' },
@@ -39,6 +54,9 @@ const PRODUCTS = [
     palmColor: '#1a1a1a',
     cuffColor: '#CD0032',
     accentGlow: 'rgba(139,0,30,0.25)',
+    model: '/images/models/polysand.glb',
+    modelTint: '',
+    image: '/images/products/polysand.webp',
     specs: [
       { label: 'Material', value: 'Poliéster' },
       { label: 'Calibre', value: '15G' },
@@ -56,6 +74,9 @@ const PRODUCTS = [
     palmColor: '#3D4A5C',
     cuffColor: '#252E3A',
     accentGlow: 'rgba(107,122,141,0.22)',
+    model: '/images/models/nanoflex.glb',
+    modelTint: '',
+    image: '/images/products/nanoflex.webp',
     specs: [
       { label: 'Material', value: 'Nylon' },
       { label: 'Calibre', value: '18G' },
@@ -66,16 +87,16 @@ const PRODUCTS = [
 ]
 
 const CATALOG = [
-  { id: 'edge-lite-a4', name: 'Edge Lite A4', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A4'], accentColor: '#2C4A7C' },
-  { id: 'edge-lite-a3', name: 'Edge Lite A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A3'], accentColor: '#2C4A7C' },
-  { id: 'edge-plus-a7', name: 'Edge Plus A7', category: 'Anticorte Premium', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A7'], accentColor: '#1A3A6A' },
-  { id: 'edge-plus-a3', name: 'Edge Plus A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A3'], accentColor: '#1A3A6A' },
-  { id: 'lite-pu-gris', name: 'Lite PU Gris', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#4A5568' },
-  { id: 'lite-pu-blanco', name: 'Lite PU Blanco', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#718096' },
-  { id: 'lite-pu-black', name: 'Lite PU Black', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#2D3748' },
-  { id: 'lite-cotton-60', name: 'Lite Cotton 60gr', category: 'Uso General', tags: ['Algodón · 60g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545' },
-  { id: 'lite-cotton-70', name: 'Lite Cotton 70gr', category: 'Uso General', tags: ['Algodón · 70g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545' },
-  { id: 'lite-nylon-100', name: 'Lite Nylon 100', category: 'Precisión Táctil', tags: ['Nylon · Cal.13', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#3D6B4F' },
+  { id: 'edge-lite-a4', name: 'Edge Lite A4', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A4'], accentColor: '#2C4A7C', image: '/images/products/edgelitea4.webp' },
+  { id: 'edge-lite-a3', name: 'Edge Lite A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A3'], accentColor: '#2C4A7C', image: '/images/products/edgelitea3.webp' },
+  { id: 'edge-plus-a7', name: 'Edge Plus A7', category: 'Anticorte Premium', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A7'], accentColor: '#1A3A6A', image: '/images/products/edgeplusa7.webp' },
+  { id: 'edge-plus-a3', name: 'Edge Plus A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A3'], accentColor: '#1A3A6A', image: '/images/products/egeplusa3.webp' },
+  { id: 'lite-pu-gris', name: 'Lite PU Gris', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#4A5568', image: '/images/products/litepugirs.webp' },
+  { id: 'lite-pu-blanco', name: 'Lite PU Blanco', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#718096', image: '/images/products/litepublanco.webp' },
+  { id: 'lite-pu-black', name: 'Lite PU Black', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#2D3748', image: '' },
+  { id: 'lite-cotton-60', name: 'Lite Cotton 60gr', category: 'Uso General', tags: ['Algodón · 60g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton60gr.webp' },
+  { id: 'lite-cotton-70', name: 'Lite Cotton 70gr', category: 'Uso General', tags: ['Algodón · 70g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton70gr.webp' },
+  { id: 'lite-nylon-100', name: 'Lite Nylon 100', category: 'Precisión Táctil', tags: ['Nylon · Cal.13', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#3D6B4F', image: '/images/products/litenylon100.webp' },
 ]
 
 type Product = typeof PRODUCTS[0]
@@ -121,18 +142,9 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
           <span className="absolute bottom-2 left-4 font-black leading-none select-none pointer-events-none" style={{ color: 'rgba(250,251,252,0.035)', fontSize: 'clamp(9rem, 20vw, 20rem)' }}>
             {product.num}
           </span>
-          <Canvas camera={{ position: [0, 0.2, 3.2], fov: 44 }} dpr={[1, 1.5]} frameloop="always" gl={{ alpha: true, antialias: true }} style={{ background: 'transparent' }}>
-            <ambientLight intensity={0.28} />
-            <directionalLight position={[3.5, 5, 3]} intensity={2.8} color="#FAFBFC" />
-            <directionalLight position={[-2.5, -2, 1.5]} intensity={0.9} color={product.primaryColor} />
-            <directionalLight position={[0, 3, -5]} intensity={0.5} color="#FAFBFC" />
-            <pointLight position={[0, 5, 1]} intensity={22} color="#FAFBFC" />
-            <Suspense fallback={null}>
-              <GloveModel primaryColor={product.primaryColor} palmColor={product.palmColor} cuffColor={product.cuffColor} rotationSpeed={0.55} />
-              <ContactShadows position={[0, -2.2, 0]} opacity={0.3} scale={5} blur={3} color={product.primaryColor} />
-              <Environment preset="warehouse" />
-            </Suspense>
-          </Canvas>
+          <Suspense fallback={null}>
+            <GloveScene variant="modal" primaryColor={product.primaryColor} palmColor={product.palmColor} cuffColor={product.cuffColor} modelUrl={product.model || undefined} modelTint={product.modelTint || undefined} />
+          </Suspense>
         </motion.div>
 
         {/* Info panel */}
@@ -199,16 +211,30 @@ function ProductCard({ product, index, onClick }: { product: Product; index: num
   return (
     <FadeIn delay={index * 0.14} y={60}>
       <motion.div
-        className="relative overflow-hidden"
+        className="group relative overflow-hidden"
         style={{ height: 'clamp(260px, 55vw, 540px)', backgroundColor: '#0D0806', border: '1px solid rgba(250,251,252,0.07)', cursor: 'pointer' }}
         onClick={onClick}
+        onMouseEnter={() => preloadModel(product.model)}
         whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.12 }}
       >
-        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${product.accentGlow}, transparent 68%)`, opacity: 0.28 }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 65% 55% at 50% 42%, ${product.accentGlow}, transparent 68%)`, opacity: 0.5 }} />
+
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="font-black leading-none select-none" style={{ color: product.primaryColor, opacity: 0.1, fontSize: 'clamp(12rem, 26vw, 22rem)' }}>
+            {product.num}
+          </span>
+        </div>
+
+        <img
+          src={product.image}
+          alt={product.name}
+          className="product-shot group-hover:scale-[1.06]"
+          style={{ position: 'absolute', left: '8%', right: '8%', top: '6%', width: '84%', height: '74%', objectFit: 'contain', objectPosition: 'center', filter: 'drop-shadow(0 18px 30px rgba(0,0,0,0.55))', transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)' }}
+        />
 
         <div className="absolute top-5 left-6 right-6 flex justify-between items-start pointer-events-none">
-          <span className="font-black leading-none" style={{ color: 'rgba(250,251,252,0.12)', fontSize: 'clamp(1.6rem, 3vw, 2.2rem)' }}>
+          <span className="font-black leading-none" style={{ color: 'rgba(250,251,252,0.18)', fontSize: 'clamp(1.6rem, 3vw, 2.2rem)' }}>
             {product.num}
           </span>
           <span className="flex items-center gap-1 uppercase tracking-[0.18em] font-bold" style={{ color: 'rgba(250,251,252,0.2)', fontSize: '0.58rem' }}>
@@ -216,13 +242,7 @@ function ProductCard({ product, index, onClick }: { product: Product; index: num
           </span>
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="font-black leading-none select-none" style={{ color: product.primaryColor, opacity: 0.08, fontSize: 'clamp(12rem, 26vw, 22rem)' }}>
-            {product.num}
-          </span>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 px-7 pb-7 pt-20 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(13,8,6,0.97) 55%, transparent)' }}>
+        <div className="absolute bottom-0 left-0 right-0 px-7 pb-7 pt-20 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(13,8,6,0.97) 40%, rgba(13,8,6,0.5) 70%, transparent)' }}>
           <p className="uppercase tracking-[0.2em] font-bold mb-1.5" style={{ color: '#CD0032', fontSize: '0.66rem' }}>{product.category}</p>
           <h3 className="font-black uppercase leading-none" style={{ color: '#FAFBFC', fontSize: 'clamp(1.2rem, 2.2vw, 1.8rem)' }}>{product.name}</h3>
         </div>
@@ -237,82 +257,199 @@ const AUTOPLAY_MS = 4500
 
 function ProductCarousel() {
   const [activeIdx, setActiveIdx] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const pausedRef = useRef(false)
+  const barControls = useAnimation()
+  const slideStartRef = useRef(Date.now())
+  const pausedAtRef = useRef<number | null>(null)
+  const pausedElapsedRef = useRef(0)
+  const navigate = useNavigate()
   const active = CATALOG[activeIdx]
 
+  function startBar() {
+    slideStartRef.current = Date.now()
+    pausedElapsedRef.current = 0
+    pausedAtRef.current = null
+    barControls.set({ scaleX: 0 })
+    barControls.start({ scaleX: 1, transition: { duration: AUTOPLAY_MS / 1000, ease: 'linear' } })
+  }
+
+  useEffect(() => { startBar() }, [activeIdx])
+
   useEffect(() => {
-    if (paused) return
-    const t = setInterval(() => setActiveIdx(i => (i + 1) % CATALOG.length), AUTOPLAY_MS)
+    const t = setInterval(() => {
+      if (!pausedRef.current) setActiveIdx(i => (i + 1) % CATALOG.length)
+    }, AUTOPLAY_MS)
     return () => clearInterval(t)
-  }, [paused])
+  }, [])
+
+  function handleMouseEnter() {
+    pausedRef.current = true
+    pausedAtRef.current = Date.now()
+    barControls.stop()
+  }
+
+  function handleMouseLeave() {
+    pausedRef.current = false
+    if (pausedAtRef.current !== null) {
+      pausedElapsedRef.current += Date.now() - pausedAtRef.current
+      pausedAtRef.current = null
+    }
+    const realElapsed = Date.now() - slideStartRef.current - pausedElapsedRef.current
+    const remaining = Math.max(50, AUTOPLAY_MS - realElapsed)
+    barControls.start({ scaleX: 1, transition: { duration: remaining / 1000, ease: 'linear' } })
+  }
 
   return (
-    <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-      {/* Featured panel */}
-      <div style={{ position: 'relative', marginBottom: '6px', overflow: 'hidden', height: 'clamp(260px, 32vw, 420px)', backgroundColor: '#0D0806' }}>
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+
+      {/* ── Banner full-bleed — más alto para imágenes portrait ── */}
+      <div style={{ position: 'relative', overflow: 'hidden', height: 'clamp(440px, 56vw, 660px)', backgroundColor: '#0D0806', marginBottom: '4px' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeIdx}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.55 }}
             style={{ position: 'absolute', inset: 0 }}
           >
+            {/* Glow ambiental de la línea — abajo izquierda */}
             <div style={{
-              position: 'absolute', inset: 0, opacity: 0.3,
-              background: `
-                radial-gradient(ellipse 70% 110% at 12% 70%, ${active.accentColor}, transparent 58%),
-                radial-gradient(ellipse 45% 65% at 82% 18%, ${active.accentColor}, transparent 52%)
-              `,
+              position: 'absolute', inset: 0,
+              background: `radial-gradient(ellipse 60% 100% at 5% 90%, ${active.accentColor}99, transparent 52%)`,
             }} />
+            {/* Spotlight de luz detrás del producto — hace resaltar guantes oscuros */}
             <div style={{
-              position: 'absolute', inset: 0, opacity: 0.025,
-              backgroundImage: 'linear-gradient(rgba(250,251,252,1) 1px, transparent 1px), linear-gradient(90deg, rgba(250,251,252,1) 1px, transparent 1px)',
-              backgroundSize: '44px 44px',
+              position: 'absolute', inset: 0,
+              background: 'radial-gradient(ellipse 38% 62% at 76% 44%, rgba(255,255,255,0.16), transparent 66%)',
             }} />
-            <span className="hidden md:block" style={{
-              position: 'absolute', right: '2%', top: '50%', transform: 'translateY(-50%)',
-              fontWeight: 900, lineHeight: 1, userSelect: 'none',
-              color: 'rgba(250,251,252,0.035)',
-              fontSize: 'clamp(10rem, 22vw, 24rem)',
-            }}>
+            {/* Glow de acento detrás del producto */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: `radial-gradient(ellipse 34% 52% at 76% 48%, ${active.accentColor}, transparent 64%)`,
+              opacity: 0.5,
+            }} />
+            {/* Degradado horizontal — texto legible a la izq, producto respira a la derecha */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to right, rgba(8,4,3,0.92) 26%, rgba(8,4,3,0.35) 54%, transparent 82%)',
+            }} />
+            {/* Degradado inferior para texto */}
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '42%', background: 'linear-gradient(to top, rgba(8,4,3,0.96) 0%, transparent)' }} />
+            {/* Número ghost — detrás del producto */}
+            <span className="hidden md:block" style={{ position: 'absolute', right: '2%', bottom: '-4%', fontWeight: 900, lineHeight: 1, userSelect: 'none', color: 'rgba(250,251,252,0.05)', fontSize: 'clamp(10rem, 22vw, 26rem)' }}>
               {String(activeIdx + 1).padStart(2, '0')}
             </span>
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0,
-              padding: 'clamp(20px, 3.5vw, 44px)',
-              background: 'linear-gradient(to top, rgba(8,4,3,0.97) 38%, rgba(8,4,3,0.55) 65%, transparent)',
-            }}>
-              <p style={{ color: '#CD0032', fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '10px' }}>
+            {/* Producto recortado — alineado a la derecha tipo hero, al frente */}
+            {active.image && (
+              <img
+                src={active.image}
+                alt={active.name}
+                style={{ position: 'absolute', top: '5%', bottom: '7%', right: '3%', height: '88%', width: '46%', objectFit: 'contain', objectPosition: 'center', filter: 'drop-shadow(0 26px 46px rgba(0,0,0,0.65))' }}
+              />
+            )}
+
+            {/* Contenido */}
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 'clamp(22px, 3.8vw, 52px)' }}>
+              <p style={{ color: '#CD0032', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.26em', marginBottom: '10px' }}>
                 {active.category}
               </p>
-              <h3 style={{ color: '#FAFBFC', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.92, letterSpacing: '-0.02em', marginBottom: '16px', fontSize: 'clamp(2rem, 5vw, 4.8rem)' }}>
+              <h3 style={{ color: '#FAFBFC', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.02em', marginBottom: '16px', fontSize: 'clamp(2rem, 5.5vw, 5.2rem)', maxWidth: '600px' }}>
                 {active.name}
               </h3>
-              <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 {active.tags.map(tag => (
-                  <span key={tag} style={{ color: 'rgba(250,251,252,0.52)', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', padding: '3px 10px', border: '1px solid rgba(250,251,252,0.14)' }}>
+                  <span key={tag} style={{ color: 'rgba(250,251,252,0.55)', fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', padding: '3px 9px', border: '1px solid rgba(250,251,252,0.15)' }}>
                     {tag}
                   </span>
                 ))}
+                <button
+                  onClick={() => navigate(`/productos?producto=${active.id}`)}
+                  className="inline-flex items-center gap-1.5 uppercase tracking-widest font-bold"
+                  style={{ fontSize: '0.58rem', padding: '5px 14px', backgroundColor: '#CD0032', color: '#FAFBFC', border: 'none', cursor: 'pointer' }}
+                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#a80029')}
+                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#CD0032')}
+                >
+                  Ver ficha <ArrowUpRight size={10} />
+                </button>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Progress bar */}
-        <AnimatePresence mode="wait">
-          {!paused && (
-            <motion.div
-              key={`bar-${activeIdx}`}
-              style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', backgroundColor: '#CD0032', transformOrigin: 'left' }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: AUTOPLAY_MS / 1000, ease: 'linear' }}
-            />
-          )}
-        </AnimatePresence>
+        {/* Barra de progreso */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={barControls}
+          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', backgroundColor: '#CD0032', transformOrigin: 'left', zIndex: 2 }}
+        />
+      </div>
+
+      {/* ── Thumbnail rail — portrait con número, color de línea y scale activo ── */}
+      <div
+        className="overflow-x-auto [&::-webkit-scrollbar]:hidden"
+        style={{ display: 'flex', gap: '3px', scrollbarWidth: 'none' }}
+      >
+        {CATALOG.map((item, i) => (
+          <button
+            key={item.id}
+            onClick={() => setActiveIdx(i)}
+            style={{
+              flexShrink: 0,
+              width: 'clamp(62px, 6vw, 86px)',
+              aspectRatio: '3/4',
+              position: 'relative',
+              overflow: 'hidden',
+              backgroundColor: '#0D0806',
+              border: `1px solid ${i === activeIdx ? '#CD0032' : 'rgba(250,251,252,0.07)'}`,
+              cursor: 'pointer',
+              padding: 0,
+              transition: 'border-color 0.2s, transform 0.22s',
+              transform: i === activeIdx ? 'scale(1.06)' : 'scale(1)',
+              zIndex: i === activeIdx ? 1 : 0,
+            }}
+          >
+            {/* Franja de color de la línea — identidad del producto */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+              backgroundColor: i === activeIdx ? '#CD0032' : item.accentColor,
+              opacity: i === activeIdx ? 1 : 0.5,
+              zIndex: 3,
+              transition: 'opacity 0.2s, background-color 0.2s',
+            }} />
+            {item.image && (
+              <img
+                src={item.image}
+                alt={item.name}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', padding: '5px', opacity: i === activeIdx ? 1 : 0.55, transition: 'opacity 0.25s' }}
+              />
+            )}
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(8,4,3,0.95) 35%, transparent)' }} />
+            {/* Número de posición */}
+            <span style={{
+              position: 'absolute', top: '7px', left: '6px',
+              color: i === activeIdx ? 'rgba(250,251,252,0.85)' : 'rgba(250,251,252,0.3)',
+              fontSize: '0.48rem', fontWeight: 900, letterSpacing: '0.08em',
+              zIndex: 2, transition: 'color 0.2s',
+            }}>
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            {/* Indicador activo inferior */}
+            {i === activeIdx && (
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', backgroundColor: '#CD0032', zIndex: 3 }} />
+            )}
+            {/* Nombre del producto */}
+            <p style={{
+              position: 'absolute', bottom: '5px', left: '5px', right: '5px',
+              color: i === activeIdx ? '#FAFBFC' : 'rgba(250,251,252,0.38)',
+              fontSize: '0.44rem', fontWeight: 700, textTransform: 'uppercase',
+              lineHeight: 1.2, letterSpacing: '0.04em',
+              zIndex: 2, transition: 'color 0.2s',
+            }}>
+              {item.name}
+            </p>
+          </button>
+        ))}
       </div>
 
     </div>

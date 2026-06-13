@@ -1,89 +1,231 @@
+import { motion } from 'framer-motion'
+import { ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
-import { WipeReveal } from '../components/WipeReveal'
+import { CountUp } from '../components/CountUp'
 
-const PILLARS = [
+type Pillar = {
+  index: string
+  label: string
+  desc: string
+  span: 1 | 2
+} & (
+  | { kind: 'count'; to: number; prefix?: string; suffix?: string }
+  | { kind: 'icon'; Icon: LucideIcon }
+)
+
+const PILLARS: Pillar[] = [
   {
-    stat: '100%',
-    label: 'Fibras recicladas',
-    desc: 'Cada lote de guantes está fabricado con fibras 100% recicladas, reduciendo residuos y fomentando la economía circular.',
+    index: '01',
+    kind: 'count',
+    to: 100,
+    suffix: '%',
+    label: 'Uso de fibra',
+    desc: 'Cada lote de 100 guantes está fabricado con fibras 100% recicladas, lo que reduce los residuos y fomenta una economía circular.',
+    span: 2,
   },
   {
-    stat: '-30%',
+    index: '02',
+    kind: 'count',
+    to: 30,
+    prefix: '−',
+    suffix: '%',
     label: 'Huella de carbono',
-    desc: 'Reducción de emisiones de CO₂ en un 30%, alineados con los objetivos de sostenibilidad globales.',
+    desc: 'Hemos reducido las emisiones de CO₂ en un 30%, disminuyendo nuestra huella de carbono y alineándonos con los objetivos de sostenibilidad globales.',
+    span: 1,
   },
   {
-    stat: '↓',
+    index: '03',
+    kind: 'icon',
+    Icon: TrendingDown,
     label: 'Combustibles fósiles',
-    desc: 'Menor consumo de petróleo. Dependencia reducida de combustibles fósiles para un futuro más sostenible.',
+    desc: 'Al reducir el consumo de petróleo, hemos disminuido la dependencia de los combustibles fósiles, garantizando un futuro más sostenible para todos.',
+    span: 1,
   },
   {
-    stat: '↑',
+    index: '04',
+    kind: 'icon',
+    Icon: TrendingUp,
     label: 'Eficiencia de recursos',
-    desc: 'Recursos optimizados en cada ciclo de producción sin comprometer la resistencia ni la calidad.',
+    desc: 'Hemos reducido el consumo de materiales, optimizando los recursos sin comprometer la resistencia y la calidad de nuestros guantes.',
+    span: 2,
   },
 ]
 
 export function SustainabilitySection() {
   return (
     <section
-      className="px-8 md:px-16 py-24 md:py-36"
-      style={{ backgroundColor: '#080403' }}
+      id="sostenibilidad"
+      style={{ backgroundColor: '#080403', overflow: 'hidden' }}
     >
-      <FadeIn y={20}>
-        <p
-          className="uppercase tracking-[0.28em] font-bold mb-3"
-          style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
-        >
-          Sostenibilidad
-        </p>
-      </FadeIn>
-      <RevealText
-        lines={['Pilares de', 'excelencia']}
-        className="font-black uppercase leading-none tracking-tight mb-8 md:mb-12"
-        style={{ color: '#FAFBFC', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
-        delay={0.05}
-      />
+      {/* ── Bloque titular ── */}
+      <div style={{ padding: 'clamp(64px, 9vw, 120px) clamp(22px, 5vw, 80px) 0', position: 'relative' }}>
 
+        <FadeIn y={16}>
+          <p
+            className="uppercase font-bold"
+            style={{ color: '#CD0032', fontSize: '0.62rem', letterSpacing: '0.28em', marginBottom: '32px' }}
+          >
+            Sostenibilidad
+          </p>
+        </FadeIn>
+
+        <div style={{ position: 'relative', zIndex: 1, marginBottom: '0' }}>
+          <RevealText
+            lines={['La sostenibilidad', 'en el punto', 'de mira']}
+            className="font-black uppercase leading-none tracking-tight"
+            style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 7.5vw, 9rem)' }}
+            delay={0.05}
+          />
+        </div>
+
+        {/* Línea divisora */}
+        <div style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.08)', marginTop: '56px' }} />
+      </div>
+
+      {/* ── Pilares — bento grid asimétrico ── */}
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
-        style={{ border: '1px solid rgba(250,251,252,0.1)' }}
+        className="grid grid-cols-1 md:grid-cols-3"
+        style={{
+          gap: '1px',
+          backgroundColor: 'rgba(250,251,252,0.07)',
+          borderTop: '1px solid rgba(250,251,252,0.07)',
+        }}
       >
-        {PILLARS.map((p, i) => (
-          <WipeReveal key={p.label} delay={i * 0.15} amount={0.1} wipeColor="#CD0032">
+        {PILLARS.map((pillar, i) => (
+          <motion.div
+            key={pillar.label}
+            className={pillar.span === 2 ? 'md:col-span-2' : 'md:col-span-1'}
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, amount: 0.3 }}
+            style={{ backgroundColor: '#080403' }}
+          >
             <div
-              className="p-8 md:p-10 flex flex-col gap-4"
               style={{
-                borderRight: '1px solid rgba(250,251,252,0.1)',
-                borderBottom: '1px solid rgba(250,251,252,0.1)',
-                backgroundColor: '#080403',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                gap: 'clamp(20px, 3vw, 40px)',
+                padding: 'clamp(32px, 3.4vw, 56px) clamp(26px, 3vw, 52px)',
+                cursor: 'default',
+                transition: 'background-color 0.3s',
               }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.backgroundColor = 'rgba(205,0,50,0.05)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent' }}
             >
-              <span
-                className="font-black leading-none"
-                style={{ color: '#CD0032', fontSize: 'clamp(2.5rem, 5.5vw, 4.5rem)' }}
-              >
-                {p.stat}
-              </span>
-              <div className="flex flex-col gap-2">
-                <h3
-                  className="font-black uppercase"
-                  style={{ color: '#FAFBFC', fontSize: 'clamp(1.2rem, 2.2vw, 1.8rem)' }}
+              {/* Cabecera: índice + flecha */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{
+                    color: 'rgba(250,251,252,0.18)',
+                    fontSize: '0.56rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.18em',
+                  }}
                 >
-                  {p.label}
+                  {pillar.index}
+                </span>
+                <ArrowUpRight size={16} style={{ color: 'rgba(205,0,50,0.35)' }} />
+              </div>
+
+              {/* Stat — count-up o ícono */}
+              <div
+                style={{
+                  color: '#CD0032',
+                  fontWeight: 900,
+                  fontSize: 'clamp(3rem, 6vw, 7.5rem)',
+                  lineHeight: 1,
+                  letterSpacing: '-0.04em',
+                  marginTop: 'auto',
+                }}
+              >
+                {pillar.kind === 'count' ? (
+                  <CountUp to={pillar.to} prefix={pillar.prefix} suffix={pillar.suffix} />
+                ) : (
+                  <pillar.Icon size="0.9em" strokeWidth={2.4} style={{ display: 'block' }} />
+                )}
+              </div>
+
+              {/* Texto */}
+              <div>
+                <h3
+                  className="uppercase font-black"
+                  style={{
+                    color: '#FAFBFC',
+                    letterSpacing: '0.05em',
+                    marginBottom: '10px',
+                    fontSize: 'clamp(1rem, 1.7vw, 1.45rem)',
+                  }}
+                >
+                  {pillar.label}
                 </h3>
                 <p
-                  className="font-light leading-relaxed"
-                  style={{ color: '#FAFBFC', opacity: 0.45, fontSize: 'clamp(1rem, 1.5vw, 1.2rem)' }}
+                  style={{
+                    color: 'rgba(250,251,252,0.4)',
+                    fontSize: 'clamp(0.82rem, 1.05vw, 0.98rem)',
+                    lineHeight: 1.7,
+                    maxWidth: '460px',
+                  }}
                 >
-                  {p.desc}
+                  {pillar.desc}
                 </p>
               </div>
             </div>
-          </WipeReveal>
+          </motion.div>
         ))}
       </div>
+
+      {/* ── CTA ── */}
+      <FadeIn y={20} delay={0.2}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '24px',
+            padding: 'clamp(44px, 7vw, 80px) clamp(22px, 5vw, 80px)',
+            borderTop: '1px solid rgba(250,251,252,0.07)',
+          }}
+        >
+          <p
+            style={{
+              color: 'rgba(250,251,252,0.3)',
+              fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)',
+              maxWidth: '400px',
+              lineHeight: 1.65,
+            }}
+          >
+            Comprometidos con un futuro más limpio,<br />sin comprometer la protección.
+          </p>
+          <a
+            href="#contacto"
+            className="inline-flex items-center gap-3 uppercase font-bold"
+            style={{
+              letterSpacing: '0.2em',
+              fontSize: 'clamp(0.7rem, 1vw, 0.85rem)',
+              color: '#FAFBFC',
+              textDecoration: 'none',
+              border: '1px solid rgba(250,251,252,0.18)',
+              padding: '14px 28px',
+              transition: 'background-color 0.22s, border-color 0.22s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = '#CD0032'
+              e.currentTarget.style.borderColor = '#CD0032'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = 'transparent'
+              e.currentTarget.style.borderColor = 'rgba(250,251,252,0.18)'
+            }}
+          >
+            Más información <ArrowUpRight size={13} />
+          </a>
+        </div>
+      </FadeIn>
     </section>
   )
 }

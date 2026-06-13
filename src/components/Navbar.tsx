@@ -1,4 +1,3 @@
-import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -9,7 +8,7 @@ const NAV_LINKS = [
   { label: 'Contacto', href: '#contacto' },
 ]
 
-const EASE = [0.22, 1, 0.36, 1] as const
+const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -45,13 +44,22 @@ export function Navbar() {
     }
   }
 
+  const bar = (open: string, closed: string, extra: React.CSSProperties = {}): React.CSSProperties => ({
+    display: 'block',
+    height: '2px',
+    width: '22px',
+    backgroundColor: '#FAFBFC',
+    borderRadius: '2px',
+    transformOrigin: 'center',
+    transform: menuOpen ? open : closed,
+    transition: `transform 0.35s ${EASE}, opacity 0.2s ease-in-out`,
+    ...extra,
+  })
+
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: -24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: EASE }}
-        className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 md:px-6 pt-3"
+      <div
+        className="nav-enter fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 md:px-6 pt-3"
         style={{ pointerEvents: 'none' }}
       >
         <header
@@ -70,7 +78,7 @@ export function Navbar() {
         >
           {/* Logo */}
           <a href="/" onClick={(e) => handleLink(e, '/')} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '9px' }}>
-            <img src="/images/handlove.png" alt="" style={{ height: '26px', width: 'auto' }} />
+            <img src="/images/handlove.png" alt="" width={26} height={26} style={{ height: '26px', width: 'auto' }} />
             <span
               className="font-black uppercase tracking-widest"
               style={{ color: '#FAFBFC', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
@@ -115,95 +123,63 @@ export function Navbar() {
               onClick={() => setMenuOpen((v) => !v)}
               aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
             >
-              {/* Barra superior */}
-              <motion.span
-                animate={menuOpen
-                  ? { rotate: 45, y: 7, width: '22px' }
-                  : { rotate: 0, y: 0, width: '22px' }
-                }
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                style={{ display: 'block', height: '2px', backgroundColor: '#FAFBFC', borderRadius: '2px', transformOrigin: 'center', marginBottom: '5px' }}
-              />
-              {/* Barra media */}
-              <motion.span
-                animate={menuOpen
-                  ? { scaleX: 0, opacity: 0 }
-                  : { scaleX: 1, opacity: 1 }
-                }
-                transition={{ duration: 0.2, ease: 'easeInOut' }}
-                style={{ display: 'block', height: '2px', width: '22px', backgroundColor: '#FAFBFC', borderRadius: '2px', transformOrigin: 'center', marginBottom: '5px' }}
-              />
-              {/* Barra inferior */}
-              <motion.span
-                animate={menuOpen
-                  ? { rotate: -45, y: -7, width: '22px' }
-                  : { rotate: 0, y: 0, width: '22px' }
-                }
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                style={{ display: 'block', height: '2px', backgroundColor: '#FAFBFC', borderRadius: '2px', transformOrigin: 'center' }}
-              />
+              <span style={bar('translateY(7px) rotate(45deg)', 'translateY(0) rotate(0)', { marginBottom: '5px' })} />
+              <span style={bar('scaleX(0)', 'scaleX(1)', { marginBottom: '5px', opacity: menuOpen ? 0 : 1 })} />
+              <span style={bar('translateY(-7px) rotate(-45deg)', 'translateY(0) rotate(0)')} />
             </button>
           </div>
         </header>
-      </motion.div>
+      </div>
 
-      {/* Mobile menu overlay */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
-            animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
-            exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
-            transition={{ duration: 0.4, ease: EASE }}
-            className="fixed inset-0 z-40 flex flex-col"
-            style={{ backgroundColor: '#080403' }}
-          >
-            {/* Acento rojo izquierdo */}
-            <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: '#CD0032' }} />
+      {/* Mobile menu overlay — siempre montado, animado por CSS para entrada y salida */}
+      <div
+        className="fixed inset-0 z-40 flex flex-col"
+        style={{
+          backgroundColor: '#080403',
+          clipPath: menuOpen ? 'inset(0 0 0% 0)' : 'inset(0 0 100% 0)',
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? 'all' : 'none',
+          transition: `clip-path 0.4s ${EASE}, opacity 0.4s ${EASE}`,
+        }}
+      >
+        {/* Acento rojo izquierdo */}
+        <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: '#CD0032' }} />
 
-            <nav className="flex flex-col justify-center flex-1 px-10 gap-2">
-              {NAV_LINKS.map((link, i) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  onClick={(e) => handleLink(e, link.href)}
-                  initial={{ opacity: 0, x: -32 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.12 + i * 0.07, duration: 0.45, ease: EASE }}
-                  className="font-black uppercase tracking-tight leading-none py-4"
-                  style={{
-                    color: '#FAFBFC',
-                    textDecoration: 'none',
-                    fontSize: 'clamp(2.4rem, 10vw, 4rem)',
-                    borderBottom: '1px solid rgba(250,251,252,0.08)',
-                  }}
-                  onTouchStart={(e) => (e.currentTarget.style.color = '#CD0032')}
-                  onTouchEnd={(e) => (e.currentTarget.style.color = '#FAFBFC')}
-                >
-                  {link.label}
-                </motion.a>
-              ))}
-            </nav>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.45, duration: 0.4 }}
-              className="px-10 pb-12"
+        <nav className="flex flex-col justify-center flex-1 px-10 gap-2">
+          {NAV_LINKS.map((link, i) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={(e) => handleLink(e, link.href)}
+              className="font-black uppercase tracking-tight leading-none py-4"
+              style={{
+                color: '#FAFBFC',
+                textDecoration: 'none',
+                fontSize: 'clamp(2.4rem, 10vw, 4rem)',
+                borderBottom: '1px solid rgba(250,251,252,0.08)',
+                opacity: menuOpen ? 1 : 0,
+                transform: menuOpen ? 'translateX(0)' : 'translateX(-32px)',
+                transition: `opacity 0.45s ${EASE} ${menuOpen ? 0.12 + i * 0.07 : 0}s, transform 0.45s ${EASE} ${menuOpen ? 0.12 + i * 0.07 : 0}s`,
+              }}
+              onTouchStart={(e) => (e.currentTarget.style.color = '#CD0032')}
+              onTouchEnd={(e) => (e.currentTarget.style.color = '#FAFBFC')}
             >
-              <a
-                href="#contacto"
-                onClick={(e) => handleLink(e, '#contacto')}
-                className="inline-block uppercase tracking-widest font-bold px-8 py-4 w-full text-center"
-                style={{ backgroundColor: '#CD0032', color: '#FAFBFC', textDecoration: 'none', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
-              >
-                Solicitar cotización
-              </a>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="px-10 pb-12" style={{ opacity: menuOpen ? 1 : 0, transition: `opacity 0.4s ease ${menuOpen ? 0.45 : 0}s` }}>
+          <a
+            href="#contacto"
+            onClick={(e) => handleLink(e, '#contacto')}
+            className="inline-block uppercase tracking-widest font-bold px-8 py-4 w-full text-center"
+            style={{ backgroundColor: '#CD0032', color: '#FAFBFC', textDecoration: 'none', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
+          >
+            Solicitar cotización
+          </a>
+        </div>
+      </div>
     </>
   )
 }

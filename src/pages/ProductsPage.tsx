@@ -1,14 +1,33 @@
-import { useState, Suspense, useEffect } from 'react'
+import { useState, Suspense, lazy, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
-import { Canvas } from '@react-three/fiber'
-import { Environment, ContactShadows } from '@react-three/drei'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ArrowUpRight } from 'lucide-react'
-import { GloveModel } from '../components/GloveModel'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 
+const GloveScene = lazy(() =>
+  import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
+)
+
 const EASE = [0.22, 1, 0.36, 1] as const
+
+const MODELS: Record<string, { url: string; tint?: string }> = {
+  'ultra-grip': { url: '/images/models/guante1.glb', tint: '#CD0032' },
+  'poly-sand': { url: '/images/models/polysand.glb' },
+  'nanoflex': { url: '/images/models/nanoflex.glb' },
+}
+
+const preloaded = new Set<string>()
+function preloadModel(url?: string) {
+  if (!url || preloaded.has(url)) return
+  preloaded.add(url)
+  const link = document.createElement('link')
+  link.rel = 'preload'
+  link.as = 'fetch'
+  link.href = url
+  document.head.appendChild(link)
+}
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -16,7 +35,7 @@ const ALL_PRODUCTS = [
   {
     id: 'ultra-grip', num: '01', line: 'Dexterity',
     name: 'Dexterity Ultra Grip', category: 'Alta Destreza / Agarre',
-    image: 'https://picsum.photos/seed/ultragrip/640/360',
+    image: '/images/products/dexterityultra.webp',
     description: 'Guante de poliéster calibre 15 con palma recubierta de nitrilo liso. Agarre confiable y comodidad durante jornadas prolongadas para industria automotriz, logística y manufactura ligera.',
     primaryColor: '#CD0032', palmColor: '#8B001E', cuffColor: '#111111',
     accentColor: '#CD0032', accentGlow: 'rgba(205,0,50,0.22)',
@@ -28,7 +47,7 @@ const ALL_PRODUCTS = [
   {
     id: 'poly-sand', num: '02', line: 'Dexterity',
     name: 'Dexterity Poly Sand', category: 'Agarre Superior',
-    image: 'https://picsum.photos/seed/polysand/640/360',
+    image: '/images/products/polysand.webp',
     description: 'Guante de poliéster calibre 15 con palma recubierta de nitrilo arenoso. Excelente agarre y alta destreza para ensamblaje, mantenimiento y manejo de herramientas manuales.',
     primaryColor: '#8B001E', palmColor: '#1a1a1a', cuffColor: '#CD0032',
     accentColor: '#8B001E', accentGlow: 'rgba(139,0,30,0.25)',
@@ -40,7 +59,7 @@ const ALL_PRODUCTS = [
   {
     id: 'nanoflex', num: '03', line: 'Dexterity',
     name: 'Dexterity Nanoflex', category: 'Precisión Táctil',
-    image: 'https://picsum.photos/seed/nanoflex/640/360',
+    image: '/images/products/nanoflex.webp',
     description: 'Guante premium de nylon calibre 18 con palma recubierta de nitrilo microespumado. Máxima sensibilidad táctil y agarre confiable para electrónica, ensamblaje e inspección de calidad.',
     primaryColor: '#6B7A8D', palmColor: '#3D4A5C', cuffColor: '#252E3A',
     accentColor: '#5A6B7D', accentGlow: 'rgba(107,122,141,0.22)',
@@ -52,7 +71,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-plus-a7', num: '04', line: 'Edge',
     name: 'Edge Plus A7', category: 'Anticorte Premium',
-    image: 'https://picsum.photos/seed/edgeplusa7/640/360',
+    image: '/images/products/edgeplusa7.webp',
     description: 'Anticorte de alto nivel con nitrilo arenoso en palma y compatibilidad táctil. Ideal para vidrio, aeroespacial y automotriz de alto riesgo.',
     primaryColor: '#1A3A6A', palmColor: '#0E2040', cuffColor: '#080C14',
     accentColor: '#1A3A6A', accentGlow: 'rgba(26,58,106,0.3)',
@@ -64,7 +83,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-plus-a3', num: '05', line: 'Edge',
     name: 'Edge Plus A3', category: 'Anticorte',
-    image: 'https://picsum.photos/seed/edgeplusa3/640/360',
+    image: '/images/products/egeplusa3.webp',
     description: 'Anticorte con nitrilo arenoso en palma y compatibilidad con pantallas táctiles para entornos metalmecánicos y automotrices.',
     primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
     accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
@@ -76,7 +95,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-lite-a4', num: '06', line: 'Edge',
     name: 'Edge Lite A4', category: 'Anticorte Ligero',
-    image: 'https://picsum.photos/seed/edgelitea4/640/360',
+    image: '/images/products/edgelitea4.webp',
     description: 'Anticorte ligero con recubrimiento de poliuretano. Buena comodidad y movilidad para manipulación de piezas con bordes filosos.',
     primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
     accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
@@ -88,7 +107,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-lite-a3', num: '07', line: 'Edge',
     name: 'Edge Lite A3', category: 'Anticorte',
-    image: 'https://picsum.photos/seed/edgelitea3/640/360',
+    image: '/images/products/edgelitea3.webp',
     description: 'Anticorte en calibre 13 para alta destreza, con recubrimiento de poliuretano y protección de nitrilo entre pulgar e índice.',
     primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
     accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
@@ -100,7 +119,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-pu-gris', num: '08', line: 'Lite',
     name: 'Lite PU Gris', category: 'Alta Destreza',
-    image: 'https://picsum.photos/seed/litepugris/640/360',
+    image: '/images/products/litepugirs.webp',
     description: 'Guante de poliéster calibre 15 con recubrimiento de poliuretano en tono gris. Ideal para ensamblaje, logística y manufactura ligera.',
     primaryColor: '#4A5568', palmColor: '#2D3748', cuffColor: '#1A202C',
     accentColor: '#4A5568', accentGlow: 'rgba(74,85,104,0.25)',
@@ -112,7 +131,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-pu-blanco', num: '09', line: 'Lite',
     name: 'Lite PU Blanco', category: 'Alta Destreza',
-    image: 'https://picsum.photos/seed/litepublanco/640/360',
+    image: '/images/products/litepublanco.webp',
     description: 'Guante de poliéster calibre 15 con recubrimiento de poliuretano en blanco. Óptimo para ensamblaje electrónico y ambientes de sala limpia.',
     primaryColor: '#718096', palmColor: '#4A5568', cuffColor: '#2D3748',
     accentColor: '#718096', accentGlow: 'rgba(113,128,150,0.22)',
@@ -124,7 +143,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-pu-black', num: '10', line: 'Lite',
     name: 'Lite PU Black', category: 'Alta Destreza',
-    image: 'https://picsum.photos/seed/litepublack/640/360',
+    image: '',
     description: 'Versión negra del Lite PU. Diseñado para ambientes donde la suciedad es visible, como metalmecánica y automotriz.',
     primaryColor: '#2D3748', palmColor: '#1A202C', cuffColor: '#0D1117',
     accentColor: '#2D3748', accentGlow: 'rgba(45,55,72,0.3)',
@@ -136,7 +155,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-cotton-60', num: '11', line: 'Lite',
     name: 'Lite Cotton 60gr', category: 'Uso General',
-    image: 'https://picsum.photos/seed/cotton60/640/360',
+    image: '/images/products/litecotton60gr.webp',
     description: 'Guante de algodón de 60 gramos sin recubrimiento. Comodidad y transpirabilidad para tareas generales de mantenimiento y logística.',
     primaryColor: '#7A6545', palmColor: '#5C4D36', cuffColor: '#3D3324',
     accentColor: '#7A6545', accentGlow: 'rgba(122,101,69,0.25)',
@@ -148,7 +167,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-cotton-70', num: '12', line: 'Lite',
     name: 'Lite Cotton 70gr', category: 'Uso General',
-    image: 'https://picsum.photos/seed/cotton70/640/360',
+    image: '/images/products/litecotton70gr.webp',
     description: 'Guante de algodón 70g con mayor resistencia al desgaste. Adecuado para jardinería, construcción ligera y logística.',
     primaryColor: '#6B5A3E', palmColor: '#4D4230', cuffColor: '#3D3324',
     accentColor: '#6B5A3E', accentGlow: 'rgba(107,90,62,0.25)',
@@ -160,7 +179,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-nylon-100', num: '13', line: 'Lite',
     name: 'Lite Nylon 100', category: 'Precisión Táctil',
-    image: 'https://picsum.photos/seed/nylon100/640/360',
+    image: '/images/products/litenylon100.webp',
     description: 'Guante de nylon calibre 13 sin recubrimiento. Alta destreza y sensibilidad táctil para inspección de calidad y ensamblaje fino.',
     primaryColor: '#3D6B4F', palmColor: '#2D5040', cuffColor: '#1D3328',
     accentColor: '#3D6B4F', accentGlow: 'rgba(61,107,79,0.25)',
@@ -219,18 +238,9 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
           <span className="absolute bottom-2 left-4 font-black leading-none select-none pointer-events-none" style={{ color: 'rgba(250,251,252,0.035)', fontSize: 'clamp(9rem, 20vw, 20rem)' }}>
             {product.num}
           </span>
-          <Canvas camera={{ position: [0, 0.2, 3.2], fov: 44 }} dpr={[1, 1.5]} frameloop="always" gl={{ alpha: true, antialias: true }} style={{ background: 'transparent' }}>
-            <ambientLight intensity={0.28} />
-            <directionalLight position={[3.5, 5, 3]} intensity={2.8} color="#FAFBFC" />
-            <directionalLight position={[-2.5, -2, 1.5]} intensity={0.9} color={product.primaryColor} />
-            <directionalLight position={[0, 3, -5]} intensity={0.5} color="#FAFBFC" />
-            <pointLight position={[0, 5, 1]} intensity={22} color="#FAFBFC" />
-            <Suspense fallback={null}>
-              <GloveModel primaryColor={product.primaryColor} palmColor={product.palmColor} cuffColor={product.cuffColor} rotationSpeed={0.55} />
-              <ContactShadows position={[0, -2.2, 0]} opacity={0.3} scale={5} blur={3} color={product.primaryColor} />
-              <Environment preset="warehouse" />
-            </Suspense>
-          </Canvas>
+          <Suspense fallback={null}>
+            <GloveScene variant="modal" primaryColor={product.primaryColor} palmColor={product.palmColor} cuffColor={product.cuffColor} modelUrl={MODELS[product.id]?.url} modelTint={MODELS[product.id]?.tint} />
+          </Suspense>
         </motion.div>
 
         <motion.div
@@ -292,13 +302,13 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
 
 // ─── Netflix Card ──────────────────────────────────────────────────────────────
 
-function NetflixCard({ product, index, onOpen }: { product: Product; index: number; onOpen: () => void }) {
+function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void }) {
   const [hovered, setHovered] = useState(false)
 
   return (
     <motion.div
       onClick={onOpen}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => { setHovered(true); preloadModel(MODELS[product.id]?.url) }}
       onMouseLeave={() => setHovered(false)}
       animate={{ scale: hovered ? 1.03 : 1 }}
       transition={{ duration: 0.26, ease: EASE }}
@@ -312,36 +322,44 @@ function NetflixCard({ product, index, onOpen }: { product: Product; index: numb
         transition: 'border-color 0.26s',
       }}
     >
-      {/* Imagen placeholder */}
-      <img
-        src={product.image}
-        alt={product.name}
-        style={{
-          position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover',
-          opacity: hovered ? 0.5 : 0.2,
-          transform: hovered ? 'scale(1.05)' : 'scale(1)',
-          transition: 'opacity 0.4s, transform 0.5s',
-        }}
-      />
-
-      {/* Gradiente de color */}
+      {/* Backdrop — spotlight de luz + glow de acento detrás del guante para que resalte */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: `radial-gradient(ellipse 45% 70% at 15% 75%, ${product.accentColor}, transparent 55%)`,
-        transition: 'opacity 0.3s',
-        opacity: hovered ? 0.25 : 0.15,
+        background: 'radial-gradient(ellipse 60% 54% at 50% 40%, rgba(255,255,255,0.14), transparent 68%)',
+        opacity: hovered ? 1 : 0.85, transition: 'opacity 0.3s',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: `radial-gradient(ellipse 50% 56% at 50% 45%, ${product.accentColor}, transparent 62%)`,
+        opacity: hovered ? 0.5 : 0.32, transition: 'opacity 0.3s',
       }} />
 
-      {/* Número ghost — desaparece en hover */}
+      {/* Número ghost — detrás del guante */}
       <span style={{
         position: 'absolute', right: '-2%', top: '50%', transform: 'translateY(-50%)',
         fontWeight: 900, lineHeight: 1, userSelect: 'none',
-        color: 'rgba(250,251,252,0.05)', fontSize: 'clamp(4rem, 10vw, 8rem)',
+        color: 'rgba(250,251,252,0.06)', fontSize: 'clamp(4rem, 10vw, 8rem)',
         opacity: hovered ? 0 : 1, transition: 'opacity 0.25s',
       }}>
         {product.num}
       </span>
+
+      {/* Producto recortado — centrado tipo tile */}
+      {product.image && (
+        <img
+          src={product.image}
+          alt={product.name}
+          style={{
+            position: 'absolute', top: '5%', left: 0, right: 0, marginInline: 'auto',
+            height: '72%', width: '64%',
+            objectFit: 'contain', objectPosition: 'center',
+            opacity: 1,
+            transform: hovered ? 'scale(1.07)' : 'scale(1)',
+            filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.6))',
+            transition: 'transform 0.5s',
+          }}
+        />
+      )}
 
       {/* Info en hover — overlay dentro del card */}
       <div style={{
@@ -423,8 +441,8 @@ function LineRow({
           className={`grid gap-2 grid-cols-2 ${products.length === 3 ? 'md:grid-cols-3' : products.length === 4 ? 'sm:grid-cols-2 md:grid-cols-4' : 'sm:grid-cols-3 md:grid-cols-3'}`}
           style={{ overflow: 'visible' }}
         >
-          {products.map((p, i) => (
-            <NetflixCard key={p.id} product={p} index={i} onOpen={() => onOpen(p)} />
+          {products.map((p) => (
+            <NetflixCard key={p.id} product={p} onOpen={() => onOpen(p)} />
           ))}
         </div>
       </div>
@@ -436,6 +454,14 @@ function LineRow({
 
 export function ProductsPage() {
   const [selected, setSelected] = useState<Product | null>(null)
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+    const id = searchParams.get('producto')
+    if (!id) return
+    const product = ALL_PRODUCTS.find(p => p.id === id)
+    if (product) setSelected(product)
+  }, [searchParams])
 
   return (
     <>

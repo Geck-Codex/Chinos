@@ -18,8 +18,49 @@ html,
 body,
 #root {
   background-color: #FAFBFC;
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Barlow', 'Barlow Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+
+/* Fallback con métricas ajustadas a Barlow: evita reflow/CLS al hacer swap */
+@font-face {
+  font-family: 'Barlow Fallback';
+  src: local('Arial');
+  ascent-override: 92%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 100%;
+}
+
+/* Animaciones de entrada del hero — CSS puro, sin JS, para no retrasar el LCP */
+@keyframes heroRise {
+  from { transform: translateY(46px); }
+  to   { transform: translateY(0); }
+}
+@keyframes heroFade {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* El h1 (elemento LCP) mantiene opacity:1 desde el primer paint y solo se desliza */
+.hero-lcp {
+  animation: heroRise 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+.hero-fade {
+  opacity: 0;
+  animation: heroFade 0.72s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+@keyframes navDrop {
+  from { opacity: 0; transform: translateY(-24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nav-enter {
+  animation: navDrop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-lcp, .hero-fade, .nav-enter { animation: none; opacity: 1; transform: none; }
 }
