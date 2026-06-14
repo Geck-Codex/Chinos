@@ -11,9 +11,10 @@ interface GloveGLTFProps {
   rotationSpeed?: number
   scale?: number
   tint?: string
+  autoRotate?: boolean
 }
 
-export function GloveGLTF({ url = HERO_MODEL_URL, rotationSpeed = 0.38, scale = 1.7, tint }: GloveGLTFProps) {
+export function GloveGLTF({ url = HERO_MODEL_URL, rotationSpeed = 0.38, scale = 1.7, tint, autoRotate = true }: GloveGLTFProps) {
   const groupRef = useRef<Group>(null)
   const { scene } = useGLTF(url)
 
@@ -37,7 +38,7 @@ export function GloveGLTF({ url = HERO_MODEL_URL, rotationSpeed = 0.38, scale = 
   useEffect(() => { speedRef.current = rotationSpeed }, [rotationSpeed])
 
   useFrame((_, delta) => {
-    if (!groupRef.current) return
+    if (!autoRotate || !groupRef.current) return
     t.current += delta
     groupRef.current.rotation.y += delta * speedRef.current
     groupRef.current.position.y = Math.sin(t.current * 0.75) * 0.09

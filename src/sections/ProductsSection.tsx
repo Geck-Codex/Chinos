@@ -1,4 +1,5 @@
 import { useState, Suspense, lazy, useEffect, useRef } from 'react'
+import type { CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
@@ -11,6 +12,24 @@ const GloveScene = lazy(() =>
 )
 
 const EASE = [0.22, 1, 0.36, 1] as const
+
+const FAMILY_THEME = {
+  dexterity: {
+    bg: 'radial-gradient(ellipse 95% 85% at 50% 30%, #E11E4B 0%, #CD0032 42%, #5e0014 100%)',
+    fg: '#FFFFFF',
+    label: '#FFD7DF',
+    sub: 'rgba(255,255,255,0.7)',
+    border: 'rgba(255,255,255,0.28)',
+    bottom: 'linear-gradient(to top, rgba(58,0,12,0.88) 14%, rgba(94,0,20,0.32) 52%, transparent)',
+    spotlight: 'rgba(255,255,255,0.18)',
+    ghost: 'rgba(255,255,255,0.10)',
+    shadow: 'drop-shadow(0 24px 42px rgba(0,0,0,0.55))',
+    accent: '#FFFFFF',
+    btnBg: '#FFFFFF',
+    btnFg: '#CD0032',
+    btnHover: '#FFE0E6',
+  },
+}
 
 const preloaded = new Set<string>()
 function preloadModel(url?: string) {
@@ -34,9 +53,9 @@ const PRODUCTS = [
     palmColor: '#8B001E',
     cuffColor: '#111111',
     accentGlow: 'rgba(205,0,50,0.22)',
-    model: '/images/models/guante1.glb',
-    modelTint: '#CD0032',
-    image: '/images/products/dexterityultra.webp',
+    model: '/images/models/dexterityultra.glb',
+    modelTint: '',
+    image: '/images/products/dexterityultra.png',
     specs: [
       { label: 'Material', value: 'Poliéster' },
       { label: 'Calibre', value: '15G' },
@@ -56,7 +75,7 @@ const PRODUCTS = [
     accentGlow: 'rgba(139,0,30,0.25)',
     model: '/images/models/polysand.glb',
     modelTint: '',
-    image: '/images/products/polysand.webp',
+    image: '/images/products/polysand.png',
     specs: [
       { label: 'Material', value: 'Poliéster' },
       { label: 'Calibre', value: '15G' },
@@ -76,7 +95,7 @@ const PRODUCTS = [
     accentGlow: 'rgba(107,122,141,0.22)',
     model: '/images/models/nanoflex.glb',
     modelTint: '',
-    image: '/images/products/nanoflex.webp',
+    image: '/images/products/nanoflex.png',
     specs: [
       { label: 'Material', value: 'Nylon' },
       { label: 'Calibre', value: '18G' },
@@ -87,16 +106,16 @@ const PRODUCTS = [
 ]
 
 const CATALOG = [
-  { id: 'edge-lite-a4', name: 'Edge Lite A4', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A4'], accentColor: '#2C4A7C', image: '/images/products/edgelitea4.webp' },
-  { id: 'edge-lite-a3', name: 'Edge Lite A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A3'], accentColor: '#2C4A7C', image: '/images/products/edgelitea3.webp' },
-  { id: 'edge-plus-a7', name: 'Edge Plus A7', category: 'Anticorte Premium', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A7'], accentColor: '#1A3A6A', image: '/images/products/edgeplusa7.webp' },
-  { id: 'edge-plus-a3', name: 'Edge Plus A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A3'], accentColor: '#1A3A6A', image: '/images/products/egeplusa3.webp' },
-  { id: 'lite-pu-gris', name: 'Lite PU Gris', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#4A5568', image: '/images/products/litepugirs.webp' },
-  { id: 'lite-pu-blanco', name: 'Lite PU Blanco', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#718096', image: '/images/products/litepublanco.webp' },
+  { id: 'edge-lite-a4', name: 'Edge Lite A4', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A4'], accentColor: '#2C4A7C', image: '/images/products/edgelitea4.png' },
+  { id: 'edge-lite-a3', name: 'Edge Lite A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A3'], accentColor: '#2C4A7C', image: '/images/products/edgelitea3.png' },
+  { id: 'edge-plus-a7', name: 'Edge Plus A7', category: 'Anticorte Premium', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A7'], accentColor: '#1A3A6A', image: '/images/products/edgeplusa7.png' },
+  { id: 'edge-plus-a3', name: 'Edge Plus A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A3'], accentColor: '#1A3A6A', image: '/images/products/egeplusa3.png' },
+  { id: 'lite-pu-gris', name: 'Lite PU Gris', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#4A5568', image: '/images/products/litepugris.png' },
+  { id: 'lite-pu-blanco', name: 'Lite PU Blanco', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#718096', image: '/images/products/litepublanco.png' },
   { id: 'lite-pu-black', name: 'Lite PU Black', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#2D3748', image: '' },
-  { id: 'lite-cotton-60', name: 'Lite Cotton 60gr', category: 'Uso General', tags: ['Algodón · 60g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton60gr.webp' },
-  { id: 'lite-cotton-70', name: 'Lite Cotton 70gr', category: 'Uso General', tags: ['Algodón · 70g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton70gr.webp' },
-  { id: 'lite-nylon-100', name: 'Lite Nylon 100', category: 'Precisión Táctil', tags: ['Nylon · Cal.13', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#3D6B4F', image: '/images/products/litenylon100.webp' },
+  { id: 'lite-cotton-60', name: 'Lite Cotton 60gr', category: 'Uso General', tags: ['Algodón · 60g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton60gr.png' },
+  { id: 'lite-cotton-70', name: 'Lite Cotton 70gr', category: 'Uso General', tags: ['Algodón · 70g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton70gr.png' },
+  { id: 'lite-nylon-100', name: 'Lite Nylon 100', category: 'Precisión Táctil', tags: ['Nylon · Cal.13', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#3D6B4F', image: '/images/products/litenylon100.png' },
 ]
 
 type Product = typeof PRODUCTS[0]
@@ -264,6 +283,7 @@ function ProductCarousel() {
   const pausedElapsedRef = useRef(0)
   const navigate = useNavigate()
   const active = CATALOG[activeIdx]
+  const t = FAMILY_THEME.dexterity
 
   function startBar() {
     slideStartRef.current = Date.now()
@@ -302,8 +322,8 @@ function ProductCarousel() {
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
 
-      {/* ── Banner full-bleed — más alto para imágenes portrait ── */}
-      <div style={{ position: 'relative', overflow: 'hidden', height: 'clamp(440px, 56vw, 660px)', backgroundColor: '#0D0806', marginBottom: '4px' }}>
+      {/* ── Banner full-bleed — fondo por línea, guante protagonista ── */}
+      <div style={{ position: 'relative', overflow: 'hidden', height: 'clamp(520px, 64vw, 740px)', marginBottom: '4px', borderRadius: '4px' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeIdx}
@@ -311,64 +331,46 @@ function ProductCarousel() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.55 }}
-            style={{ position: 'absolute', inset: 0 }}
+            style={{ position: 'absolute', inset: 0, background: t.bg }}
           >
-            {/* Glow ambiental de la línea — abajo izquierda */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: `radial-gradient(ellipse 60% 100% at 5% 90%, ${active.accentColor}99, transparent 52%)`,
-            }} />
-            {/* Spotlight de luz detrás del producto — hace resaltar guantes oscuros */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'radial-gradient(ellipse 38% 62% at 76% 44%, rgba(255,255,255,0.16), transparent 66%)',
-            }} />
-            {/* Glow de acento detrás del producto */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: `radial-gradient(ellipse 34% 52% at 76% 48%, ${active.accentColor}, transparent 64%)`,
-              opacity: 0.5,
-            }} />
-            {/* Degradado horizontal — texto legible a la izq, producto respira a la derecha */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(to right, rgba(8,4,3,0.92) 26%, rgba(8,4,3,0.35) 54%, transparent 82%)',
-            }} />
-            {/* Degradado inferior para texto */}
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '42%', background: 'linear-gradient(to top, rgba(8,4,3,0.96) 0%, transparent)' }} />
+            {/* Spotlight detrás del producto */}
+            <div className="carousel-spot" style={{ ['--spot']: t.spotlight } as CSSProperties} />
+            {/* Degradado inferior — sólo para legibilidad del texto */}
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%', background: t.bottom }} />
             {/* Número ghost — detrás del producto */}
-            <span className="hidden md:block" style={{ position: 'absolute', right: '2%', bottom: '-4%', fontWeight: 900, lineHeight: 1, userSelect: 'none', color: 'rgba(250,251,252,0.05)', fontSize: 'clamp(10rem, 22vw, 26rem)' }}>
+            <span className="hidden md:block" style={{ position: 'absolute', right: '2%', bottom: '-4%', fontWeight: 900, lineHeight: 1, userSelect: 'none', color: t.ghost, fontSize: 'clamp(10rem, 22vw, 26rem)' }}>
               {String(activeIdx + 1).padStart(2, '0')}
             </span>
             {/* Producto recortado — alineado a la derecha tipo hero, al frente */}
             {active.image && (
               <img
+                className="carousel-shot"
                 src={active.image}
                 alt={active.name}
-                style={{ position: 'absolute', top: '5%', bottom: '7%', right: '3%', height: '88%', width: '46%', objectFit: 'contain', objectPosition: 'center', filter: 'drop-shadow(0 26px 46px rgba(0,0,0,0.65))' }}
+                style={{ filter: t.shadow }}
               />
             )}
 
             {/* Contenido */}
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 'clamp(22px, 3.8vw, 52px)' }}>
-              <p style={{ color: '#CD0032', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.26em', marginBottom: '10px' }}>
+              <p style={{ color: t.label, fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.26em', marginBottom: '10px' }}>
                 {active.category}
               </p>
-              <h3 style={{ color: '#FAFBFC', fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.02em', marginBottom: '16px', fontSize: 'clamp(2rem, 5.5vw, 5.2rem)', maxWidth: '600px' }}>
+              <h3 style={{ color: t.fg, fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.02em', marginBottom: '16px', fontSize: 'clamp(2rem, 5.5vw, 5.2rem)', maxWidth: '600px' }}>
                 {active.name}
               </h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 {active.tags.map(tag => (
-                  <span key={tag} style={{ color: 'rgba(250,251,252,0.55)', fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', padding: '3px 9px', border: '1px solid rgba(250,251,252,0.15)' }}>
+                  <span key={tag} style={{ color: t.sub, fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', padding: '3px 9px', border: `1px solid ${t.border}` }}>
                     {tag}
                   </span>
                 ))}
                 <button
                   onClick={() => navigate(`/productos?producto=${active.id}`)}
                   className="inline-flex items-center gap-1.5 uppercase tracking-widest font-bold"
-                  style={{ fontSize: '0.58rem', padding: '5px 14px', backgroundColor: '#CD0032', color: '#FAFBFC', border: 'none', cursor: 'pointer' }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#a80029')}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#CD0032')}
+                  style={{ fontSize: '0.58rem', padding: '5px 14px', backgroundColor: t.btnBg, color: t.btnFg, border: 'none', cursor: 'pointer' }}
+                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = t.btnHover)}
+                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = t.btnBg)}
                 >
                   Ver ficha <ArrowUpRight size={10} />
                 </button>
@@ -381,7 +383,7 @@ function ProductCarousel() {
         <motion.div
           initial={{ scaleX: 0 }}
           animate={barControls}
-          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', backgroundColor: '#CD0032', transformOrigin: 'left', zIndex: 2 }}
+          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', backgroundColor: t.accent, transformOrigin: 'left', zIndex: 2 }}
         />
       </div>
 

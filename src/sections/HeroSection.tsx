@@ -95,7 +95,7 @@ export function HeroSection() {
               Ver productos
             </a>
             <a
-              href="#mayoreo"
+              href="#contacto"
               className="uppercase tracking-widest font-bold px-8 py-4 border"
               style={{ borderColor: 'rgba(250,251,252,0.22)', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
               onMouseEnter={(e) => {
@@ -107,7 +107,7 @@ export function HeroSection() {
                 e.currentTarget.style.color = '#FAFBFC'
               }}
             >
-              Mayoreo
+              Cotizar
             </a>
           </div>
         </div>

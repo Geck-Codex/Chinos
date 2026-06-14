@@ -2,7 +2,7 @@ import { useState, Suspense, lazy, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowUpRight } from 'lucide-react'
+import { X, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 
@@ -12,10 +12,65 @@ const GloveScene = lazy(() =>
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
+const LINE_THEME = {
+  Dexterity: {
+    bg: '#CD0032',
+    fg: '#FFFFFF',
+    label: '#FFD7DF',
+    chipBg: 'rgba(255,255,255,0.14)',
+    chipBorder: 'rgba(255,255,255,0.25)',
+    chipText: 'rgba(255,255,255,0.78)',
+    spotlight: 'transparent',
+    ghost: 'rgba(255,255,255,0.1)',
+    shadow: 'drop-shadow(0 18px 30px rgba(0,0,0,0.5))',
+    accent: '#FFFFFF',
+    icon: 'rgba(255,255,255,0.7)',
+  },
+  Edge: {
+    bg: '#264a82',
+    fg: '#FFFFFF',
+    label: '#CDE0FF',
+    chipBg: 'rgba(255,255,255,0.14)',
+    chipBorder: 'rgba(255,255,255,0.25)',
+    chipText: 'rgba(255,255,255,0.78)',
+    spotlight: 'transparent',
+    ghost: 'rgba(255,255,255,0.1)',
+    shadow: 'drop-shadow(0 18px 30px rgba(0,0,0,0.5))',
+    accent: '#7FA3DC',
+    icon: 'rgba(255,255,255,0.7)',
+  },
+  Lite: {
+    bg: '#EDF1F5',
+    fg: '#15191F',
+    label: '#CD0032',
+    chipBg: 'rgba(20,25,32,0.06)',
+    chipBorder: 'rgba(20,25,32,0.16)',
+    chipText: 'rgba(20,25,32,0.62)',
+    spotlight: 'transparent',
+    ghost: 'rgba(20,25,32,0.06)',
+    shadow: 'drop-shadow(0 16px 28px rgba(60,70,85,0.3))',
+    accent: '#CD0032',
+    icon: 'rgba(20,25,32,0.5)',
+  },
+}
+
+function themeForLine(line: string) {
+  return LINE_THEME[line as keyof typeof LINE_THEME] ?? LINE_THEME.Dexterity
+}
+
 const MODELS: Record<string, { url: string; tint?: string }> = {
-  'ultra-grip': { url: '/images/models/guante1.glb', tint: '#CD0032' },
-  'poly-sand': { url: '/images/models/polysand.glb' },
-  'nanoflex': { url: '/images/models/nanoflex.glb' },
+  'ultra-grip':    { url: '/images/models/dexterityultra.glb' },
+  'poly-sand':     { url: '/images/models/polysand.glb' },
+  'nanoflex':      { url: '/images/models/nanoflex.glb' },
+  'edge-plus-a7':  { url: '/images/models/edgeplusa7.glb' },
+  'edge-plus-a3':  { url: '/images/models/edgeplusa3.glb' },
+  'edge-lite-a4':  { url: '/images/models/edgelitea4.glb' },
+  'edge-lite-a3':  { url: '/images/models/edgelitea3.glb' },
+  'lite-pu-gris':   { url: '/images/models/litepugris.glb' },
+  'lite-pu-blanco': { url: '/images/models/litepublanco.glb' },
+  'lite-cotton-60':{ url: '/images/models/litecotton60gr.glb' },
+  'lite-cotton-70':{ url: '/images/models/litecotton70gr.glb' },
+  'lite-nylon-100':{ url: '/images/models/litenylon100.glb' },
 }
 
 const preloaded = new Set<string>()
@@ -35,7 +90,7 @@ const ALL_PRODUCTS = [
   {
     id: 'ultra-grip', num: '01', line: 'Dexterity',
     name: 'Dexterity Ultra Grip', category: 'Alta Destreza / Agarre',
-    image: '/images/products/dexterityultra.webp',
+    image: '/images/products/dexterityultra.png',
     description: 'Guante de poliéster calibre 15 con palma recubierta de nitrilo liso. Agarre confiable y comodidad durante jornadas prolongadas para industria automotriz, logística y manufactura ligera.',
     primaryColor: '#CD0032', palmColor: '#8B001E', cuffColor: '#111111',
     accentColor: '#CD0032', accentGlow: 'rgba(205,0,50,0.22)',
@@ -47,7 +102,7 @@ const ALL_PRODUCTS = [
   {
     id: 'poly-sand', num: '02', line: 'Dexterity',
     name: 'Dexterity Poly Sand', category: 'Agarre Superior',
-    image: '/images/products/polysand.webp',
+    image: '/images/products/polysand.png',
     description: 'Guante de poliéster calibre 15 con palma recubierta de nitrilo arenoso. Excelente agarre y alta destreza para ensamblaje, mantenimiento y manejo de herramientas manuales.',
     primaryColor: '#8B001E', palmColor: '#1a1a1a', cuffColor: '#CD0032',
     accentColor: '#8B001E', accentGlow: 'rgba(139,0,30,0.25)',
@@ -59,7 +114,7 @@ const ALL_PRODUCTS = [
   {
     id: 'nanoflex', num: '03', line: 'Dexterity',
     name: 'Dexterity Nanoflex', category: 'Precisión Táctil',
-    image: '/images/products/nanoflex.webp',
+    image: '/images/products/nanoflex.png',
     description: 'Guante premium de nylon calibre 18 con palma recubierta de nitrilo microespumado. Máxima sensibilidad táctil y agarre confiable para electrónica, ensamblaje e inspección de calidad.',
     primaryColor: '#6B7A8D', palmColor: '#3D4A5C', cuffColor: '#252E3A',
     accentColor: '#5A6B7D', accentGlow: 'rgba(107,122,141,0.22)',
@@ -71,7 +126,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-plus-a7', num: '04', line: 'Edge',
     name: 'Edge Plus A7', category: 'Anticorte Premium',
-    image: '/images/products/edgeplusa7.webp',
+    image: '/images/products/edgeplusa7.png',
     description: 'Anticorte de alto nivel con nitrilo arenoso en palma y compatibilidad táctil. Ideal para vidrio, aeroespacial y automotriz de alto riesgo.',
     primaryColor: '#1A3A6A', palmColor: '#0E2040', cuffColor: '#080C14',
     accentColor: '#1A3A6A', accentGlow: 'rgba(26,58,106,0.3)',
@@ -83,7 +138,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-plus-a3', num: '05', line: 'Edge',
     name: 'Edge Plus A3', category: 'Anticorte',
-    image: '/images/products/egeplusa3.webp',
+    image: '/images/products/egeplusa3.png',
     description: 'Anticorte con nitrilo arenoso en palma y compatibilidad con pantallas táctiles para entornos metalmecánicos y automotrices.',
     primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
     accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
@@ -95,7 +150,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-lite-a4', num: '06', line: 'Edge',
     name: 'Edge Lite A4', category: 'Anticorte Ligero',
-    image: '/images/products/edgelitea4.webp',
+    image: '/images/products/edgelitea4.png',
     description: 'Anticorte ligero con recubrimiento de poliuretano. Buena comodidad y movilidad para manipulación de piezas con bordes filosos.',
     primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
     accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
@@ -107,7 +162,7 @@ const ALL_PRODUCTS = [
   {
     id: 'edge-lite-a3', num: '07', line: 'Edge',
     name: 'Edge Lite A3', category: 'Anticorte',
-    image: '/images/products/edgelitea3.webp',
+    image: '/images/products/edgelitea3.png',
     description: 'Anticorte en calibre 13 para alta destreza, con recubrimiento de poliuretano y protección de nitrilo entre pulgar e índice.',
     primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
     accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
@@ -119,7 +174,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-pu-gris', num: '08', line: 'Lite',
     name: 'Lite PU Gris', category: 'Alta Destreza',
-    image: '/images/products/litepugirs.webp',
+    image: '/images/products/litepugris.png',
     description: 'Guante de poliéster calibre 15 con recubrimiento de poliuretano en tono gris. Ideal para ensamblaje, logística y manufactura ligera.',
     primaryColor: '#4A5568', palmColor: '#2D3748', cuffColor: '#1A202C',
     accentColor: '#4A5568', accentGlow: 'rgba(74,85,104,0.25)',
@@ -131,7 +186,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-pu-blanco', num: '09', line: 'Lite',
     name: 'Lite PU Blanco', category: 'Alta Destreza',
-    image: '/images/products/litepublanco.webp',
+    image: '/images/products/litepublanco.png',
     description: 'Guante de poliéster calibre 15 con recubrimiento de poliuretano en blanco. Óptimo para ensamblaje electrónico y ambientes de sala limpia.',
     primaryColor: '#718096', palmColor: '#4A5568', cuffColor: '#2D3748',
     accentColor: '#718096', accentGlow: 'rgba(113,128,150,0.22)',
@@ -155,7 +210,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-cotton-60', num: '11', line: 'Lite',
     name: 'Lite Cotton 60gr', category: 'Uso General',
-    image: '/images/products/litecotton60gr.webp',
+    image: '/images/products/litecotton60gr.png',
     description: 'Guante de algodón de 60 gramos sin recubrimiento. Comodidad y transpirabilidad para tareas generales de mantenimiento y logística.',
     primaryColor: '#7A6545', palmColor: '#5C4D36', cuffColor: '#3D3324',
     accentColor: '#7A6545', accentGlow: 'rgba(122,101,69,0.25)',
@@ -167,7 +222,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-cotton-70', num: '12', line: 'Lite',
     name: 'Lite Cotton 70gr', category: 'Uso General',
-    image: '/images/products/litecotton70gr.webp',
+    image: '/images/products/litecotton70gr.png',
     description: 'Guante de algodón 70g con mayor resistencia al desgaste. Adecuado para jardinería, construcción ligera y logística.',
     primaryColor: '#6B5A3E', palmColor: '#4D4230', cuffColor: '#3D3324',
     accentColor: '#6B5A3E', accentGlow: 'rgba(107,90,62,0.25)',
@@ -179,7 +234,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-nylon-100', num: '13', line: 'Lite',
     name: 'Lite Nylon 100', category: 'Precisión Táctil',
-    image: '/images/products/litenylon100.webp',
+    image: '/images/products/litenylon100.png',
     description: 'Guante de nylon calibre 13 sin recubrimiento. Alta destreza y sensibilidad táctil para inspección de calidad y ensamblaje fino.',
     primaryColor: '#3D6B4F', palmColor: '#2D5040', cuffColor: '#1D3328',
     accentColor: '#3D6B4F', accentGlow: 'rgba(61,107,79,0.25)',
@@ -200,16 +255,25 @@ type Product = typeof ALL_PRODUCTS[0]
 
 // ─── Modal ───────────────────────────────────────────────────────────────────
 
-function Modal({ product, onClose }: { product: Product; onClose: () => void }) {
+function Modal({ product, onClose, onPrev, onNext }: {
+  product: Product
+  onClose: () => void
+  onPrev?: () => void
+  onNext?: () => void
+}) {
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft') onPrev?.()
+      if (e.key === 'ArrowRight') onNext?.()
+    }
     window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKey)
     }
-  }, [onClose])
+  }, [onClose, onPrev, onNext])
 
   return (
     <>
@@ -273,7 +337,7 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
             ))}
           </div>
           <motion.a
-            href="#contacto" onClick={onClose}
+            href="/#contacto" onClick={onClose}
             className="inline-flex items-center gap-3 uppercase tracking-widest font-bold px-9 py-4 self-start"
             style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.68rem, 1.05vw, 0.8rem)', textDecoration: 'none', borderRadius: '6px' }}
             initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.82, duration: 0.5, ease: EASE }}
@@ -284,6 +348,7 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
           </motion.a>
         </motion.div>
 
+        {/* Close */}
         <motion.button
           className="absolute top-5 right-5 z-10 flex items-center justify-center"
           style={{ width: '44px', height: '44px', border: '1px solid rgba(250,251,252,0.15)', backgroundColor: 'rgba(8,4,3,0.6)', color: '#FAFBFC', cursor: 'pointer' }}
@@ -295,6 +360,36 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
         >
           <X size={17} />
         </motion.button>
+
+        {/* Prev */}
+        {onPrev && (
+          <motion.button
+            className="absolute z-10 flex items-center justify-center"
+            style={{ left: '12px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', border: '1px solid rgba(250,251,252,0.15)', backgroundColor: 'rgba(8,4,3,0.6)', color: '#FAFBFC', cursor: 'pointer', borderRadius: '4px' }}
+            initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
+            transition={{ delay: 0.28, duration: 0.38, ease: EASE }}
+            onClick={onPrev}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#CD0032'; e.currentTarget.style.borderColor = '#CD0032' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(8,4,3,0.6)'; e.currentTarget.style.borderColor = 'rgba(250,251,252,0.15)' }}
+          >
+            <ChevronLeft size={20} />
+          </motion.button>
+        )}
+
+        {/* Next */}
+        {onNext && (
+          <motion.button
+            className="absolute z-10 flex items-center justify-center"
+            style={{ right: '12px', top: '50%', transform: 'translateY(-50%)', width: '44px', height: '44px', border: '1px solid rgba(250,251,252,0.15)', backgroundColor: 'rgba(8,4,3,0.6)', color: '#FAFBFC', cursor: 'pointer', borderRadius: '4px' }}
+            initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}
+            transition={{ delay: 0.28, duration: 0.38, ease: EASE }}
+            onClick={onNext}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#CD0032'; e.currentTarget.style.borderColor = '#CD0032' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(8,4,3,0.6)'; e.currentTarget.style.borderColor = 'rgba(250,251,252,0.15)' }}
+          >
+            <ChevronRight size={20} />
+          </motion.button>
+        )}
       </motion.div>
     </>
   )
@@ -304,6 +399,7 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
 
 function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void }) {
   const [hovered, setHovered] = useState(false)
+  const theme = themeForLine(product.line)
 
   return (
     <motion.div
@@ -313,32 +409,28 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
       animate={{ scale: hovered ? 1.03 : 1 }}
       transition={{ duration: 0.26, ease: EASE }}
       style={{
-        aspectRatio: '16 / 9',
-        backgroundColor: '#0D0806',
+        aspectRatio: '4 / 5',
+        background: theme.bg,
         cursor: 'pointer',
         overflow: 'hidden',
         position: 'relative',
-        border: `1px solid ${hovered ? product.accentColor + '55' : 'rgba(250,251,252,0.06)'}`,
+        borderRadius: '6px',
+        border: `1px solid ${hovered ? theme.accent : 'rgba(255,255,255,0.1)'}`,
         transition: 'border-color 0.26s',
       }}
     >
-      {/* Backdrop — spotlight de luz + glow de acento detrás del guante para que resalte */}
+      {/* Spotlight detrás del guante para que resalte */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse 60% 54% at 50% 40%, rgba(255,255,255,0.14), transparent 68%)',
+        background: `radial-gradient(ellipse 62% 56% at 50% 40%, ${theme.spotlight}, transparent 66%)`,
         opacity: hovered ? 1 : 0.85, transition: 'opacity 0.3s',
-      }} />
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: `radial-gradient(ellipse 50% 56% at 50% 45%, ${product.accentColor}, transparent 62%)`,
-        opacity: hovered ? 0.5 : 0.32, transition: 'opacity 0.3s',
       }} />
 
       {/* Número ghost — detrás del guante */}
       <span style={{
-        position: 'absolute', right: '-2%', top: '50%', transform: 'translateY(-50%)',
+        position: 'absolute', right: '-2%', top: '46%', transform: 'translateY(-50%)',
         fontWeight: 900, lineHeight: 1, userSelect: 'none',
-        color: 'rgba(250,251,252,0.06)', fontSize: 'clamp(4rem, 10vw, 8rem)',
+        color: theme.ghost, fontSize: 'clamp(5rem, 12vw, 10rem)',
         opacity: hovered ? 0 : 1, transition: 'opacity 0.25s',
       }}>
         {product.num}
@@ -350,29 +442,20 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
           src={product.image}
           alt={product.name}
           style={{
-            position: 'absolute', top: '5%', left: 0, right: 0, marginInline: 'auto',
-            height: '72%', width: '64%',
+            position: 'absolute', top: '6%', left: 0, right: 0, marginInline: 'auto',
+            height: '70%', width: '82%',
             objectFit: 'contain', objectPosition: 'center',
             opacity: 1,
             transform: hovered ? 'scale(1.07)' : 'scale(1)',
-            filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.6))',
+            filter: theme.shadow,
             transition: 'transform 0.5s',
           }}
         />
       )}
 
-      {/* Info en hover — overlay dentro del card */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: hovered
-          ? 'linear-gradient(to top, rgba(8,4,3,0.97) 50%, rgba(8,4,3,0.4) 80%, transparent)'
-          : 'linear-gradient(to top, rgba(8,4,3,0.88) 35%, transparent)',
-        transition: 'background 0.35s',
-      }} />
-
       {/* Specs — aparecen en hover */}
       <div style={{
-        position: 'absolute', bottom: '52px', left: '14px', right: '14px',
+        position: 'absolute', bottom: '64px', left: '16px', right: '16px',
         display: 'flex', gap: '8px', flexWrap: 'wrap',
         opacity: hovered ? 1 : 0,
         transform: hovered ? 'translateY(0)' : 'translateY(6px)',
@@ -380,34 +463,34 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
       }}>
         {product.specs.slice(0, 2).map(s => (
           <span key={s.label} style={{
-            fontSize: '0.56rem', fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.1em', padding: '3px 8px',
-            backgroundColor: 'rgba(250,251,252,0.08)',
-            border: '1px solid rgba(250,251,252,0.12)',
-            color: 'rgba(250,251,252,0.7)',
+            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.1em', padding: '4px 9px',
+            backgroundColor: theme.chipBg,
+            border: `1px solid ${theme.chipBorder}`,
+            color: theme.chipText,
           }}>
-            {s.label}: <span style={{ color: '#FAFBFC' }}>{s.value}</span>
+            {s.label}: <span style={{ color: theme.fg }}>{s.value}</span>
           </span>
         ))}
       </div>
 
       {/* Nombre + categoría — siempre visible */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '12px 14px' }}>
-        <p style={{ color: '#CD0032', fontSize: '0.52rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '3px' }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px' }}>
+        <p style={{ color: theme.label, fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '4px' }}>
           {product.category}
         </p>
-        <h3 style={{ color: '#FAFBFC', fontWeight: 900, textTransform: 'uppercase', lineHeight: 1, fontSize: 'clamp(0.8rem, 1.5vw, 1rem)' }}>
+        <h3 style={{ color: theme.fg, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1, fontSize: 'clamp(1rem, 1.9vw, 1.4rem)' }}>
           {product.name}
         </h3>
       </div>
 
       {/* Ícono de abrir — en hover */}
       <div style={{
-        position: 'absolute', top: '10px', right: '10px',
+        position: 'absolute', top: '12px', right: '12px',
         opacity: hovered ? 1 : 0, transition: 'opacity 0.22s',
-        color: 'rgba(250,251,252,0.6)',
+        color: theme.icon,
       }}>
-        <ArrowUpRight size={14} />
+        <ArrowUpRight size={16} />
       </div>
     </motion.div>
   )
@@ -438,7 +521,7 @@ function LineRow({
           </p>
         </div>
         <div
-          className={`grid gap-2 grid-cols-2 ${products.length === 3 ? 'md:grid-cols-3' : products.length === 4 ? 'sm:grid-cols-2 md:grid-cols-4' : 'sm:grid-cols-3 md:grid-cols-3'}`}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5"
           style={{ overflow: 'visible' }}
         >
           {products.map((p) => (
@@ -462,6 +545,10 @@ export function ProductsPage() {
     const product = ALL_PRODUCTS.find(p => p.id === id)
     if (product) setSelected(product)
   }, [searchParams])
+
+  const selectedIdx = selected ? ALL_PRODUCTS.findIndex(p => p.id === selected.id) : -1
+  const handlePrev = selectedIdx > 0 ? () => setSelected(ALL_PRODUCTS[selectedIdx - 1]) : undefined
+  const handleNext = selectedIdx < ALL_PRODUCTS.length - 1 ? () => setSelected(ALL_PRODUCTS[selectedIdx + 1]) : undefined
 
   return (
     <>
@@ -538,7 +625,7 @@ export function ProductsPage() {
 
       {createPortal(
         <AnimatePresence>
-          {selected && <Modal product={selected} onClose={() => setSelected(null)} />}
+          {selected && <Modal product={selected} onClose={() => setSelected(null)} onPrev={handlePrev} onNext={handleNext} />}
         </AnimatePresence>,
         document.body
       )}
