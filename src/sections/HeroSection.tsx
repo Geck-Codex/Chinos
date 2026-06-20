@@ -1,47 +1,14 @@
-import { Suspense, lazy, useRef, useState, useEffect } from 'react'
+import { HeroScene, type HeroSpec } from '../components/HeroScene'
 
-const MODEL_URL = '/images/models/guante2.glb'
-
-const GloveScene = lazy(() =>
-  import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
-)
+const HERO_SPECS: HeroSpec[] = [
+  { value: 'ANSI A7', label: 'Nivel de corte', side: 'right', pos: { top: '17%', right: '2%' } },
+  { value: 'EN388 · 4X42F', label: 'Certificación', side: 'right', pos: { top: '45%', right: '0%' } },
+  { value: 'HPPE cal.13', label: 'Material base', side: 'left', pos: { top: '71%', left: '0%' } },
+]
 
 export function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const [canvasActive, setCanvasActive] = useState(true)
-  const [show3D, setShow3D] = useState(false)
-
-  // Diferir la carga del 3D hasta después del primer paint (para no competir con
-  // el LCP del texto), pero con timeout para que arranque pronto. El modelo se
-  // precarga en paralelo con el chunk de three.js en vez de en serie.
-  useEffect(() => {
-    const start = () => {
-      const link = document.createElement('link')
-      link.rel = 'preload'
-      link.as = 'fetch'
-      link.href = MODEL_URL
-      document.head.appendChild(link)
-      setShow3D(true)
-    }
-    const ric = window.requestIdleCallback ?? ((cb: () => void, _o?: unknown) => setTimeout(cb, 200))
-    const id = ric(start, { timeout: 1200 })
-    return () => (window.cancelIdleCallback ?? clearTimeout)(id as number)
-  }, [])
-
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => setCanvasActive(entry.isIntersecting),
-      { threshold: 0 }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen flex items-center pt-[76px]"
       style={{ backgroundColor: '#080403' }}
     >
@@ -112,16 +79,12 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* ── Right: 3D glove ── */}
+        {/* ── Right: escena 3D ── */}
         <div
           className="hero-fade flex-1 w-full"
-          style={{ height: 'clamp(400px, 56vw, 700px)', minWidth: 0, animationDelay: '0.3s', animationDuration: '1.2s' }}
+          style={{ minWidth: 0, animationDelay: '0.3s', animationDuration: '1.2s' }}
         >
-          {show3D && (
-            <Suspense fallback={null}>
-              <GloveScene variant="hero" active={canvasActive} />
-            </Suspense>
-          )}
+          <HeroScene word="HANDLOVE" specs={HERO_SPECS} />
         </div>
 
       </div>

@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 import { ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 import { CountUp } from '../components/CountUp'
 
@@ -53,7 +53,115 @@ const PILLARS: Pillar[] = [
   },
 ]
 
+const PIECE_ENTER = [
+  { x: -250, y: -90, rotate: -9 },
+  { x: 250, y: -110, rotate: 9 },
+  { x: -250, y: 110, rotate: 8 },
+  { x: 250, y: 90, rotate: -8 },
+]
+
+function PillarCard({
+  pillar,
+  progress,
+  enter,
+}: {
+  pillar: Pillar
+  progress: MotionValue<number>
+  enter: { x: number; y: number; rotate: number }
+}) {
+  const x = useTransform(progress, [0.2, 0.7], [enter.x, 0])
+  const y = useTransform(progress, [0.2, 0.7], [enter.y, 0])
+  const rotate = useTransform(progress, [0.2, 0.7], [enter.rotate, 0])
+  const opacity = useTransform(progress, [0.15, 0.38], [0, 1])
+
+  return (
+    <motion.div
+      className={pillar.span === 2 ? 'md:col-span-2' : 'md:col-span-1'}
+      style={{ x, y, rotate, opacity, backgroundColor: '#080403' }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          gap: 'clamp(20px, 3vw, 40px)',
+          padding: 'clamp(32px, 3.4vw, 56px) clamp(26px, 3vw, 52px)',
+          cursor: 'default',
+          transition: 'background-color 0.3s',
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.backgroundColor = 'rgba(205,0,50,0.05)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent' }}
+      >
+        {/* Cabecera: índice + flecha */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span
+            style={{
+              color: 'rgba(250,251,252,0.18)',
+              fontSize: '0.56rem',
+              fontWeight: 700,
+              letterSpacing: '0.18em',
+            }}
+          >
+            {pillar.index}
+          </span>
+          <ArrowUpRight size={16} style={{ color: 'rgba(205,0,50,0.35)' }} />
+        </div>
+
+        {/* Stat — count-up o ícono */}
+        <div
+          style={{
+            color: '#CD0032',
+            fontWeight: 900,
+            fontSize: 'clamp(3rem, 6vw, 7.5rem)',
+            lineHeight: 1,
+            letterSpacing: '-0.04em',
+            marginTop: 'auto',
+          }}
+        >
+          {pillar.kind === 'count' ? (
+            <CountUp to={pillar.to} prefix={pillar.prefix} suffix={pillar.suffix} />
+          ) : (
+            <pillar.Icon size="0.9em" strokeWidth={2.4} style={{ display: 'block' }} />
+          )}
+        </div>
+
+        {/* Texto */}
+        <div>
+          <h3
+            className="uppercase font-black"
+            style={{
+              color: '#FAFBFC',
+              letterSpacing: '0.05em',
+              marginBottom: '10px',
+              fontSize: 'clamp(1rem, 1.7vw, 1.45rem)',
+            }}
+          >
+            {pillar.label}
+          </h3>
+          <p
+            style={{
+              color: 'rgba(250,251,252,0.4)',
+              fontSize: 'clamp(0.82rem, 1.05vw, 0.98rem)',
+              lineHeight: 1.7,
+              maxWidth: '460px',
+            }}
+          >
+            {pillar.desc}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 export function SustainabilitySection() {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: gridRef,
+    offset: ['start end', 'center center'],
+  })
+  const backdrop = useTransform(scrollYProgress, [0.4, 0.68], ['#FFFFFF', '#080403'])
+
   return (
     <section
       id="sostenibilidad"
@@ -62,124 +170,76 @@ export function SustainabilitySection() {
       {/* ── Bloque titular ── */}
       <div style={{ padding: 'clamp(64px, 9vw, 120px) clamp(22px, 5vw, 80px) 0', position: 'relative' }}>
 
-        <FadeIn y={16}>
-          <p
-            className="uppercase font-bold"
-            style={{ color: '#CD0032', fontSize: '0.62rem', letterSpacing: '0.28em', marginBottom: '32px' }}
-          >
-            Sostenibilidad
-          </p>
-        </FadeIn>
+        <motion.p
+          className="uppercase tracking-[0.28em] font-bold"
+          style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)', marginBottom: '32px' }}
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ amount: 0.6 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Sostenibilidad
+        </motion.p>
 
-        <div style={{ position: 'relative', zIndex: 1, marginBottom: '0' }}>
+        <motion.div
+          style={{ position: 'relative', zIndex: 1, marginBottom: '0' }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ amount: 0.4 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
           <RevealText
             lines={['La sostenibilidad', 'en el punto', 'de mira']}
             className="font-black uppercase leading-none tracking-tight"
             style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 7.5vw, 9rem)' }}
             delay={0.05}
           />
-        </div>
+        </motion.div>
 
         {/* Línea divisora */}
-        <div style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.08)', marginTop: '56px' }} />
+        <motion.div
+          style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.08)', marginTop: '56px', originX: 0 }}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ amount: 0.8 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        />
       </div>
 
-      {/* ── Pilares — bento grid asimétrico ── */}
-      <div
-        className="grid grid-cols-1 md:grid-cols-3"
-        style={{
-          gap: '1px',
-          backgroundColor: 'rgba(250,251,252,0.07)',
-          borderTop: '1px solid rgba(250,251,252,0.07)',
-        }}
-      >
-        {PILLARS.map((pillar, i) => (
-          <motion.div
-            key={pillar.label}
-            className={pillar.span === 2 ? 'md:col-span-2' : 'md:col-span-1'}
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-            viewport={{ once: true, amount: 0.3 }}
-            style={{ backgroundColor: '#080403' }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                gap: 'clamp(20px, 3vw, 40px)',
-                padding: 'clamp(32px, 3.4vw, 56px) clamp(26px, 3vw, 52px)',
-                cursor: 'default',
-                transition: 'background-color 0.3s',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.backgroundColor = 'rgba(205,0,50,0.05)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent' }}
-            >
-              {/* Cabecera: índice + flecha */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span
-                  style={{
-                    color: 'rgba(250,251,252,0.18)',
-                    fontSize: '0.56rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.18em',
-                  }}
-                >
-                  {pillar.index}
-                </span>
-                <ArrowUpRight size={16} style={{ color: 'rgba(205,0,50,0.35)' }} />
-              </div>
-
-              {/* Stat — count-up o ícono */}
-              <div
-                style={{
-                  color: '#CD0032',
-                  fontWeight: 900,
-                  fontSize: 'clamp(3rem, 6vw, 7.5rem)',
-                  lineHeight: 1,
-                  letterSpacing: '-0.04em',
-                  marginTop: 'auto',
-                }}
-              >
-                {pillar.kind === 'count' ? (
-                  <CountUp to={pillar.to} prefix={pillar.prefix} suffix={pillar.suffix} />
-                ) : (
-                  <pillar.Icon size="0.9em" strokeWidth={2.4} style={{ display: 'block' }} />
-                )}
-              </div>
-
-              {/* Texto */}
-              <div>
-                <h3
-                  className="uppercase font-black"
-                  style={{
-                    color: '#FAFBFC',
-                    letterSpacing: '0.05em',
-                    marginBottom: '10px',
-                    fontSize: 'clamp(1rem, 1.7vw, 1.45rem)',
-                  }}
-                >
-                  {pillar.label}
-                </h3>
-                <p
-                  style={{
-                    color: 'rgba(250,251,252,0.4)',
-                    fontSize: 'clamp(0.82rem, 1.05vw, 0.98rem)',
-                    lineHeight: 1.7,
-                    maxWidth: '460px',
-                  }}
-                >
-                  {pillar.desc}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+      {/* ── Pilares — bento grid asimétrico que se arma como rompecabezas al hacer scroll ── */}
+      <div style={{ position: 'relative' }}>
+        <motion.div
+          aria-hidden
+          style={{ position: 'absolute', inset: 0, backgroundColor: backdrop }}
+        />
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-3"
+          style={{
+            position: 'relative',
+            gap: '1px',
+            backgroundColor: 'rgba(250,251,252,0.07)',
+            borderTop: '1px solid rgba(250,251,252,0.07)',
+          }}
+        >
+          {PILLARS.map((pillar, i) => (
+            <PillarCard
+              key={pillar.label}
+              pillar={pillar}
+              progress={scrollYProgress}
+              enter={PIECE_ENTER[i]}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ── CTA ── */}
-      <FadeIn y={20} delay={0.2}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ amount: 0.4 }}
+        transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div
           style={{
             display: 'flex',
@@ -225,7 +285,7 @@ export function SustainabilitySection() {
             Más información <ArrowUpRight size={13} />
           </a>
         </div>
-      </FadeIn>
+      </motion.div>
     </section>
   )
 }

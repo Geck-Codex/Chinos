@@ -4,7 +4,7 @@ import { useGLTF, Center } from '@react-three/drei'
 import { Mesh, MeshStandardMaterial } from 'three'
 import type { Group } from 'three'
 
-export const HERO_MODEL_URL = '/images/models/guante2.glb'
+export const HERO_MODEL_URL = '/images/models/modelo1.glb'
 
 interface GloveGLTFProps {
   url?: string

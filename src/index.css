@@ -18,21 +18,12 @@ html,
 body,
 #root {
   background-color: #FAFBFC;
-  font-family: 'Barlow', 'Barlow Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: "DM Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Fallback con métricas ajustadas a Barlow: evita reflow/CLS al hacer swap */
-@font-face {
-  font-family: 'Barlow Fallback';
-  src: local('Arial');
-  ascent-override: 92%;
-  descent-override: 24%;
-  line-gap-override: 0%;
-  size-adjust: 100%;
-}
 
 /* Animaciones de entrada del hero — CSS puro, sin JS, para no retrasar el LCP */
 @keyframes heroRise {
@@ -61,8 +52,26 @@ body,
   animation: navDrop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Hero scene — spotlight rojo detrás del guante */
+@keyframes spotPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.85; transform: scale(1.07); }
+}
+.hero-spot {
+  animation: spotPulse 6.5s ease-in-out infinite;
+}
+
+/* Hero scene — flotación sutil de las anotaciones técnicas */
+@keyframes specFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+.spec-float {
+  animation: specFloat 5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-lcp, .hero-fade, .nav-enter { animation: none; opacity: 1; transform: none; }
+  .hero-lcp, .hero-fade, .nav-enter, .hero-spot, .spec-float { animation: none; opacity: 1; transform: none; }
 }
 
 /* Carrusel de productos — guante recortado */

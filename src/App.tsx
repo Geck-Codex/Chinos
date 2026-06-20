@@ -1,6 +1,8 @@
 import { lazy, Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
+import { ScrollToTop } from './components/ScrollToTop'
 import { HeroSection } from './sections/HeroSection'
 
 const FeaturesSection = lazy(() => import('./sections/FeaturesSection').then((m) => ({ default: m.FeaturesSection })))
@@ -28,15 +30,19 @@ function LandingPage() {
 }
 
 export default function App() {
+  const location = useLocation()
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/nosotros" element={<AboutPage />} />
-          <Route path="/productos" element={<ProductsPage />} />
-        </Routes>
+        <AnimatePresence mode="wait" initial={false}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/nosotros" element={<AboutPage />} />
+            <Route path="/productos" element={<ProductsPage />} />
+          </Routes>
+        </AnimatePresence>
       </Suspense>
     </>
   )

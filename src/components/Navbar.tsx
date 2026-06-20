@@ -103,10 +103,11 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* CTA — solo en desktop */}
+            {/* CTA — solo en desktop, abre WhatsApp directo */}
             <a
-              href="#contacto"
-              onClick={(e) => handleLink(e, '#contacto')}
+              href="https://wa.me/5216144864571"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden md:inline-block uppercase tracking-widest font-bold text-xs px-5 py-2.5"
               style={{ backgroundColor: '#CD0032', color: '#FAFBFC', textDecoration: 'none', borderRadius: '6px' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}

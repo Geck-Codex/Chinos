@@ -1,16 +1,23 @@
-import { useState, Suspense, lazy, useEffect } from 'react'
+import { useState, useRef, Suspense, lazy, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
+import { HeroScene, type HeroSpec } from '../components/HeroScene'
 
 const GloveScene = lazy(() =>
   import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
 )
 
 const EASE = [0.22, 1, 0.36, 1] as const
+
+const HERO_SPECS: HeroSpec[] = [
+  { value: 'ANSI A7', label: 'Nivel de corte', side: 'right', pos: { top: '17%', right: '2%' } },
+  { value: 'EN388 · 4X42F', label: 'Certificación', side: 'right', pos: { top: '45%', right: '0%' } },
+  { value: 'HPPE cal.13', label: 'Material base', side: 'left', pos: { top: '71%', left: '0%' } },
+]
 
 const LINE_THEME = {
   Dexterity: {
@@ -67,6 +74,7 @@ const MODELS: Record<string, { url: string; tint?: string }> = {
   'edge-lite-a4':  { url: '/images/models/edgelitea4.glb' },
   'edge-lite-a3':  { url: '/images/models/edgelitea3.glb' },
   'lite-pu-gris':   { url: '/images/models/litepugris.glb' },
+  'lite-pu-black':  { url: '/images/models/litepublack.glb' },
   'lite-pu-blanco': { url: '/images/models/litepublanco.glb' },
   'lite-cotton-60':{ url: '/images/models/litecotton60gr.glb' },
   'lite-cotton-70':{ url: '/images/models/litecotton70gr.glb' },
@@ -198,7 +206,7 @@ const ALL_PRODUCTS = [
   {
     id: 'lite-pu-black', num: '10', line: 'Lite',
     name: 'Lite PU Black', category: 'Alta Destreza',
-    image: '',
+    image: '/images/products/litepublack.png',
     description: 'Versión negra del Lite PU. Diseñado para ambientes donde la suciedad es visible, como metalmecánica y automotriz.',
     primaryColor: '#2D3748', palmColor: '#1A202C', cuffColor: '#0D1117',
     accentColor: '#2D3748', accentGlow: 'rgba(45,55,72,0.3)',
@@ -316,11 +324,15 @@ function Modal({ product, onClose, onPrev, onNext }: {
           <motion.p className="uppercase tracking-[0.24em] font-bold mb-2" style={{ color: '#CD0032', fontSize: 'clamp(0.65rem, 1.1vw, 0.8rem)' }} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.5, ease: EASE }}>
             {product.category}
           </motion.p>
-          <div className="overflow-hidden mb-5">
-            <motion.h2 className="font-black uppercase leading-none tracking-tight" style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)' }} initial={{ y: '110%' }} animate={{ y: '0%' }} transition={{ delay: 0.3, duration: 0.75, ease: EASE }}>
-              {product.name}
-            </motion.h2>
-          </div>
+          <motion.h2
+            className="font-black uppercase leading-[0.95] tracking-tight mb-5"
+            style={{ color: '#FAFBFC', fontSize: 'clamp(2rem, 4.2vw, 4.5rem)', wordBreak: 'break-word' }}
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.65, ease: EASE }}
+          >
+            {product.name}
+          </motion.h2>
           <motion.div style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.1)', originX: 0, marginBottom: '22px' }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.42, duration: 0.55, ease: EASE }} />
           <motion.p className="font-light leading-relaxed mb-10" style={{ color: '#FAFBFC', opacity: 0.52, fontSize: 'clamp(0.85rem, 1.3vw, 1.02rem)', maxWidth: '420px' }} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 0.52, y: 0 }} transition={{ delay: 0.46, duration: 0.55, ease: EASE }}>
             {product.description}
@@ -475,11 +487,11 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
       </div>
 
       {/* Nombre + categoría — siempre visible */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px' }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px', background: `linear-gradient(to top, ${theme.bg} 70%, transparent)` }}>
         <p style={{ color: theme.label, fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '4px' }}>
           {product.category}
         </p>
-        <h3 style={{ color: theme.fg, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1, fontSize: 'clamp(1rem, 1.9vw, 1.4rem)' }}>
+        <h3 style={{ color: theme.fg, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1.1, fontSize: 'clamp(0.88rem, 1.6vw, 1.25rem)', wordBreak: 'break-word' }}>
           {product.name}
         </h3>
       </div>
@@ -496,6 +508,103 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
   )
 }
 
+// ─── Mobile Carousel ────────────────────────────────────────────────────────────
+
+function useIsMobile(query = '(max-width: 767px)') {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mql = window.matchMedia(query)
+    const update = () => setIsMobile(mql.matches)
+    update()
+    mql.addEventListener('change', update)
+    return () => mql.removeEventListener('change', update)
+  }, [query])
+  return isMobile
+}
+
+function MobileCarousel({ products, onOpen }: { products: Product[]; onOpen: (p: Product) => void }) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState(0)
+  const paused = useRef(false)
+
+  const goTo = (index: number) => {
+    const track = trackRef.current
+    if (!track) return
+    const target = ((index % products.length) + products.length) % products.length
+    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+    const onScroll = () => {
+      const index = Math.round(track.scrollLeft / track.clientWidth)
+      setActive(index)
+    }
+    track.addEventListener('scroll', onScroll, { passive: true })
+    return () => track.removeEventListener('scroll', onScroll)
+  }, [products.length])
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (paused.current) return
+      const track = trackRef.current
+      if (!track) return
+      const current = Math.round(track.scrollLeft / track.clientWidth)
+      goTo(current + 1)
+    }, 4500)
+    return () => clearInterval(id)
+  }, [products.length])
+
+  return (
+    <div>
+      <div
+        ref={trackRef}
+        onPointerDown={() => { paused.current = true }}
+        onPointerUp={() => { paused.current = false }}
+        onPointerCancel={() => { paused.current = false }}
+        style={{
+          display: 'flex',
+          overflowX: 'auto',
+          scrollSnapType: 'x mandatory',
+          scrollbarWidth: 'none',
+          WebkitOverflowScrolling: 'touch',
+          gap: 0,
+        }}
+      >
+        {products.map((p) => (
+          <div
+            key={p.id}
+            style={{ flex: '0 0 100%', scrollSnapAlign: 'center', padding: '0 2px' }}
+          >
+            <NetflixCard product={p} onOpen={() => onOpen(p)} />
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mt-5">
+        {products.map((p, i) => (
+          <button
+            key={p.id}
+            aria-label={`Ir a ${p.name}`}
+            onClick={() => goTo(i)}
+            style={{
+              height: '6px',
+              width: i === active ? '22px' : '6px',
+              borderRadius: '999px',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              backgroundColor: i === active ? '#CD0032' : 'rgba(250,251,252,0.25)',
+              transition: 'width 0.3s, background-color 0.3s',
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Line Row ─────────────────────────────────────────────────────────────────
 
 function LineRow({
@@ -504,6 +613,8 @@ function LineRow({
   lineKey: string; label: string; sub: string;
   products: Product[]; onOpen: (p: Product) => void;
 }) {
+  const isMobile = useIsMobile()
+
   return (
     <FadeIn y={24}>
       <div className="mb-14 md:mb-20">
@@ -520,14 +631,18 @@ function LineRow({
             {sub}
           </p>
         </div>
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5"
-          style={{ overflow: 'visible' }}
-        >
-          {products.map((p) => (
-            <NetflixCard key={p.id} product={p} onOpen={() => onOpen(p)} />
-          ))}
-        </div>
+        {isMobile ? (
+          <MobileCarousel products={products} onOpen={onOpen} />
+        ) : (
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5"
+            style={{ overflow: 'visible' }}
+          >
+            {products.map((p) => (
+              <NetflixCard key={p.id} product={p} onOpen={() => onOpen(p)} />
+            ))}
+          </div>
+        )}
       </div>
     </FadeIn>
   )
@@ -556,25 +671,51 @@ export function ProductsPage() {
 
         {/* Hero */}
         <section
-          className="relative flex flex-col justify-end px-8 md:px-16 pb-16 md:pb-20"
-          style={{ backgroundColor: '#FAFBFC', minHeight: '100vh' }}
+          className="relative min-h-screen flex items-center pt-[76px]"
+          style={{ backgroundColor: '#FAFBFC' }}
         >
-          <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ backgroundColor: '#CD0032' }} />
+          <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: '#CD0032' }} />
 
-          <p className="uppercase tracking-[0.28em] font-bold mb-6" style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}>
-            Catálogo completo
-          </p>
+          <div className="relative z-10 flex flex-col lg:flex-row w-full items-center px-8 md:px-16 py-16 gap-8">
 
-          <h1
-            className="font-black uppercase tracking-tight mb-6"
-            style={{ color: '#0c0c0c', fontSize: 'clamp(2.8rem, 7vw, 9rem)', lineHeight: 0.88 }}
-          >
-            13 modelos.<br />Una sola misión.
-          </h1>
+            {/* ── Left: copy ── */}
+            <div className="flex-1 flex flex-col justify-center max-w-2xl">
+              <p
+                className="hero-fade uppercase tracking-[0.3em] font-semibold mb-5"
+                style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)', animationDelay: '0.1s' }}
+              >
+                Catálogo completo
+              </p>
 
-          <p className="font-light" style={{ color: 'rgba(12,12,12,0.5)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '480px' }}>
-            Desde alta destreza para manufactura de precisión hasta anticorte certificado para industrias de alto riesgo.
-          </p>
+              <div className="overflow-hidden mb-6">
+                <h1
+                  className="hero-lcp font-black uppercase leading-[0.9] tracking-tight"
+                  style={{ color: '#0c0c0c', fontSize: 'clamp(3.2rem, 7.5vw, 8rem)' }}
+                >
+                  13 modelos.<br />
+                  <span style={{ color: '#CD0032' }}>Una sola</span><br />
+                  misión.
+                </h1>
+              </div>
+
+              <p
+                className="hero-fade font-light leading-relaxed max-w-[460px]"
+                style={{ color: 'rgba(12,12,12,0.55)', fontSize: 'clamp(0.95rem, 1.4vw, 1.15rem)', animationDelay: '0.32s' }}
+              >
+                Desde alta destreza para manufactura de precisión hasta anticorte
+                certificado para industrias de alto riesgo.
+              </p>
+            </div>
+
+            {/* ── Right: escena 3D ── */}
+            <div
+              className="hero-fade flex-1 w-full"
+              style={{ minWidth: 0, animationDelay: '0.3s', animationDuration: '1.2s' }}
+            >
+              <HeroScene word="CATÁLOGO" specs={HERO_SPECS} modelUrl="/images/models/edgeplusa7.glb" theme="light" />
+            </div>
+
+          </div>
         </section>
 
         {/* Divider */}
