@@ -6,7 +6,7 @@ import { WipeReveal } from '../components/WipeReveal'
 import { CountUp } from '../components/CountUp'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
 
-const EASE = [0.22, 1, 0.36, 1] as const
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 const HERO_SPECS: HeroSpec[] = [
   { value: '22+', label: 'Años', side: 'right', pos: { top: '17%', right: '2%' } },
@@ -208,14 +208,14 @@ const PAGE_VARIANTS = {
   hidden:  { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.07, delayChildren: 0.05 },
+    transition: { duration: 0.5, ease: EASE, staggerChildren: 0.07, delayChildren: 0.05 },
   },
-  exit:    { opacity: 0, y: -18, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+  exit:    { opacity: 0, y: -18, transition: { duration: 0.4, ease: EASE } },
 }
 
 const SECTION_VARIANTS = {
   hidden:  { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE } },
 }
 
 export function AboutPage() {
