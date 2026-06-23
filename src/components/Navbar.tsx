@@ -31,10 +31,18 @@ export function Navbar() {
     e.preventDefault()
     setMenuOpen(false)
     if (href.startsWith('#')) {
-      const scroll = () => document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+      let attempts = 0
+      const scroll = () => {
+        const target = document.querySelector(href)
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' })
+        } else if (attempts++ < 40) {
+          setTimeout(scroll, 80)
+        }
+      }
       if (location.pathname !== '/') {
         navigate('/')
-        setTimeout(scroll, 120)
+        setTimeout(scroll, 80)
       } else {
         setTimeout(scroll, 60)
       }
@@ -76,14 +84,8 @@ export function Navbar() {
           }}
         >
           {/* Logo */}
-          <a href="/" onClick={(e) => handleLink(e, '/')} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '9px' }}>
-            <img src="/images/handlove.png" alt="" width={26} height={26} style={{ height: '26px', width: 'auto' }} />
-            <span
-              className="font-black uppercase tracking-widest"
-              style={{ color: '#FAFBFC', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
-            >
-              Handlove
-            </span>
+          <a href="/" onClick={(e) => handleLink(e, '/')} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+            <img src="/images/logo-hand.png" alt="Handlove" style={{ height: '25px', width: 'auto' }} />
           </a>
 
           {/* Desktop nav */}

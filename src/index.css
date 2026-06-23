@@ -21,7 +21,9 @@ body,
   font-family: "DM Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* clip (no hidden) evita scroll horizontal sin crear un contenedor de
+     scroll, de modo que position: sticky sigue funcionando */
+  overflow-x: clip;
 }
 
 
@@ -72,6 +74,19 @@ body,
 
 @media (prefers-reduced-motion: reduce) {
   .hero-lcp, .hero-fade, .nav-enter, .hero-spot, .spec-float { animation: none; opacity: 1; transform: none; }
+}
+
+/* Marquee / carrusel auto-scroll — loop seamless con contenido duplicado */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  width: max-content;
+  animation: marqueeScroll linear infinite;
+}
+.marquee-track.reverse {
+  animation-direction: reverse;
 }
 
 /* Carrusel de productos — guante recortado */

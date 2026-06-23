@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { FadeIn } from '../components/FadeIn'
@@ -106,6 +107,54 @@ const CERTS = [
   },
 ]
 
+// ─── Mobile cert carousel (auto-scroll) ──────────────────────────────────────
+
+interface CertItem {
+  id: string
+  acronym: string
+  name: string
+  detail: string
+  desc: string
+  icon: ReactNode
+}
+
+function CertMobileCarousel({ certs }: { certs: CertItem[] }) {
+  const items = [...certs, ...certs]
+  return (
+    <div className="overflow-hidden sm:hidden" style={{ marginLeft: '-32px', marginRight: '-32px', paddingLeft: '32px' }}>
+      <div
+        className="marquee-track flex gap-4"
+        style={{ animationDuration: '24s' }}
+      >
+        {items.map((cert, i) => (
+          <div
+            key={`${cert.id}-${i}`}
+            style={{
+              width: '240px',
+              flexShrink: 0,
+              border: '1px solid rgba(250,251,252,0.1)',
+              padding: '28px 22px 22px',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <div style={{ width: '44px', height: '44px', marginBottom: '14px' }}>{cert.icon}</div>
+            <p className="font-black uppercase leading-none tracking-tight mb-1"
+              style={{ color: '#FAFBFC', fontSize: '1.4rem' }}>{cert.acronym}</p>
+            <p className="uppercase tracking-wider font-bold mb-3"
+              style={{ color: '#CD0032', fontSize: '0.58rem' }}>{cert.detail}</p>
+            <p className="font-medium mb-2"
+              style={{ color: 'rgba(250,251,252,0.55)', fontSize: '0.7rem', lineHeight: 1.5 }}>{cert.name}</p>
+            <div style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.08)', margin: '6px 0 10px' }} />
+            <p className="font-light leading-relaxed"
+              style={{ color: 'rgba(250,251,252,0.38)', fontSize: '0.75rem' }}>{cert.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Animated marquee ─────────────────────────────────────────────────────────
 
 function RunningMarquee({ text, reverse = false }: { text: string; reverse?: boolean }) {
@@ -119,11 +168,9 @@ function RunningMarquee({ text, reverse = false }: { text: string; reverse?: boo
         backgroundColor: '#080403',
       }}
     >
-      <motion.div
-        className="flex gap-12 whitespace-nowrap"
-        animate={{ x: reverse ? ['0%', '50%'] : ['0%', '-50%'] }}
-        transition={{ duration: 28, ease: 'linear', repeat: Infinity }}
-        style={{ width: 'max-content' }}
+      <div
+        className={`marquee-track flex gap-12 whitespace-nowrap${reverse ? ' reverse' : ''}`}
+        style={{ animationDuration: '28s' }}
       >
         {items.map(({ id, t }) => (
           <span
@@ -135,7 +182,7 @@ function RunningMarquee({ text, reverse = false }: { text: string; reverse?: boo
             <span style={{ color: '#CD0032', opacity: 0.4 }}>·</span>
           </span>
         ))}
-      </motion.div>
+      </div>
     </div>
   )
 }
@@ -202,6 +249,161 @@ function CinematicBanner({ src, headline }: { src: string; headline: string[] })
   )
 }
 
+// ─── Sub-componentes (vocabulario del proyecto) ──────────────────────────────
+
+// ── STATS — WipeReveal en grid, como DifferentiatorsSection ──
+
+function StatsGrid() {
+  return (
+    <div
+      className="grid grid-cols-2 md:grid-cols-4"
+      style={{ border: '1px solid rgba(250,251,252,0.1)' }}
+    >
+      {STATS.map((s, i) => (
+        <WipeReveal key={s.label} delay={i * 0.12} amount={0.1} wipeColor="#CD0032">
+          <div
+            className="p-8 md:p-12 flex flex-col gap-2 h-full"
+            style={{
+              borderRight: i < 3 ? '1px solid rgba(250,251,252,0.1)' : 'none',
+              borderBottom: '1px solid rgba(250,251,252,0.1)',
+              backgroundColor: '#080403',
+            }}
+          >
+            <CountUp
+              to={s.value}
+              suffix={s.suffix}
+              duration={2}
+              className="font-black leading-none tabular-nums"
+              style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 6vw, 5.5rem)' }}
+            />
+            <p
+              className="uppercase tracking-wider font-bold"
+              style={{ color: 'rgba(250,251,252,0.4)', fontSize: 'clamp(0.65rem, 0.9vw, 0.78rem)' }}
+            >
+              {s.label}
+            </p>
+          </div>
+        </WipeReveal>
+      ))}
+    </div>
+  )
+}
+
+// ── PILARES — baraja apilada con sticky: cada tarjeta se pega y la siguiente
+//    sube encima dejando asomar la franja (número + título) de la anterior ──
+
+const PILAR_STICK_TOP = 96   // px desde el top donde se pega la primera tarjeta
+const PILAR_HEADER = 72      // px que asoma de cada tarjeta apilada
+
+function PilaresStack() {
+  return (
+    <div style={{ position: 'relative' }}>
+      {PILLARS.map((p, i) => (
+        <div
+          key={p.num}
+          style={{
+            position: 'sticky',
+            top: `${PILAR_STICK_TOP + i * PILAR_HEADER}px`,
+            marginBottom: i < PILLARS.length - 1 ? 'clamp(40px, 8vh, 90px)' : 0,
+          }}
+        >
+          <motion.article
+            initial={{ opacity: 0, y: 70 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.7, ease: EASE }}
+            whileHover="hover"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              backgroundColor: '#0D0806',
+              border: '1px solid rgba(250,251,252,0.14)',
+              boxShadow: '0 -8px 40px rgba(0,0,0,0.45)',
+            }}
+          >
+            {/* Franja header — esto es lo que asoma como baraja */}
+            <div
+              className="flex items-center gap-5 px-7 md:px-10"
+              style={{ height: `${PILAR_HEADER}px`, borderBottom: '1px solid rgba(250,251,252,0.1)', flexShrink: 0 }}
+            >
+              <span className="font-black leading-none" style={{ color: '#CD0032', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)' }}>
+                {p.num}
+              </span>
+              <h3
+                className="font-black uppercase leading-none tracking-tight whitespace-nowrap"
+                style={{ color: '#FAFBFC', fontSize: 'clamp(1.05rem, 2.2vw, 1.7rem)' }}
+              >
+                {p.title}
+              </h3>
+            </div>
+
+            {/* Cuerpo — imagen + texto */}
+            <div className="grid grid-cols-1 md:grid-cols-2" style={{ flex: 1 }}>
+              <div style={{ position: 'relative', overflow: 'hidden', minHeight: 'clamp(200px, 30vh, 320px)' }}>
+                <motion.img
+                  src={p.img}
+                  alt={p.title}
+                  variants={{ hover: { scale: 1.06 } }}
+                  transition={{ duration: 0.55, ease: EASE }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent 55%, rgba(13,8,6,0.6))' }} />
+              </div>
+              <div className="flex flex-col justify-center px-7 md:px-10 py-10">
+                <p
+                  className="font-light leading-relaxed"
+                  style={{ color: 'rgba(250,251,252,0.55)', fontSize: 'clamp(0.92rem, 1.4vw, 1.15rem)', maxWidth: '440px' }}
+                >
+                  {p.body}
+                </p>
+              </div>
+            </div>
+          </motion.article>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── CERTIFICACIONES — WipeReveal en grid + hover, como Industries/CTASection ──
+
+function CertsGrid({ certs }: { certs: CertItem[] }) {
+  return (
+    <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {certs.map((cert, i) => (
+        <WipeReveal key={cert.id} delay={i * 0.12} amount={0.15} wipeColor="#CD0032" style={{ height: '100%' }}>
+          <motion.div whileHover="hover" style={{ height: '100%' }}>
+            <motion.div
+              variants={{ hover: { borderColor: '#CD0032', backgroundColor: 'rgba(205,0,50,0.05)' } }}
+              transition={{ duration: 0.22 }}
+              style={{ border: '1px solid rgba(250,251,252,0.1)', padding: '36px 28px 28px', height: '100%', display: 'flex', flexDirection: 'column' }}
+            >
+              <div style={{ width: '52px', height: '52px', marginBottom: '20px' }}>{cert.icon}</div>
+              <p className="font-black uppercase leading-none tracking-tight mb-1" style={{ color: '#FAFBFC', fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
+                {cert.acronym}
+              </p>
+              <p className="uppercase tracking-wider font-bold mb-4" style={{ color: '#CD0032', fontSize: '0.6rem' }}>
+                {cert.detail}
+              </p>
+              <p className="font-medium mb-3" style={{ color: 'rgba(250,251,252,0.55)', fontSize: '0.72rem', lineHeight: 1.5 }}>
+                {cert.name}
+              </p>
+              <motion.div
+                style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.08)', margin: '8px 0 14px' }}
+                variants={{ hover: { backgroundColor: 'rgba(205,0,50,0.3)' } }}
+              />
+              <p className="font-light leading-relaxed" style={{ color: 'rgba(250,251,252,0.38)', fontSize: '0.78rem' }}>
+                {cert.desc}
+              </p>
+            </motion.div>
+          </motion.div>
+        </WipeReveal>
+      ))}
+    </div>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const PAGE_VARIANTS = {
@@ -227,7 +429,6 @@ export function AboutPage() {
       exit="exit"
       style={{ backgroundColor: '#080403' }}
     >
-
       {/* ── 1. HERO ── */}
       <motion.section
         variants={SECTION_VARIANTS}
@@ -238,21 +439,48 @@ export function AboutPage() {
 
         <div className="relative z-10 flex flex-col lg:flex-row w-full items-center px-8 md:px-16 py-16 gap-8">
           <div className="flex-1 flex flex-col justify-center max-w-2xl">
-            <FadeIn y={0} duration={1}>
-              <p
-                className="uppercase tracking-[0.3em] font-bold mb-5"
-                style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
-              >
-                Sobre nosotros
-              </p>
+            <FadeIn y={0} duration={0.7}>
+              <div className="flex items-center gap-3 mb-6">
+                <span
+                  className="uppercase tracking-[0.3em] font-bold"
+                  style={{ color: '#CD0032', fontSize: 'clamp(0.72rem, 1vw, 0.85rem)' }}
+                >
+                  Sobre nosotros
+                </span>
+                <span style={{ width: '32px', height: '1px', backgroundColor: '#CD0032', display: 'inline-block', opacity: 0.5 }} />
+                <span
+                  className="uppercase tracking-[0.2em] font-bold"
+                  style={{ color: 'rgba(8,4,3,0.35)', fontSize: 'clamp(0.65rem, 0.9vw, 0.78rem)' }}
+                >
+                  Desde 2002
+                </span>
+              </div>
             </FadeIn>
             <RevealText
               lines={['Guantes para', 'aferrarte a', 'tu futuro']}
               as="h1"
               className="font-black uppercase leading-[0.9] tracking-tight"
               style={{ color: '#0c0c0c', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
-              delay={0.1}
+              delay={0.08}
             />
+            <FadeIn y={20} delay={0.45} duration={0.8}>
+              <p
+                className="font-light leading-relaxed mt-7 mb-7"
+                style={{ color: 'rgba(8,4,3,0.6)', fontSize: 'clamp(1rem, 1.4vw, 1.2rem)', maxWidth: '460px' }}
+              >
+                Marca de guantes de seguridad industrial con presencia internacional y más de{' '}
+                <strong style={{ color: '#080403', fontWeight: 700 }}>20 años de experiencia</strong> en el mercado.
+              </p>
+            </FadeIn>
+            <FadeIn y={16} delay={0.6} duration={0.7}>
+              <p
+                className="font-medium leading-snug"
+                style={{ color: '#080403', fontSize: 'clamp(1.05rem, 1.5vw, 1.35rem)', maxWidth: '460px' }}
+              >
+                Nuestra prioridad es la calidad, pero{' '}
+                <span style={{ color: '#CD0032', fontWeight: 800 }}>tu seguridad es lo primero.</span>
+              </p>
+            </FadeIn>
           </div>
           <div
             className="hero-fade flex-1 w-full"
@@ -266,11 +494,7 @@ export function AboutPage() {
       <RunningMarquee text="El poder reside en cada guante" />
 
       {/* ── 2. STORY — split con imagen ── */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.08 }}
-        variants={SECTION_VARIANTS}
-        style={{ backgroundColor: '#FAFBFC' }}
-      >
+      <section style={{ backgroundColor: '#FAFBFC' }}>
         <div className="grid grid-cols-1 lg:grid-cols-2" style={{ minHeight: '90vh' }}>
 
           {/* Imagen con parallax */}
@@ -351,19 +575,12 @@ export function AboutPage() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── 3. STATS ── */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.08 }}
-        variants={SECTION_VARIANTS}
-        className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}
-      >
+      <section className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}>
         <FadeIn y={20}>
-          <p
-            className="uppercase tracking-[0.22em] font-bold mb-3"
-            style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
-          >
+          <p className="uppercase tracking-[0.22em] font-bold mb-3" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
             Números que definen la protección
           </p>
         </FadeIn>
@@ -373,36 +590,8 @@ export function AboutPage() {
           style={{ color: '#FAFBFC', fontSize: 'clamp(2.2rem, 5vw, 6rem)' }}
           delay={0.05}
         />
-
-        <div className="grid grid-cols-2 md:grid-cols-4" style={{ border: '1px solid rgba(250,251,252,0.1)' }}>
-          {STATS.map((s, i) => (
-            <WipeReveal key={s.label} delay={i * 0.12} amount={0.1} wipeColor="#CD0032">
-              <div
-                className="p-8 md:p-12 flex flex-col gap-2"
-                style={{
-                  borderRight: i < 3 ? '1px solid rgba(250,251,252,0.1)' : 'none',
-                  borderBottom: '1px solid rgba(250,251,252,0.1)',
-                  backgroundColor: '#080403',
-                }}
-              >
-                <CountUp
-                  to={s.value}
-                  suffix={s.suffix}
-                  duration={2}
-                  className="font-black leading-none tabular-nums"
-                  style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 6vw, 5.5rem)' }}
-                />
-                <p
-                  className="uppercase tracking-wider font-bold"
-                  style={{ color: 'rgba(250,251,252,0.4)', fontSize: 'clamp(0.65rem, 0.9vw, 0.78rem)' }}
-                >
-                  {s.label}
-                </p>
-              </div>
-            </WipeReveal>
-          ))}
-        </div>
-      </motion.section>
+        <StatsGrid />
+      </section>
 
       {/* ── 4. CINEMATIC BANNER ── */}
       <CinematicBanner
@@ -413,16 +602,9 @@ export function AboutPage() {
       <RunningMarquee text="La calidad ante todo, siempre" reverse />
 
       {/* ── 5. PILARES — 3 columnas con imagen ── */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.08 }}
-        variants={SECTION_VARIANTS}
-        className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}
-      >
+      <section className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}>
         <FadeIn y={20}>
-          <p
-            className="uppercase tracking-[0.22em] font-bold mb-3"
-            style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
-          >
+          <p className="uppercase tracking-[0.22em] font-bold mb-3" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
             Nuestros pilares
           </p>
         </FadeIn>
@@ -432,76 +614,11 @@ export function AboutPage() {
           style={{ color: '#FAFBFC', fontSize: 'clamp(2.2rem, 5vw, 6rem)' }}
           delay={0.05}
         />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PILLARS.map((p, i) => (
-            <motion.div
-              key={p.num}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.75, delay: i * 0.14, ease: EASE }}
-              style={{
-                position: 'relative',
-                overflow: 'hidden',
-                border: '1px solid rgba(250,251,252,0.1)',
-              }}
-            >
-              {/* Imagen */}
-              <motion.div
-                style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}
-                whileHover="hover"
-              >
-                <motion.img
-                  src={p.img}
-                  alt={p.title}
-                  variants={{ hover: { scale: 1.06 } }}
-                  transition={{ duration: 0.55, ease: EASE }}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-                <div
-                  style={{
-                    position: 'absolute', inset: 0,
-                    background: 'linear-gradient(to bottom, transparent 30%, rgba(8,4,3,0.85))',
-                  }}
-                />
-                <span
-                  style={{
-                    position: 'absolute', bottom: '14px', left: '18px',
-                    fontWeight: 900, color: '#CD0032', fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)',
-                    lineHeight: 1,
-                  }}
-                >
-                  {p.num}
-                </span>
-              </motion.div>
-
-              {/* Texto */}
-              <div className="p-7">
-                <h3
-                  className="font-black uppercase leading-tight tracking-tight mb-3"
-                  style={{ color: '#FAFBFC', fontSize: 'clamp(1.1rem, 2vw, 1.5rem)' }}
-                >
-                  {p.title}
-                </h3>
-                <p
-                  className="font-light leading-relaxed"
-                  style={{ color: 'rgba(250,251,252,0.5)', fontSize: 'clamp(0.82rem, 1.1vw, 0.95rem)' }}
-                >
-                  {p.body}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
+        <PilaresStack />
+      </section>
 
       {/* ── 6. VISIÓN — split oscuro con imagen derecha ── */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.08 }}
-        variants={SECTION_VARIANTS}
-        style={{ backgroundColor: '#FAFBFC' }}
-      >
+      <section style={{ backgroundColor: '#FAFBFC' }}>
         <div className="grid grid-cols-1 lg:grid-cols-2" style={{ minHeight: '80vh' }}>
 
           {/* Texto */}
@@ -584,112 +701,14 @@ export function AboutPage() {
             />
           </motion.div>
         </div>
-      </motion.section>
-
-      {/* ── 7. FABRICACIÓN — imagen full + texto ── */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.08 }}
-        variants={SECTION_VARIANTS}
-        className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
-          <FadeIn y={30}>
-            <p
-              className="uppercase tracking-[0.22em] font-bold mb-3"
-              style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
-            >
-              Normas de fabricación
-            </p>
-            <h2
-              className="font-black uppercase leading-none tracking-tight mb-7"
-              style={{ color: '#FAFBFC', fontSize: 'clamp(2.2rem, 4.5vw, 5rem)' }}
-            >
-              30 millones<br />de docenas
-            </h2>
-            <p
-              className="font-light leading-relaxed mb-10"
-              style={{ color: 'rgba(250,251,252,0.55)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '460px' }}
-            >
-              Exportamos anualmente gracias a tecnología de vanguardia y mejoras constantes. Desde la
-              selección de los mejores materiales hasta la última puntada, realizamos estrictos controles
-              de calidad para garantizar que cada par sea impecable.
-            </p>
-
-            {/* Lista numerada */}
-            <div style={{ borderTop: '1px solid rgba(250,251,252,0.1)' }}>
-              {[
-                'Actualizamos nuestra gama constantemente.',
-                'Producción y entrega a cualquier escala.',
-                'Alta calidad con costes competitivos.',
-              ].map((point, i) => (
-                <motion.div
-                  key={i}
-                  className="flex gap-5 py-5"
-                  style={{ borderBottom: '1px solid rgba(250,251,252,0.1)' }}
-                  initial={{ opacity: 0, x: -24 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.55, delay: i * 0.1, ease: EASE }}
-                >
-                  <span className="font-black flex-shrink-0 mt-0.5" style={{ color: '#CD0032', fontSize: '0.78rem' }}>
-                    0{i + 1}
-                  </span>
-                  <p className="font-light leading-relaxed" style={{ color: 'rgba(250,251,252,0.55)', fontSize: 'clamp(0.85rem, 1.2vw, 0.98rem)' }}>
-                    {point}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </FadeIn>
-
-          {/* Mosaico de imágenes */}
-          <div className="grid grid-cols-2 gap-3" style={{ gridTemplateRows: 'auto auto' }}>
-            <motion.div
-              style={{ gridColumn: '1 / -1', aspectRatio: '16/9', overflow: 'hidden' }}
-              initial={{ opacity: 0, scale: 0.96 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.85, ease: EASE }}
-            >
-              <img
-                src="/images/features/applications-1.webp"
-                alt="Aplicaciones HandLove"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              />
-            </motion.div>
-            {['/images/features/applications-2.webp', '/images/features/applications-3.webp'].map((src, i) => (
-              <motion.div
-                key={src}
-                style={{ aspectRatio: '4/3', overflow: 'hidden' }}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.7, delay: 0.15 + i * 0.1, ease: EASE }}
-              >
-                <img
-                  src={src}
-                  alt=""
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
+      </section>
 
       <RunningMarquee text="Excelencia certificada" />
 
       {/* ── 8. CERTIFICACIONES ── */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.08 }}
-        variants={SECTION_VARIANTS}
-        className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}
-      >
+      <section className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}>
         <FadeIn y={20}>
-          <p
-            className="uppercase tracking-[0.22em] font-bold mb-3"
-            style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
-          >
+          <p className="uppercase tracking-[0.22em] font-bold mb-3" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
             Certificaciones
           </p>
         </FadeIn>
@@ -700,90 +719,20 @@ export function AboutPage() {
           delay={0.05}
         />
         <FadeIn y={20} delay={0.1}>
-          <p
-            className="font-light leading-relaxed mb-14"
-            style={{ color: 'rgba(250,251,252,0.45)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '560px' }}
-          >
-            Cada guante HandLove está fabricado y auditado bajo los estándares internacionales más
-            exigentes — desde la fibra hasta el recubrimiento final.
+          <p className="font-light leading-relaxed mb-14" style={{ color: 'rgba(250,251,252,0.45)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '560px' }}>
+            Cada guante HandLove está fabricado y auditado bajo los estándares internacionales más exigentes — desde la fibra hasta el recubrimiento final.
           </p>
         </FadeIn>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {CERTS.map((cert, i) => (
-            <motion.div
-              key={cert.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.65, delay: i * 0.12, ease: EASE }}
-              whileHover="hover"
-              style={{ position: 'relative' }}
-            >
-              <motion.div
-                variants={{ hover: { borderColor: '#CD0032', backgroundColor: 'rgba(205,0,50,0.05)' } }}
-                transition={{ duration: 0.22 }}
-                style={{
-                  border: '1px solid rgba(250,251,252,0.1)',
-                  padding: '36px 28px 28px',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0',
-                }}
-              >
-                {/* Ícono SVG */}
-                <div style={{ width: '52px', height: '52px', marginBottom: '20px' }}>
-                  {cert.icon}
-                </div>
+        {/* Carrusel en móvil */}
+        <CertMobileCarousel certs={CERTS} />
 
-                {/* Acrónimo grande */}
-                <p
-                  className="font-black uppercase leading-none tracking-tight mb-1"
-                  style={{ color: '#FAFBFC', fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}
-                >
-                  {cert.acronym}
-                </p>
-
-                {/* Detail chip */}
-                <p
-                  className="uppercase tracking-wider font-bold mb-4"
-                  style={{ color: '#CD0032', fontSize: '0.6rem' }}
-                >
-                  {cert.detail}
-                </p>
-
-                {/* Nombre largo */}
-                <p
-                  className="font-medium mb-3"
-                  style={{ color: 'rgba(250,251,252,0.55)', fontSize: '0.72rem', lineHeight: 1.5 }}
-                >
-                  {cert.name}
-                </p>
-
-                {/* Separador */}
-                <motion.div
-                  style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.08)', margin: '8px 0 14px' }}
-                  variants={{ hover: { backgroundColor: 'rgba(205,0,50,0.3)' } }}
-                />
-
-                {/* Descripción */}
-                <p
-                  className="font-light leading-relaxed"
-                  style={{ color: 'rgba(250,251,252,0.38)', fontSize: '0.78rem' }}
-                >
-                  {cert.desc}
-                </p>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
+        {/* Grid en tablet y desktop */}
+        <CertsGrid certs={CERTS} />
+      </section>
 
       {/* ── 9. CTA ── */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}
-        variants={SECTION_VARIANTS}
+      <section
         className="px-8 md:px-16 py-20 md:py-28 flex flex-col items-center text-center"
         style={{ backgroundColor: '#080403', borderTop: '1px solid rgba(250,251,252,0.08)' }}
       >
@@ -804,7 +753,7 @@ export function AboutPage() {
             Solicitar presupuesto
           </motion.a>
         </FadeIn>
-      </motion.section>
+      </section>
 
     </motion.div>
   )
