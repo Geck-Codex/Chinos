@@ -219,15 +219,16 @@ function ParallaxImage({ src, alt, strength = 80 }: { src: string; alt: string; 
 function ClipReveal({ from, children }: { from: string; children: ReactNode }) {
   const [ref, inView] = useInViewOnce<HTMLDivElement>({ amount: 0.25 })
   return (
-    <motion.div
-      ref={ref}
-      style={{ position: 'relative', minHeight: '420px' }}
-      initial={{ clipPath: from }}
-      animate={inView ? { clipPath: 'inset(0 0% 0 0%)' } : { clipPath: from }}
-      transition={{ duration: 1.1, ease: EASE }}
-    >
-      {children}
-    </motion.div>
+    <div ref={ref} style={{ position: 'relative', minHeight: '420px' }}>
+      <motion.div
+        style={{ position: 'absolute', inset: 0 }}
+        initial={{ clipPath: from }}
+        animate={inView ? { clipPath: 'inset(0 0% 0 0%)' } : { clipPath: from }}
+        transition={{ duration: 1.1, ease: EASE }}
+      >
+        {children}
+      </motion.div>
+    </div>
   )
 }
 
