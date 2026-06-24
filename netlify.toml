@@ -1,3 +1,9 @@
 [build]
   command = "npx tsc -b && npx vite build"
   publish = "dist"
+
+# SPA: todas las rutas las resuelve React Router en index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
