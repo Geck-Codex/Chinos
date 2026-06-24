@@ -22,7 +22,7 @@ export function IndustriesSection() {
     >
       <FadeIn y={20}>
         <p
-          className="uppercase tracking-[0.28em] font-bold mb-3"
+          className="uppercase tracking-[0.28em] font-bold mb-2"
           style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
         >
           Uso industrial
@@ -30,7 +30,7 @@ export function IndustriesSection() {
       </FadeIn>
       <RevealText
         lines={['Industrias', 'líderes']}
-        className="font-black uppercase leading-none tracking-tight mb-8 md:mb-12"
+        className="font-black uppercase leading-none tracking-tight mb-5 md:mb-7"
         style={{ color: '#080403', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
         delay={0.05}
       />

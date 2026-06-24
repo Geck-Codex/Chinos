@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import type { ReactNode, CSSProperties } from 'react'
+import { useInViewOnce } from './useInViewOnce'
 
 interface WipeRevealProps {
   children: ReactNode
@@ -18,14 +19,13 @@ export function WipeReveal({
   style,
   amount = 0.3,
 }: WipeRevealProps) {
-  const vp = { once: true as const, amount }
+  const [ref, inView] = useInViewOnce<HTMLDivElement>({ amount })
 
   return (
-    <div className={className} style={{ position: 'relative', overflow: 'hidden', ...style }}>
+    <div ref={ref} className={className} style={{ position: 'relative', overflow: 'hidden', ...style }}>
       <motion.div
         initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={vp}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
         transition={{ duration: 0.55, delay: delay + 0.3, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
@@ -33,8 +33,7 @@ export function WipeReveal({
       <motion.div
         style={{ position: 'absolute', inset: 0, backgroundColor: wipeColor, zIndex: 2 }}
         initial={{ x: '-101%' }}
-        whileInView={{ x: ['-101%', '0%', '101%'] }}
-        viewport={vp}
+        animate={inView ? { x: ['-101%', '0%', '101%'] } : { x: '-101%' }}
         transition={{
           duration: 0.72,
           delay,

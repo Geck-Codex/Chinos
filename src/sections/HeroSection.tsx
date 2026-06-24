@@ -28,7 +28,7 @@ export function HeroSection() {
           <div className="overflow-hidden mb-6">
             <h1
               className="hero-lcp font-black uppercase leading-[0.9] tracking-tight"
-              style={{ color: '#FAFBFC', fontSize: 'clamp(3.5rem, 8vw, 8.5rem)' }}
+              style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 7vw, 7rem)' }}
             >
               Seguridad<br />
               <span style={{ color: '#CD0032' }}>en cada</span><br />

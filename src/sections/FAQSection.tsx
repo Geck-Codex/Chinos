@@ -38,7 +38,7 @@ export function FAQSection() {
     >
       <FadeIn y={20}>
         <p
-          className="uppercase tracking-[0.28em] font-bold mb-10 md:mb-14"
+          className="uppercase tracking-[0.28em] font-bold mb-5 md:mb-7"
           style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
         >
           Tenemos las respuestas

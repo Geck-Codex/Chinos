@@ -184,7 +184,7 @@ export function FeaturesSection() {
       transition={{ duration: 0.5, ease: EASE }}
     >
       {/* Header compact */}
-      <div className="mb-10 md:mb-14">
+      <div className="mb-5 md:mb-7">
         <motion.p
           animate={{ color: isDark ? 'rgba(205,0,50,0.7)' : '#CD0032' }}
           transition={{ duration: 0.4 }}

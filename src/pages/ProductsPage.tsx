@@ -68,10 +68,10 @@ function themeForLine(line: string) {
 const MODELS: Record<string, { url: string; tint?: string }> = {
   'ultra-grip':    { url: '/images/models/dexterityultra.glb' },
   'poly-sand':     { url: '/images/models/polysand.glb' },
-  'nanoflex':      { url: '/images/models/nanoflex.glb' },
+  'nanoflex':      { url: '/images/models/nanoflex1.glb' },
   'edge-plus-a7':  { url: '/images/models/edgeplusa7.glb' },
   'edge-plus-a3':  { url: '/images/models/edgeplusa3.glb' },
-  'edge-lite-a4':  { url: '/images/models/edgelitea4.glb' },
+  'edge-lite-a4':  { url: '/images/models/edgeliteaa4.glb' },
   'edge-lite-a3':  { url: '/images/models/edgelitea3.glb' },
   'lite-pu-gris':   { url: '/images/models/litepugris.glb' },
   'lite-pu-black':  { url: '/images/models/litepublack.glb' },
@@ -608,9 +608,9 @@ function MobileCarousel({ products, onOpen }: { products: Product[]; onOpen: (p:
 // ─── Line Row ─────────────────────────────────────────────────────────────────
 
 function LineRow({
-  lineKey, label, sub, products, onOpen,
+  label, sub, products, onOpen,
 }: {
-  lineKey: string; label: string; sub: string;
+  label: string; sub: string;
   products: Product[]; onOpen: (p: Product) => void;
 }) {
   const isMobile = useIsMobile()
@@ -620,9 +620,6 @@ function LineRow({
       <div className="mb-14 md:mb-20">
         <div className="flex items-end gap-5 mb-6">
           <div>
-            <p className="uppercase tracking-tight font-bold mb-1" style={{ color: '#CD0032', fontSize: 'clamp(0.65rem, 0.9vw, 0.8rem)' }}>
-              {lineKey}
-            </p>
             <h2 className="font-black uppercase leading-none tracking-tight" style={{ color: '#FAFBFC', fontSize: 'clamp(1.8rem, 3.5vw, 3.5rem)' }}>
               {label}
             </h2>
@@ -726,7 +723,6 @@ export function ProductsPage() {
           {LINES.map(line => (
             <LineRow
               key={line.key}
-              lineKey={line.key}
               label={line.label}
               sub={line.sub}
               products={ALL_PRODUCTS.filter(p => p.line === line.key)}

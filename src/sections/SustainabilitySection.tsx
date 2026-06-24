@@ -4,6 +4,7 @@ import { ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { RevealText } from '../components/RevealText'
 import { CountUp } from '../components/CountUp'
+import { useInViewOnce } from '../components/useInViewOnce'
 
 type Pillar = {
   index: string
@@ -162,6 +163,11 @@ export function SustainabilitySection() {
   })
   const backdrop = useTransform(scrollYProgress, [0.4, 0.68], ['#FFFFFF', '#080403'])
 
+  const [labelRef, labelIn] = useInViewOnce<HTMLParagraphElement>({ amount: 0.6 })
+  const [titleRef, titleIn] = useInViewOnce<HTMLDivElement>({ amount: 0.4 })
+  const [lineRef, lineIn] = useInViewOnce<HTMLDivElement>({ amount: 0.8 })
+  const [ctaRef, ctaIn] = useInViewOnce<HTMLDivElement>({ amount: 0.4 })
+
   return (
     <section
       id="sostenibilidad"
@@ -171,21 +177,21 @@ export function SustainabilitySection() {
       <div style={{ padding: 'clamp(64px, 9vw, 120px) clamp(22px, 5vw, 80px) 0', position: 'relative' }}>
 
         <motion.p
+          ref={labelRef}
           className="uppercase tracking-[0.28em] font-bold"
           style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)', marginBottom: '32px' }}
           initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ amount: 0.6 }}
+          animate={labelIn ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           Sostenibilidad
         </motion.p>
 
         <motion.div
+          ref={titleRef}
           style={{ position: 'relative', zIndex: 1, marginBottom: '0' }}
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ amount: 0.4 }}
+          animate={titleIn ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <RevealText
@@ -198,10 +204,10 @@ export function SustainabilitySection() {
 
         {/* Línea divisora */}
         <motion.div
+          ref={lineRef}
           style={{ height: '1px', backgroundColor: 'rgba(250,251,252,0.08)', marginTop: '56px', originX: 0 }}
           initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ amount: 0.8 }}
+          animate={lineIn ? { scaleX: 1 } : { scaleX: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
@@ -235,9 +241,9 @@ export function SustainabilitySection() {
 
       {/* ── CTA ── */}
       <motion.div
+        ref={ctaRef}
         initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ amount: 0.4 }}
+        animate={ctaIn ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
       >
         <div

@@ -26,7 +26,7 @@ export function DifferentiatorsSection() {
     >
       <FadeIn y={20}>
         <p
-          className="uppercase tracking-[0.28em] font-bold mb-3"
+          className="uppercase tracking-[0.28em] font-bold mb-2"
           style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
         >
           Lo que nos diferencia
@@ -34,7 +34,7 @@ export function DifferentiatorsSection() {
       </FadeIn>
       <RevealText
         lines={['Calidad y', 'sostenibilidad']}
-        className="font-black uppercase leading-none tracking-tight mb-8 md:mb-12"
+        className="font-black uppercase leading-none tracking-tight mb-5 md:mb-7"
         style={{ color: '#FAFBFC', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
         delay={0.05}
       />

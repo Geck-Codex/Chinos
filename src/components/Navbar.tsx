@@ -84,8 +84,9 @@ export function Navbar() {
           }}
         >
           {/* Logo */}
-          <a href="/" onClick={(e) => handleLink(e, '/')} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
-            <img src="/images/logo-hand.png" alt="Handlove" style={{ height: '25px', width: 'auto' }} />
+          <a href="/" onClick={(e) => handleLink(e, '/')} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '9px' }}>
+            <img src="/images/handlove.png" alt="" style={{ height: '36px', width: 'auto' }} />
+            <img src="/images/logo-white.png" alt="Handlove" style={{ height: '26px', width: 'auto' }} />
           </a>
 
           {/* Desktop nav */}
@@ -105,11 +106,10 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* CTA — solo en desktop, abre WhatsApp directo */}
+            {/* CTA — solo en desktop, lleva a la sección de contacto */}
             <a
-              href="https://wa.me/5216144864571"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contacto"
+              onClick={(e) => handleLink(e, '#contacto')}
               className="hidden md:inline-block uppercase tracking-widest font-bold text-xs px-5 py-2.5"
               style={{ backgroundColor: '#CD0032', color: '#FAFBFC', textDecoration: 'none', borderRadius: '6px' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}

@@ -31,8 +31,9 @@ export function GloveScene({
   const renderGLTF = hero || !!modelUrl
 
   // Hero: gira solo (render continuo mientras está en pantalla).
-  // Modal: el usuario lo gira arrastrando → render solo bajo demanda (0 GPU en reposo).
-  const frameloop = hero ? (active ? 'always' : 'never') : 'demand'
+  // Modal: gira solo como el hero y además se puede arrastrar → render continuo
+  // mientras el modal está abierto (se desmonta al cerrar, así que 0 GPU en reposo).
+  const frameloop = hero ? (active ? 'always' : 'never') : 'always'
 
   return (
     <ErrorBoundary>
@@ -44,10 +45,11 @@ export function GloveScene({
           gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
           style={{ background: 'transparent' }}
         >
-          <ambientLight intensity={hero ? 0.7 : 0.5} />
-          <hemisphereLight args={['#ffffff', '#2a1a1c', hero ? 1.2 : 1.0]} />
-          <directionalLight position={[3.5, 5, 3]} intensity={hero ? 3.6 : 3.4} color="#ffffff" />
-          <directionalLight position={[-3, -2, 1.5]} intensity={hero ? 1.2 : 0.95} color={accent} />
+          <ambientLight intensity={hero ? 0.95 : 1.15} />
+          <hemisphereLight args={['#ffffff', '#3a2a2c', hero ? 1.4 : 1.7]} />
+          <directionalLight position={[3.5, 5, 3]} intensity={hero ? 3.8 : 4.6} color="#ffffff" />
+          <directionalLight position={[-3, -2, 1.5]} intensity={hero ? 1.2 : 1.1} color={accent} />
+          <directionalLight position={[0, 1.5, 6]} intensity={hero ? 1.0 : 2.0} color="#ffffff" />
 
           <Suspense fallback={null}>
             {renderGLTF ? (
@@ -84,6 +86,8 @@ export function GloveScene({
               enableDamping
               dampingFactor={0.08}
               rotateSpeed={0.9}
+              autoRotate
+              autoRotateSpeed={0.9}
             />
           )}
         </Canvas>

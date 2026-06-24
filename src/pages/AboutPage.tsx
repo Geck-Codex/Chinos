@@ -6,6 +6,7 @@ import { RevealText } from '../components/RevealText'
 import { WipeReveal } from '../components/WipeReveal'
 import { CountUp } from '../components/CountUp'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
+import { useInViewOnce } from '../components/useInViewOnce'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -17,7 +18,7 @@ const HERO_SPECS: HeroSpec[] = [
 
 const STATS = [
   { value: 22, suffix: '+', label: 'Años de experiencia', decimals: false },
-  { value: 30000, suffix: 'm²', label: 'Área de instalaciones', decimals: false },
+  { value: 15, suffix: '+', label: 'Mercados internacionales', decimals: false },
   { value: 100, suffix: '+', label: 'Empleados cualificados', decimals: false },
   { value: 500, suffix: '+', label: 'Máquinas importadas', decimals: false },
 ]
@@ -213,6 +214,23 @@ function ParallaxImage({ src, alt, strength = 80 }: { src: string; alt: string; 
   )
 }
 
+// ─── Clip reveal (imagen que se descubre al entrar en viewport) ───────────────
+
+function ClipReveal({ from, children }: { from: string; children: ReactNode }) {
+  const [ref, inView] = useInViewOnce<HTMLDivElement>({ amount: 0.25 })
+  return (
+    <motion.div
+      ref={ref}
+      style={{ position: 'relative', minHeight: '420px' }}
+      initial={{ clipPath: from }}
+      animate={inView ? { clipPath: 'inset(0 0 0 0)' } : { clipPath: from }}
+      transition={{ duration: 1.1, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 // ─── Full-bleed cinematic section ─────────────────────────────────────────────
 
 function CinematicBanner({ src, headline }: { src: string; headline: string[] }) {
@@ -274,7 +292,7 @@ function StatsGrid() {
               suffix={s.suffix}
               duration={2}
               className="font-black leading-none tabular-nums"
-              style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 6vw, 5.5rem)' }}
+              style={{ color: '#FAFBFC', fontSize: 'clamp(2.6rem, 5.5vw, 5rem)' }}
             />
             <p
               className="uppercase tracking-wider font-bold"
@@ -307,10 +325,20 @@ function PilaresStack() {
             marginBottom: i < PILLARS.length - 1 ? 'clamp(40px, 8vh, 90px)' : 0,
           }}
         >
+          <PilarCard p={p} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function PilarCard({ p }: { p: (typeof PILLARS)[number] }) {
+  const [ref, inView] = useInViewOnce<HTMLElement>({ amount: 0.4 })
+  return (
           <motion.article
+            ref={ref}
             initial={{ opacity: 0, y: 70 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 70 }}
             transition={{ duration: 0.7, ease: EASE }}
             whileHover="hover"
             style={{
@@ -360,9 +388,6 @@ function PilaresStack() {
               </div>
             </div>
           </motion.article>
-        </div>
-      ))}
-    </div>
   )
 }
 
@@ -439,7 +464,7 @@ export function AboutPage() {
 
         <div className="relative z-10 flex flex-col lg:flex-row w-full items-center px-8 md:px-16 py-16 gap-8">
           <div className="flex-1 flex flex-col justify-center max-w-2xl">
-            <FadeIn y={0} duration={0.7}>
+            <FadeIn y={0} duration={0.7} playOnMount>
               <div className="flex items-center gap-3 mb-6">
                 <span
                   className="uppercase tracking-[0.3em] font-bold"
@@ -460,10 +485,11 @@ export function AboutPage() {
               lines={['Guantes para', 'aferrarte a', 'tu futuro']}
               as="h1"
               className="font-black uppercase leading-[0.9] tracking-tight"
-              style={{ color: '#0c0c0c', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
+              style={{ color: '#0c0c0c', fontSize: 'clamp(2.6rem, 6vw, 6rem)' }}
               delay={0.08}
+              playOnMount
             />
-            <FadeIn y={20} delay={0.45} duration={0.8}>
+            <FadeIn y={20} delay={0.45} duration={0.8} playOnMount>
               <p
                 className="font-light leading-relaxed mt-7 mb-7"
                 style={{ color: 'rgba(8,4,3,0.6)', fontSize: 'clamp(1rem, 1.4vw, 1.2rem)', maxWidth: '460px' }}
@@ -472,7 +498,7 @@ export function AboutPage() {
                 <strong style={{ color: '#080403', fontWeight: 700 }}>20 años de experiencia</strong> en el mercado.
               </p>
             </FadeIn>
-            <FadeIn y={16} delay={0.6} duration={0.7}>
+            <FadeIn y={16} delay={0.6} duration={0.7} playOnMount>
               <p
                 className="font-medium leading-snug"
                 style={{ color: '#080403', fontSize: 'clamp(1.05rem, 1.5vw, 1.35rem)', maxWidth: '460px' }}
@@ -480,6 +506,34 @@ export function AboutPage() {
                 Nuestra prioridad es la calidad, pero{' '}
                 <span style={{ color: '#CD0032', fontWeight: 800 }}>tu seguridad es lo primero.</span>
               </p>
+            </FadeIn>
+            <FadeIn y={16} delay={0.72} duration={0.7} playOnMount>
+              <div className="flex gap-4 mt-9 flex-wrap">
+                <a
+                  href="/productos"
+                  className="uppercase tracking-widest font-bold px-8 py-4"
+                  style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px', textDecoration: 'none' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#CD0032')}
+                >
+                  Ver catálogo
+                </a>
+                <a
+                  href="/#contacto"
+                  className="uppercase tracking-widest font-bold px-8 py-4 border"
+                  style={{ borderColor: 'rgba(8,4,3,0.22)', color: '#080403', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px', textDecoration: 'none' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#080403'
+                    e.currentTarget.style.color = '#FAFBFC'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = '#080403'
+                  }}
+                >
+                  Cotizar
+                </a>
+              </div>
             </FadeIn>
           </div>
           <div
@@ -498,13 +552,7 @@ export function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2" style={{ minHeight: '90vh' }}>
 
           {/* Imagen con parallax */}
-          <motion.div
-            style={{ position: 'relative', minHeight: '420px' }}
-            initial={{ clipPath: 'inset(0 100% 0 0)' }}
-            whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 1.1, ease: EASE }}
-          >
+          <ClipReveal from="inset(0 100% 0 0)">
             <ParallaxImage src="/images/features/production-1.webp" alt="Fábrica HandLove" strength={60} />
             <div
               style={{
@@ -513,7 +561,7 @@ export function AboutPage() {
                 pointerEvents: 'none',
               }}
             />
-          </motion.div>
+          </ClipReveal>
 
           {/* Texto */}
           <div
@@ -522,7 +570,7 @@ export function AboutPage() {
           >
             <FadeIn y={30}>
               <p
-                className="uppercase tracking-[0.22em] font-bold mb-4"
+                className="uppercase tracking-[0.22em] font-bold mb-2"
                 style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
               >
                 El viaje de HandLove
@@ -580,13 +628,13 @@ export function AboutPage() {
       {/* ── 3. STATS ── */}
       <section className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}>
         <FadeIn y={20}>
-          <p className="uppercase tracking-[0.22em] font-bold mb-3" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
+          <p className="uppercase tracking-[0.22em] font-bold mb-2" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
             Números que definen la protección
           </p>
         </FadeIn>
         <RevealText
           lines={['La escala de', 'la excelencia']}
-          className="font-black uppercase leading-none tracking-tight mb-12 md:mb-16"
+          className="font-black uppercase leading-none tracking-tight mb-5 md:mb-8"
           style={{ color: '#FAFBFC', fontSize: 'clamp(2.2rem, 5vw, 6rem)' }}
           delay={0.05}
         />
@@ -604,13 +652,13 @@ export function AboutPage() {
       {/* ── 5. PILARES — 3 columnas con imagen ── */}
       <section className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}>
         <FadeIn y={20}>
-          <p className="uppercase tracking-[0.22em] font-bold mb-3" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
+          <p className="uppercase tracking-[0.22em] font-bold mb-2" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
             Nuestros pilares
           </p>
         </FadeIn>
         <RevealText
           lines={['Por qué eligen', 'HandLove']}
-          className="font-black uppercase leading-none tracking-tight mb-14 md:mb-20"
+          className="font-black uppercase leading-none tracking-tight mb-6 md:mb-9"
           style={{ color: '#FAFBFC', fontSize: 'clamp(2.2rem, 5vw, 6rem)' }}
           delay={0.05}
         />
@@ -628,7 +676,7 @@ export function AboutPage() {
           >
             <FadeIn y={30}>
               <p
-                className="uppercase tracking-[0.22em] font-bold mb-4"
+                className="uppercase tracking-[0.22em] font-bold mb-2"
                 style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}
               >
                 Nuestra visión
@@ -684,13 +732,7 @@ export function AboutPage() {
           </div>
 
           {/* Imagen con parallax */}
-          <motion.div
-            style={{ position: 'relative', minHeight: '420px' }}
-            initial={{ clipPath: 'inset(0 0 0 100%)' }}
-            whileInView={{ clipPath: 'inset(0 0 0 0%)' }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 1.1, ease: EASE }}
-          >
+          <ClipReveal from="inset(0 0 0 100%)">
             <ParallaxImage src="/images/features/production-3.webp" alt="Calidad HandLove" strength={60} />
             <div
               style={{
@@ -699,7 +741,7 @@ export function AboutPage() {
                 pointerEvents: 'none',
               }}
             />
-          </motion.div>
+          </ClipReveal>
         </div>
       </section>
 
@@ -708,18 +750,18 @@ export function AboutPage() {
       {/* ── 8. CERTIFICACIONES ── */}
       <section className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: '#080403' }}>
         <FadeIn y={20}>
-          <p className="uppercase tracking-[0.22em] font-bold mb-3" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
+          <p className="uppercase tracking-[0.22em] font-bold mb-2" style={{ color: '#CD0032', fontSize: 'clamp(0.7rem, 1vw, 0.85rem)' }}>
             Certificaciones
           </p>
         </FadeIn>
         <RevealText
           lines={['Excelencia certificada']}
-          className="font-black uppercase leading-none tracking-tight mb-10 md:mb-14"
+          className="font-black uppercase leading-none tracking-tight mb-5 md:mb-7"
           style={{ color: '#FAFBFC', fontSize: 'clamp(2.2rem, 5vw, 6rem)' }}
           delay={0.05}
         />
         <FadeIn y={20} delay={0.1}>
-          <p className="font-light leading-relaxed mb-14" style={{ color: 'rgba(250,251,252,0.45)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '560px' }}>
+          <p className="font-light leading-relaxed mb-8" style={{ color: 'rgba(250,251,252,0.45)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '560px' }}>
             Cada guante HandLove está fabricado y auditado bajo los estándares internacionales más exigentes — desde la fibra hasta el recubrimiento final.
           </p>
         </FadeIn>

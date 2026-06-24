@@ -93,7 +93,7 @@ const PRODUCTS = [
     palmColor: '#3D4A5C',
     cuffColor: '#252E3A',
     accentGlow: 'rgba(107,122,141,0.22)',
-    model: '/images/models/nanoflex.glb',
+    model: '/images/models/nanoflex1.glb',
     modelTint: '',
     image: '/images/products/nanoflex.png',
     specs: [
@@ -467,13 +467,13 @@ export function ProductsSection() {
     <>
       <section id="productos" className="px-8 md:px-16 py-24 md:py-36" style={{ backgroundColor: '#080403' }}>
         <FadeIn y={20}>
-          <p className="uppercase tracking-[0.28em] font-bold mb-3" style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}>
+          <p className="uppercase tracking-[0.28em] font-bold mb-2" style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}>
             Productos estrella
           </p>
         </FadeIn>
         <RevealText
           lines={['Equipamiento de élite']}
-          className="font-black uppercase leading-none tracking-tight mb-8 md:mb-12"
+          className="font-black uppercase leading-none tracking-tight mb-5 md:mb-7"
           style={{ color: '#FAFBFC', fontSize: 'clamp(3rem, 7vw, 8rem)' }}
           delay={0.05}
         />
