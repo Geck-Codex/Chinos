@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
+import { useScrollToContact } from '../components/useScrollToContact'
 
 const HERO_SPECS: HeroSpec[] = [
   { value: 'ANSI A7', label: 'Nivel de corte', side: 'right', pos: { top: '17%', right: '2%' } },
@@ -7,6 +9,7 @@ const HERO_SPECS: HeroSpec[] = [
 ]
 
 export function HeroSection() {
+  const goToContact = useScrollToContact()
   return (
     <section
       className="relative min-h-screen flex items-center pt-[76px]"
@@ -52,17 +55,18 @@ export function HeroSection() {
           </p>
 
           <div className="hero-fade flex gap-4 mt-9 flex-wrap" style={{ animationDelay: '0.46s' }}>
-            <a
-              href="#productos"
+            <Link
+              to="/productos"
               className="uppercase tracking-widest font-bold px-8 py-4"
-              style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
+              style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px', textDecoration: 'none' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#CD0032')}
             >
               Ver productos
-            </a>
+            </Link>
             <a
               href="#contacto"
+              onClick={goToContact}
               className="uppercase tracking-widest font-bold px-8 py-4 border"
               style={{ borderColor: 'rgba(250,251,252,0.22)', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
               onMouseEnter={(e) => {

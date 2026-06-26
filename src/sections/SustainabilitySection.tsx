@@ -5,6 +5,7 @@ import type { LucideIcon } from 'lucide-react'
 import { RevealText } from '../components/RevealText'
 import { CountUp } from '../components/CountUp'
 import { useInViewOnce } from '../components/useInViewOnce'
+import { useScrollToContact } from '../components/useScrollToContact'
 
 type Pillar = {
   index: string
@@ -156,6 +157,7 @@ function PillarCard({
 }
 
 export function SustainabilitySection() {
+  const goToContact = useScrollToContact()
   const gridRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: gridRef,
@@ -269,6 +271,7 @@ export function SustainabilitySection() {
           </p>
           <a
             href="#contacto"
+            onClick={goToContact}
             className="inline-flex items-center gap-3 uppercase font-bold"
             style={{
               letterSpacing: '0.2em',

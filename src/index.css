@@ -27,6 +27,12 @@ body,
 }
 
 
+/* Cursor con el logo de Handlove — solo en zonas marcadas con .cursor-logo */
+.cursor-logo,
+.cursor-logo * {
+  cursor: url('/images/handlove-cursor.png') 20 20, pointer;
+}
+
 /* Animaciones de entrada del hero — CSS puro, sin JS, para no retrasar el LCP */
 @keyframes heroRise {
   from { transform: translateY(46px); }

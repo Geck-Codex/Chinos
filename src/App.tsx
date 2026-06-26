@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { ScrollToTop } from './components/ScrollToTop'
+import { ScrollUpButton } from './components/ScrollUpButton'
 import { HeroSection } from './sections/HeroSection'
 
 const FeaturesSection = lazy(() => import('./sections/FeaturesSection').then((m) => ({ default: m.FeaturesSection })))
@@ -44,6 +45,7 @@ export default function App() {
           </Routes>
         </AnimatePresence>
       </Suspense>
+      <ScrollUpButton />
     </>
   )
 }

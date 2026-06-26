@@ -7,6 +7,7 @@ import { WipeReveal } from '../components/WipeReveal'
 import { CountUp } from '../components/CountUp'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
 import { useInViewOnce } from '../components/useInViewOnce'
+import { useScrollToContact } from '../components/useScrollToContact'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -447,6 +448,7 @@ const SECTION_VARIANTS = {
 }
 
 export function AboutPage() {
+  const goToContact = useScrollToContact()
   return (
     <motion.div
       variants={PAGE_VARIANTS}
@@ -521,6 +523,7 @@ export function AboutPage() {
                 </a>
                 <a
                   href="/#contacto"
+                  onClick={goToContact}
                   className="uppercase tracking-widest font-bold px-8 py-4 border"
                   style={{ borderColor: 'rgba(8,4,3,0.22)', color: '#080403', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px', textDecoration: 'none' }}
                   onMouseEnter={(e) => {
@@ -788,6 +791,7 @@ export function AboutPage() {
           />
           <motion.a
             href="/#contacto"
+            onClick={goToContact}
             className="inline-flex items-center gap-3 uppercase tracking-widest font-bold px-10 py-4 mt-4"
             style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.72rem, 1vw, 0.85rem)', borderRadius: '6px', textDecoration: 'none' }}
             whileHover={{ backgroundColor: '#a80029', scale: 1.03 }}

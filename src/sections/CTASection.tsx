@@ -149,8 +149,8 @@ export function CTASection() {
               className="font-light leading-relaxed mb-12"
               style={{ color: 'rgba(250,251,252,0.45)', fontSize: 'clamp(0.9rem, 1.3vw, 1.05rem)', maxWidth: '400px' }}
             >
-              Solicita tu presupuesto por volumen o una muestra sin costo.
-              Respondemos en menos de 24 horas.
+              Solicita tu cotización por volumen o una muestra de cualquiera
+              de nuestros modelos. Respondemos en menos de 24 horas.
             </p>
           </FadeIn>
 

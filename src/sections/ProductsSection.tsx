@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { X, ArrowUpRight } from 'lucide-react'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
+import { useScrollToContact } from '../components/useScrollToContact'
 
 const GloveScene = lazy(() =>
   import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
@@ -123,6 +124,7 @@ type Product = typeof PRODUCTS[0]
 // ─── Modal ───────────────────────────────────────────────────────────────────
 
 function Modal({ product, onClose }: { product: Product; onClose: () => void }) {
+  const goToContact = useScrollToContact()
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -197,7 +199,8 @@ function Modal({ product, onClose }: { product: Product; onClose: () => void }) 
             ))}
           </div>
           <motion.a
-            href="#contacto" onClick={onClose}
+            href="#contacto"
+            onClick={(e) => { onClose(); goToContact(e) }}
             className="inline-flex items-center gap-3 uppercase tracking-widest font-bold px-9 py-4 self-start"
             style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', textDecoration: 'none', borderRadius: '6px' }}
             initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.82, duration: 0.5, ease: EASE }}
@@ -230,8 +233,8 @@ function ProductCard({ product, index, onClick }: { product: Product; index: num
   return (
     <FadeIn delay={index * 0.14} y={60}>
       <motion.div
-        className="group relative overflow-hidden"
-        style={{ height: 'clamp(260px, 55vw, 540px)', backgroundColor: '#0D0806', border: '1px solid rgba(250,251,252,0.07)', cursor: 'pointer' }}
+        className="group relative overflow-hidden cursor-logo"
+        style={{ height: 'clamp(260px, 55vw, 540px)', backgroundColor: '#0D0806', border: '1px solid rgba(250,251,252,0.07)' }}
         onClick={onClick}
         onMouseEnter={() => preloadModel(product.model)}
         whileTap={{ scale: 0.97 }}
@@ -359,22 +362,23 @@ function ProductCarousel() {
               <h3 style={{ color: t.fg, fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.9, letterSpacing: '-0.02em', marginBottom: '16px', fontSize: 'clamp(2rem, 5.5vw, 5.2rem)', maxWidth: '600px' }}>
                 {active.name}
               </h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '22px' }}>
                 {active.tags.map(tag => (
                   <span key={tag} style={{ color: t.sub, fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', padding: '3px 9px', border: `1px solid ${t.border}` }}>
                     {tag}
                   </span>
                 ))}
-                <button
-                  onClick={() => navigate(`/productos?producto=${active.id}`)}
-                  className="inline-flex items-center gap-1.5 uppercase tracking-widest font-bold"
-                  style={{ fontSize: '0.58rem', padding: '5px 14px', backgroundColor: t.btnBg, color: t.btnFg, border: 'none', cursor: 'pointer' }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = t.btnHover)}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = t.btnBg)}
-                >
-                  Ver ficha <ArrowUpRight size={10} />
-                </button>
               </div>
+              <motion.button
+                onClick={() => navigate(`/productos?producto=${active.id}`)}
+                className="inline-flex items-center gap-2.5 uppercase tracking-widest font-bold"
+                style={{ fontSize: 'clamp(0.8rem, 1.2vw, 0.95rem)', padding: '15px 34px', backgroundColor: t.btnBg, color: t.btnFg, border: 'none', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 12px 30px rgba(0,0,0,0.28)' }}
+                whileHover={{ scale: 1.05, backgroundColor: t.btnHover }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.2 }}
+              >
+                Ver ficha técnica <ArrowUpRight size={18} strokeWidth={2.5} />
+              </motion.button>
             </div>
           </motion.div>
         </AnimatePresence>

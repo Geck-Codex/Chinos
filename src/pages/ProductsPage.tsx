@@ -6,6 +6,7 @@ import { X, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
+import { useScrollToContact } from '../components/useScrollToContact'
 
 const GloveScene = lazy(() =>
   import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
@@ -269,6 +270,7 @@ function Modal({ product, onClose, onPrev, onNext }: {
   onPrev?: () => void
   onNext?: () => void
 }) {
+  const goToContact = useScrollToContact()
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => {
@@ -349,7 +351,8 @@ function Modal({ product, onClose, onPrev, onNext }: {
             ))}
           </div>
           <motion.a
-            href="/#contacto" onClick={onClose}
+            href="/#contacto"
+            onClick={(e) => { onClose(); goToContact(e) }}
             className="inline-flex items-center gap-3 uppercase tracking-widest font-bold px-9 py-4 self-start"
             style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.68rem, 1.05vw, 0.8rem)', textDecoration: 'none', borderRadius: '6px' }}
             initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.82, duration: 0.5, ease: EASE }}
@@ -415,6 +418,7 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
 
   return (
     <motion.div
+      className="cursor-logo"
       onClick={onOpen}
       onMouseEnter={() => { setHovered(true); preloadModel(MODELS[product.id]?.url) }}
       onMouseLeave={() => setHovered(false)}
@@ -423,7 +427,6 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
       style={{
         aspectRatio: '4 / 5',
         background: theme.bg,
-        cursor: 'pointer',
         overflow: 'hidden',
         position: 'relative',
         borderRadius: '6px',
@@ -650,6 +653,7 @@ function LineRow({
 export function ProductsPage() {
   const [selected, setSelected] = useState<Product | null>(null)
   const [searchParams] = useSearchParams()
+  const goToContact = useScrollToContact()
 
   useEffect(() => {
     const id = searchParams.get('producto')
@@ -743,11 +747,12 @@ export function ProductsPage() {
               className="font-black uppercase leading-none tracking-tight mb-8"
               style={{ color: '#FAFBFC', fontSize: 'clamp(2.2rem, 5vw, 6rem)' }}
             />
-            <p className="font-light mb-10" style={{ color: 'rgba(250,251,252,0.45)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '440px' }}>
-              Cotiza por volumen o solicita muestras de cualquier modelo del catálogo. Respondemos en menos de 24 horas.
+            <p className="font-light mb-10 mx-auto" style={{ color: 'rgba(250,251,252,0.45)', fontSize: 'clamp(0.88rem, 1.3vw, 1.05rem)', maxWidth: '440px' }}>
+              Cotiza por volumen o solicita una muestra de cualquier modelo del catálogo. Respondemos en menos de 24 horas.
             </p>
             <a
               href="/#contacto"
+              onClick={goToContact}
               className="inline-flex items-center gap-3 uppercase tracking-widest font-bold px-10 py-4"
               style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.72rem, 1vw, 0.85rem)', textDecoration: 'none', borderRadius: '6px' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}
