@@ -38,7 +38,7 @@ function BentoImages({ feature }: { feature: Feature }) {
       <div className="flex-[2] relative overflow-hidden" style={{ backgroundColor: '#111' }}>
         <img
           src={`/images/features/${feature.id}-1.webp`}
-          alt=""
+          alt={`Guantes de seguridad Handlove — ${feature.name}`}
           className="w-full h-full object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
@@ -59,7 +59,7 @@ function BentoImages({ feature }: { feature: Feature }) {
       <div className="flex-[1.2] relative overflow-hidden" style={{ backgroundColor: '#0f0f0f' }}>
         <img
           src={`/images/features/${feature.id}-2.webp`}
-          alt=""
+          alt={`Handlove — ${feature.name}, detalle`}
           className="w-full h-full object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
@@ -73,7 +73,7 @@ function BentoImages({ feature }: { feature: Feature }) {
       >
         <img
           src={`/images/features/${feature.id}-3.webp`}
-          alt=""
+          alt={`Handlove — ${feature.name}, aplicación`}
           className="w-full h-full object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
         />

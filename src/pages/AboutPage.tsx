@@ -8,6 +8,22 @@ import { CountUp } from '../components/CountUp'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
 import { useInViewOnce } from '../components/useInViewOnce'
 import { useScrollToContact } from '../components/useScrollToContact'
+import { Seo } from '../seo/Seo'
+import { SITE_URL } from '../seo/config'
+
+const aboutJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'Nosotros — Handlove Mexico',
+  url: `${SITE_URL}/nosotros`,
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Nosotros', item: `${SITE_URL}/nosotros` },
+    ],
+  },
+}
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -457,6 +473,12 @@ export function AboutPage() {
       exit="exit"
       style={{ backgroundColor: '#080403' }}
     >
+      <Seo
+        title="Nosotros — Fabricante de guantes de seguridad"
+        description="Más de 22 años fabricando guantes de seguridad industriales para 15+ mercados internacionales. Instalaciones de 30.000 m², certificación ISO 9001 y control de calidad integral."
+        path="/nosotros"
+        jsonLd={aboutJsonLd}
+      />
       {/* ── 1. HERO ── */}
       <motion.section
         variants={SECTION_VARIANTS}

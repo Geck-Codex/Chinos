@@ -7,6 +7,8 @@ import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
 import { useScrollToContact } from '../components/useScrollToContact'
+import { Seo } from '../seo/Seo'
+import { SITE_URL } from '../seo/config'
 
 const GloveScene = lazy(() =>
   import('../components/GloveScene').then((m) => ({ default: m.GloveScene }))
@@ -418,7 +420,7 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
 
   return (
     <motion.div
-      className="cursor-logo"
+      className={product.line === 'Dexterity' ? 'cursor-logo-white' : 'cursor-logo'}
       onClick={onOpen}
       onMouseEnter={() => { setHovered(true); preloadModel(MODELS[product.id]?.url) }}
       onMouseLeave={() => setHovered(false)}
@@ -650,6 +652,25 @@ function LineRow({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
+const productsJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Catálogo de guantes de seguridad Handlove Mexico',
+  itemListElement: ALL_PRODUCTS.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Product',
+      name: p.name,
+      category: p.category,
+      description: p.description,
+      image: `${SITE_URL}${p.image}`,
+      brand: { '@type': 'Brand', name: 'Handlove Mexico' },
+      url: `${SITE_URL}/productos?producto=${p.id}`,
+    },
+  })),
+}
+
 export function ProductsPage() {
   const [selected, setSelected] = useState<Product | null>(null)
   const [searchParams] = useSearchParams()
@@ -668,6 +689,12 @@ export function ProductsPage() {
 
   return (
     <>
+      <Seo
+        title="Catálogo de guantes de seguridad industriales"
+        description="Catálogo completo de guantes de seguridad Handlove: líneas anticorte Edge (ANSI A3–A7, EN388), alta destreza Dexterity y uso general Lite. Solicita cotización al por mayor."
+        path="/productos"
+        jsonLd={productsJsonLd}
+      />
       <div style={{ backgroundColor: '#080403', minHeight: '100vh' }}>
 
         {/* Hero */}

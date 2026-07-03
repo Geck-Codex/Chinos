@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://handslove.netlify.app/sitemap.xml
