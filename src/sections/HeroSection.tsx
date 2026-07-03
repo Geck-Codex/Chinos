@@ -88,7 +88,7 @@ export function HeroSection() {
           className="hero-fade flex-1 w-full"
           style={{ minWidth: 0, animationDelay: '0.3s', animationDuration: '1.2s' }}
         >
-          <HeroScene word="HANDLOVE" specs={HERO_SPECS} />
+          <HeroScene word="HANDLOVE" specs={HERO_SPECS} modelUrl="/images/models/nanoflex1.glb" />
         </div>
 
       </div>

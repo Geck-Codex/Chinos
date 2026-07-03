@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 import { useInViewOnce } from '../components/useInViewOnce'
+import { ContactForm } from '../components/ContactForm'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -162,30 +163,25 @@ export function CTASection() {
           </div>
         </div>
 
-        {/* ── Lado derecho: tarjetas de contacto ── */}
-        <div className="flex flex-col justify-center px-10 md:px-16 py-20 lg:py-28 gap-5">
+        {/* ── Lado derecho: formulario de contacto ── */}
+        <div className="flex flex-col justify-center px-10 md:px-16 py-20 lg:py-28 gap-6">
           <FadeIn y={20} delay={0.1}>
             <p
-              className="uppercase tracking-[0.22em] font-bold mb-6"
+              className="uppercase tracking-[0.22em] font-bold"
               style={{ color: 'rgba(250,251,252,0.3)', fontSize: '0.62rem' }}
             >
-              Canales de atención
+              Solicita tu cotización
             </p>
           </FadeIn>
 
+          <FadeIn y={20} delay={0.18}>
+            <ContactForm />
+          </FadeIn>
+
+          {/* Teléfono como canal alternativo */}
           {CONTACTS.map((c, i) => (
             <ContactCard key={c.num} c={c} i={i} />
           ))}
-
-          {/* Nota al pie */}
-          <FadeIn y={10} delay={0.45}>
-            <p
-              className="uppercase tracking-wider font-bold mt-2"
-              style={{ color: 'rgba(250,251,252,0.2)', fontSize: '0.6rem' }}
-            >
-              · Línea exclusiva para llamadas · Lun a Vie de 9am a 5pm ·
-            </p>
-          </FadeIn>
         </div>
 
       </div>

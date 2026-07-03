@@ -33,6 +33,12 @@ body,
   cursor: url('/images/handlove-cursor.png') 20 20, pointer;
 }
 
+/* Variante blanca — para fondos rojos/oscuros (líneas Dexterity y Edge) */
+.cursor-logo-white,
+.cursor-logo-white * {
+  cursor: url('/images/handlove-cursor-white.png') 20 20, pointer;
+}
+
 /* Animaciones de entrada del hero — CSS puro, sin JS, para no retrasar el LCP */
 @keyframes heroRise {
   from { transform: translateY(46px); }
