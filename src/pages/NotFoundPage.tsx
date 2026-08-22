@@ -51,7 +51,7 @@ export function NotFoundPage() {
         <FadeIn y={16} delay={0.38} duration={0.7} playOnMount>
           <div className="flex gap-4 flex-wrap">
             <Link
-              to="/productos"
+              to="/productos/"
               className="uppercase tracking-widest font-bold px-8 py-4"
               style={{
                 backgroundColor: '#CD0032',

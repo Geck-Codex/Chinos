@@ -89,7 +89,7 @@ export function ProductPage() {
         <div className="relative z-10 px-8 md:px-16 pt-10">
           <nav aria-label="Ruta de navegación">
             <Link
-              to="/productos"
+              to="/productos/"
               className="inline-flex items-center gap-2 uppercase tracking-[0.2em] font-bold"
               style={{
                 color: 'rgba(250,251,252,0.45)',
@@ -401,7 +401,7 @@ export function ProductPage() {
             {related.map((p) => (
               <motion.div key={p.id} whileHover={{ y: -6 }} transition={{ duration: 0.3, ease: EASE }}>
                 <Link
-                  to={`/productos/${p.id}`}
+                  to={`/productos/${p.id}/`}
                   className="block relative overflow-hidden h-full"
                   style={{
                     backgroundColor: theme.bg,

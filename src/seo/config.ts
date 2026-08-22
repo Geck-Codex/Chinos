@@ -22,5 +22,10 @@ export const OG_IMAGE_HEIGHT = '630'
 export const OG_IMAGE_TYPE = 'image/png'
 export const OG_IMAGE_ALT = 'Handlove Mexico — guantes de seguridad industriales'
 
-export const absoluteUrl = (path = '/') =>
-  `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`
+// Netlify sirve cada ruta como carpeta con index.html, asi que la URL real
+// SIEMPRE lleva barra final (/productos/ y no /productos, que devuelve un 301).
+// Canonical, sitemap y JSON-LD tienen que usar esa misma forma.
+export const absoluteUrl = (path = '/') => {
+  const clean = path.startsWith('/') ? path : `/${path}`
+  return `${SITE_URL}${clean.endsWith('/') ? clean : `${clean}/`}`
+}

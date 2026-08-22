@@ -60,7 +60,7 @@ export function HeroSection() {
 
           <div className="hero-fade flex gap-4 mt-9 flex-wrap" style={{ animationDelay: '0.46s' }}>
             <Link
-              to="/productos"
+              to="/productos/"
               className="uppercase tracking-widest font-bold px-8 py-4"
               style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px', textDecoration: 'none' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}

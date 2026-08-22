@@ -76,8 +76,8 @@ const ROUTES = [
       <h2>Contacto</h2>
       <p>Teléfono de ventas: +52 614 688 8300 (solo llamadas). Correo: contacto.mexico@handloves.com.
       Cotizaciones al por mayor para toda la República Mexicana.</p>
-      <p><a href="/productos">Ver el catálogo completo de guantes</a> ·
-      <a href="/nosotros">Conocer a Handlove Mexico</a></p>`,
+      <p><a href="/productos/">Ver el catálogo completo de guantes</a> ·
+      <a href="/nosotros/">Conocer a Handlove Mexico</a></p>`,
   },
   {
     path: '/productos',
@@ -94,13 +94,13 @@ const ROUTES = [
       Solicita cotización al por mayor.</p>
       ${PRODUCTS.map(
         (p) => `<article>
-        <h2><a href="/productos/${p.id}">${esc(p.name)}</a></h2>
+        <h2><a href="/productos/${p.id}/">${esc(p.name)}</a></h2>
         <p><strong>Categoría:</strong> ${esc(p.category)}</p>
         <p>${esc(p.description)}</p>
-        <p><a href="/productos/${p.id}">Ver ficha completa de ${esc(p.name)}</a></p>
+        <p><a href="/productos/${p.id}/">Ver ficha completa de ${esc(p.name)}</a></p>
       </article>`,
       ).join('\n      ')}
-      <p><a href="/">Inicio</a> · <a href="/nosotros">Sobre Handlove Mexico</a></p>`,
+      <p><a href="/">Inicio</a> · <a href="/nosotros/">Sobre Handlove Mexico</a></p>`,
   },
   {
     path: '/nosotros',
@@ -120,7 +120,7 @@ const ROUTES = [
       resistencia al corte según ANSI/ISEA 105 y EN388, e inspección final antes del embarque.</p>
       <h2>Contacto</h2>
       <p>Teléfono: +52 614 688 8300 · Correo: contacto.mexico@handloves.com · Chihuahua, México.</p>
-      <p><a href="/productos">Ver catálogo de guantes</a> · <a href="/">Inicio</a></p>`,
+      <p><a href="/productos/">Ver catálogo de guantes</a> · <a href="/">Inicio</a></p>`,
   },
 ]
 
@@ -138,7 +138,7 @@ for (const p of PRODUCTS) {
     changefreq: 'monthly',
     priority: '0.8',
     body: `
-      <nav><a href="/">Inicio</a> · <a href="/productos">Catálogo</a> · ${esc(p.name)}</nav>
+      <nav><a href="/">Inicio</a> · <a href="/productos/">Catálogo</a> · ${esc(p.name)}</nav>
       <h1>${esc(p.name)} — ${esc(p.category)}</h1>
       <p><strong>Línea ${esc(p.line)}.</strong> ${esc(c.tagline)}</p>
 
@@ -172,11 +172,11 @@ for (const p of PRODUCTS) {
         related.length
           ? `<h2>Más de la línea ${esc(p.line)}</h2>
       <ul>${related
-        .map((r) => `<li><a href="/productos/${r.id}">${esc(r.name)} — ${esc(r.category)}</a></li>`)
+        .map((r) => `<li><a href="/productos/${r.id}/">${esc(r.name)} — ${esc(r.category)}</a></li>`)
         .join('')}</ul>`
           : ''
       }
-      <p><a href="/productos">Ver el catálogo completo de guantes de seguridad</a></p>`,
+      <p><a href="/productos/">Ver el catálogo completo de guantes de seguridad</a></p>`,
   })
 }
 
@@ -253,7 +253,7 @@ function routeJsonLd(route, canonical) {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE_URL}/` },
-          { '@type': 'ListItem', position: 2, name: 'Catálogo', item: `${SITE_URL}/productos` },
+          { '@type': 'ListItem', position: 2, name: 'Catálogo', item: `${SITE_URL}/productos/` },
           { '@type': 'ListItem', position: 3, name: p.name, item: canonical },
         ],
       },
@@ -297,7 +297,9 @@ function routeJsonLd(route, canonical) {
 const template = readFileSync(join(DIST, 'index.html'), 'utf8')
 
 function renderRoute(route) {
-  const canonical = route.path === '/' ? `${SITE_URL}/` : `${SITE_URL}${route.path}`
+  // Netlify sirve cada ruta como carpeta: la URL real lleva barra final.
+  // Sin ella devuelve un 301, y no se declara canonica una URL que redirige.
+  const canonical = `${SITE_URL}${route.path.endsWith('/') ? route.path : `${route.path}/`}`
   let html = template
 
   const set = (pattern, replacement) => {
@@ -367,8 +369,8 @@ const notFound = template
     `<div id="root"><div data-seo-fallback>
       <h1>Página no encontrada — Handlove Mexico</h1>
       <p>La dirección que abriste no existe o cambió de lugar.</p>
-      <p><a href="/">Inicio</a> · <a href="/productos">Catálogo de guantes de seguridad</a> ·
-      <a href="/nosotros">Sobre Handlove Mexico</a></p>
+      <p><a href="/">Inicio</a> · <a href="/productos/">Catálogo de guantes de seguridad</a> ·
+      <a href="/nosotros/">Sobre Handlove Mexico</a></p>
     </div></div>`,
   )
 writeFileSync(join(DIST, '404.html'), notFound, 'utf8')
@@ -379,7 +381,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${ROUTES.map(
   (r) => `  <url>
-    <loc>${SITE_URL}${r.path}</loc>
+    <loc>${SITE_URL}${r.path.endsWith('/') ? r.path : `${r.path}/`}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority}</priority>
@@ -426,12 +428,12 @@ plazo de entrega dependen del modelo y del nivel de personalización; se cotizan
 ## Páginas
 
 - [Inicio](${SITE_URL}/): líneas de producto, características y preguntas frecuentes.
-- [Catálogo](${SITE_URL}/productos): los 13 modelos con especificaciones técnicas.
-- [Nosotros](${SITE_URL}/nosotros): historia, planta de 30.000 m² y control de calidad.
+- [Catálogo](${SITE_URL}/productos/): los 13 modelos con especificaciones técnicas.
+- [Nosotros](${SITE_URL}/nosotros/): historia, planta de 30.000 m² y control de calidad.
 
 ### Ficha de cada modelo
 
-${PRODUCTS.map((p) => `- [${p.name}](${SITE_URL}/productos/${p.id}) — ${p.category} (línea ${p.line}): ${p.description}`).join('\n')}
+${PRODUCTS.map((p) => `- [${p.name}](${SITE_URL}/productos/${p.id}/) — ${p.category} (línea ${p.line}): ${p.description}`).join('\n')}
 `
 writeFileSync(join(DIST, 'llms.txt'), llms, 'utf8')
 console.log('  ok llms.txt')

@@ -548,7 +548,7 @@ export function AboutPage() {
             <FadeIn y={16} delay={0.72} duration={0.7} playOnMount>
               <div className="flex gap-4 mt-9 flex-wrap">
                 <Link
-                  to="/productos"
+                  to="/productos/"
                   className="uppercase tracking-widest font-bold px-8 py-4"
                   style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px', textDecoration: 'none' }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}

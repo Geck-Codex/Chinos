@@ -513,7 +513,7 @@ export function ProductsSection() {
 
           <div className="flex justify-center mt-10">
             <Link
-              to="/productos"
+              to="/productos/"
               className="inline-flex items-center gap-3 uppercase tracking-widest font-bold px-10 py-4"
               style={{ border: '1px solid rgba(250,251,252,0.18)', color: '#FAFBFC', textDecoration: 'none', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px' }}
               onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#CD0032'; e.currentTarget.style.borderColor = '#CD0032' }}

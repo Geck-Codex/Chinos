@@ -136,7 +136,7 @@ function Modal({ product, onClose, onPrev, onNext }: {
             className="mt-5 self-start"
           >
             <Link
-              to={`/productos/${product.id}`}
+              to={`/productos/${product.id}/`}
               onClick={onClose}
               className="inline-flex items-center gap-2 uppercase tracking-[0.18em] font-bold"
               style={{ color: 'rgba(250,251,252,0.5)', fontSize: '0.66rem', textDecoration: 'none' }}
@@ -287,7 +287,7 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
         {/* Enlace real a la ficha: da a Google una URL rastreable por producto
             sin quitarle al clic de la tarjeta su modal. */}
         <Link
-          to={`/productos/${product.id}`}
+          to={`/productos/${product.id}/`}
           onClick={(e) => e.stopPropagation()}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '7px',
