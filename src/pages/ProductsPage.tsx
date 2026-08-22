@@ -1,5 +1,5 @@
 import { useState, useRef, Suspense, lazy, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -7,6 +7,14 @@ import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
 import { HeroScene, type HeroSpec } from '../components/HeroScene'
 import { useScrollToContact } from '../components/useScrollToContact'
+import {
+  ALL_PRODUCTS,
+  LINES,
+  MODELS,
+  preloadModel,
+  themeForLine,
+  type Product,
+} from '../data/products'
 import { Seo } from '../seo/Seo'
 import { SITE_URL } from '../seo/config'
 
@@ -22,247 +30,6 @@ const HERO_SPECS: HeroSpec[] = [
   { value: 'HPPE cal.13', label: 'Material base', side: 'left', pos: { top: '71%', left: '0%' } },
 ]
 
-const LINE_THEME = {
-  Dexterity: {
-    bg: '#CD0032',
-    fg: '#FFFFFF',
-    label: '#FFD7DF',
-    chipBg: 'rgba(255,255,255,0.14)',
-    chipBorder: 'rgba(255,255,255,0.25)',
-    chipText: 'rgba(255,255,255,0.78)',
-    spotlight: 'transparent',
-    ghost: 'rgba(255,255,255,0.1)',
-    shadow: 'drop-shadow(0 18px 30px rgba(0,0,0,0.5))',
-    accent: '#FFFFFF',
-    icon: 'rgba(255,255,255,0.7)',
-  },
-  Edge: {
-    bg: '#264a82',
-    fg: '#FFFFFF',
-    label: '#CDE0FF',
-    chipBg: 'rgba(255,255,255,0.14)',
-    chipBorder: 'rgba(255,255,255,0.25)',
-    chipText: 'rgba(255,255,255,0.78)',
-    spotlight: 'transparent',
-    ghost: 'rgba(255,255,255,0.1)',
-    shadow: 'drop-shadow(0 18px 30px rgba(0,0,0,0.5))',
-    accent: '#7FA3DC',
-    icon: 'rgba(255,255,255,0.7)',
-  },
-  Lite: {
-    bg: '#EDF1F5',
-    fg: '#15191F',
-    label: '#CD0032',
-    chipBg: 'rgba(20,25,32,0.06)',
-    chipBorder: 'rgba(20,25,32,0.16)',
-    chipText: 'rgba(20,25,32,0.62)',
-    spotlight: 'transparent',
-    ghost: 'rgba(20,25,32,0.06)',
-    shadow: 'drop-shadow(0 16px 28px rgba(60,70,85,0.3))',
-    accent: '#CD0032',
-    icon: 'rgba(20,25,32,0.5)',
-  },
-}
-
-function themeForLine(line: string) {
-  return LINE_THEME[line as keyof typeof LINE_THEME] ?? LINE_THEME.Dexterity
-}
-
-const MODELS: Record<string, { url: string; tint?: string }> = {
-  'ultra-grip':    { url: '/images/models/dexterityultra.glb' },
-  'poly-sand':     { url: '/images/models/polysand.glb' },
-  'nanoflex':      { url: '/images/models/nanoflex1.glb' },
-  'edge-plus-a7':  { url: '/images/models/edgeplusa7.glb' },
-  'edge-plus-a3':  { url: '/images/models/edgeplusa3.glb' },
-  'edge-lite-a4':  { url: '/images/models/edgeliteaa4.glb' },
-  'edge-lite-a3':  { url: '/images/models/edgelitea3.glb' },
-  'lite-pu-gris':   { url: '/images/models/litepugris.glb' },
-  'lite-pu-black':  { url: '/images/models/litepublack.glb' },
-  'lite-pu-blanco': { url: '/images/models/litepublanco.glb' },
-  'lite-cotton-60':{ url: '/images/models/litecotton60gr.glb' },
-  'lite-cotton-70':{ url: '/images/models/litecotton70gr.glb' },
-  'lite-nylon-100':{ url: '/images/models/litenylon100.glb' },
-}
-
-const preloaded = new Set<string>()
-function preloadModel(url?: string) {
-  if (!url || preloaded.has(url)) return
-  preloaded.add(url)
-  const link = document.createElement('link')
-  link.rel = 'preload'
-  link.as = 'fetch'
-  link.href = url
-  document.head.appendChild(link)
-}
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
-
-const ALL_PRODUCTS = [
-  {
-    id: 'ultra-grip', num: '01', line: 'Dexterity',
-    name: 'Dexterity Ultra Grip', category: 'Alta Destreza / Agarre',
-    image: '/images/products/dexterityultra.png',
-    description: 'Guante de poliéster calibre 15 con palma recubierta de nitrilo liso. Agarre confiable y comodidad durante jornadas prolongadas para industria automotriz, logística y manufactura ligera.',
-    primaryColor: '#CD0032', palmColor: '#8B001E', cuffColor: '#111111',
-    accentColor: '#CD0032', accentGlow: 'rgba(205,0,50,0.22)',
-    specs: [
-      { label: 'Material', value: 'Poliéster' }, { label: 'Calibre', value: '15G' },
-      { label: 'Recubrimiento', value: 'Nitrilo liso' }, { label: 'EN388', value: '4121' },
-    ],
-  },
-  {
-    id: 'poly-sand', num: '02', line: 'Dexterity',
-    name: 'Dexterity Poly Sand', category: 'Agarre Superior',
-    image: '/images/products/polysand.png',
-    description: 'Guante de poliéster calibre 15 con palma recubierta de nitrilo arenoso. Excelente agarre y alta destreza para ensamblaje, mantenimiento y manejo de herramientas manuales.',
-    primaryColor: '#8B001E', palmColor: '#1a1a1a', cuffColor: '#CD0032',
-    accentColor: '#8B001E', accentGlow: 'rgba(139,0,30,0.25)',
-    specs: [
-      { label: 'Material', value: 'Poliéster' }, { label: 'Calibre', value: '15G' },
-      { label: 'Recubrimiento', value: 'Nitrilo arenoso' }, { label: 'EN388', value: '4121' },
-    ],
-  },
-  {
-    id: 'nanoflex', num: '03', line: 'Dexterity',
-    name: 'Dexterity Nanoflex', category: 'Precisión Táctil',
-    image: '/images/products/nanoflex.png',
-    description: 'Guante premium de nylon calibre 18 con palma recubierta de nitrilo microespumado. Máxima sensibilidad táctil y agarre confiable para electrónica, ensamblaje e inspección de calidad.',
-    primaryColor: '#6B7A8D', palmColor: '#3D4A5C', cuffColor: '#252E3A',
-    accentColor: '#5A6B7D', accentGlow: 'rgba(107,122,141,0.22)',
-    specs: [
-      { label: 'Material', value: 'Nylon' }, { label: 'Calibre', value: '18G' },
-      { label: 'Recubrimiento', value: 'Nitrilo microespumado' }, { label: 'EN388', value: '4121' },
-    ],
-  },
-  {
-    id: 'edge-plus-a7', num: '04', line: 'Edge',
-    name: 'Edge Plus A7', category: 'Anticorte Premium',
-    image: '/images/products/edgeplusa7.png',
-    description: 'Anticorte de alto nivel con nitrilo arenoso en palma y compatibilidad táctil. Ideal para vidrio, aeroespacial y automotriz de alto riesgo.',
-    primaryColor: '#1A3A6A', palmColor: '#0E2040', cuffColor: '#080C14',
-    accentColor: '#1A3A6A', accentGlow: 'rgba(26,58,106,0.3)',
-    specs: [
-      { label: 'Material', value: 'HPPE' }, { label: 'Calibre', value: '13G' },
-      { label: 'Recubrimiento', value: 'Nitrilo arenoso' }, { label: 'ANSI CUT', value: 'A7' },
-    ],
-  },
-  {
-    id: 'edge-plus-a3', num: '05', line: 'Edge',
-    name: 'Edge Plus A3', category: 'Anticorte',
-    image: '/images/products/egeplusa3.png',
-    description: 'Anticorte con nitrilo arenoso en palma y compatibilidad con pantallas táctiles para entornos metalmecánicos y automotrices.',
-    primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
-    accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
-    specs: [
-      { label: 'Material', value: 'HPPE' }, { label: 'Calibre', value: '13G' },
-      { label: 'Recubrimiento', value: 'Nitrilo arenoso' }, { label: 'ANSI CUT', value: 'A3' },
-    ],
-  },
-  {
-    id: 'edge-lite-a4', num: '06', line: 'Edge',
-    name: 'Edge Lite A4', category: 'Anticorte Ligero',
-    image: '/images/products/edgelitea4.png',
-    description: 'Anticorte ligero con recubrimiento de poliuretano. Buena comodidad y movilidad para manipulación de piezas con bordes filosos.',
-    primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
-    accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
-    specs: [
-      { label: 'Material', value: 'HPPE' }, { label: 'Calibre', value: '13G' },
-      { label: 'Recubrimiento', value: 'Poliuretano' }, { label: 'ANSI CUT', value: 'A4' },
-    ],
-  },
-  {
-    id: 'edge-lite-a3', num: '07', line: 'Edge',
-    name: 'Edge Lite A3', category: 'Anticorte',
-    image: '/images/products/edgelitea3.png',
-    description: 'Anticorte en calibre 13 para alta destreza, con recubrimiento de poliuretano y protección de nitrilo entre pulgar e índice.',
-    primaryColor: '#2C4A7C', palmColor: '#1A3054', cuffColor: '#0A0E18',
-    accentColor: '#2C4A7C', accentGlow: 'rgba(44,74,124,0.28)',
-    specs: [
-      { label: 'Material', value: 'HPPE' }, { label: 'Calibre', value: '13G' },
-      { label: 'Recubrimiento', value: 'Poliuretano' }, { label: 'ANSI CUT', value: 'A3' },
-    ],
-  },
-  {
-    id: 'lite-pu-gris', num: '08', line: 'Lite',
-    name: 'Lite PU Gris', category: 'Alta Destreza',
-    image: '/images/products/litepugris.png',
-    description: 'Guante de poliéster calibre 15 con recubrimiento de poliuretano en tono gris. Ideal para ensamblaje, logística y manufactura ligera.',
-    primaryColor: '#4A5568', palmColor: '#2D3748', cuffColor: '#1A202C',
-    accentColor: '#4A5568', accentGlow: 'rgba(74,85,104,0.25)',
-    specs: [
-      { label: 'Material', value: 'Poliéster' }, { label: 'Calibre', value: '15G' },
-      { label: 'Recubrimiento', value: 'Poliuretano' }, { label: 'EN388', value: '3131' },
-    ],
-  },
-  {
-    id: 'lite-pu-blanco', num: '09', line: 'Lite',
-    name: 'Lite PU Blanco', category: 'Alta Destreza',
-    image: '/images/products/litepublanco.png',
-    description: 'Guante de poliéster calibre 15 con recubrimiento de poliuretano en blanco. Óptimo para ensamblaje electrónico y ambientes de sala limpia.',
-    primaryColor: '#718096', palmColor: '#4A5568', cuffColor: '#2D3748',
-    accentColor: '#718096', accentGlow: 'rgba(113,128,150,0.22)',
-    specs: [
-      { label: 'Material', value: 'Poliéster' }, { label: 'Calibre', value: '15G' },
-      { label: 'Recubrimiento', value: 'Poliuretano' }, { label: 'EN388', value: '3131' },
-    ],
-  },
-  {
-    id: 'lite-pu-black', num: '10', line: 'Lite',
-    name: 'Lite PU Black', category: 'Alta Destreza',
-    image: '/images/products/litepublack.png',
-    description: 'Versión negra del Lite PU. Diseñado para ambientes donde la suciedad es visible, como metalmecánica y automotriz.',
-    primaryColor: '#2D3748', palmColor: '#1A202C', cuffColor: '#0D1117',
-    accentColor: '#2D3748', accentGlow: 'rgba(45,55,72,0.3)',
-    specs: [
-      { label: 'Material', value: 'Poliéster' }, { label: 'Calibre', value: '15G' },
-      { label: 'Recubrimiento', value: 'Poliuretano' }, { label: 'EN388', value: '3131' },
-    ],
-  },
-  {
-    id: 'lite-cotton-60', num: '11', line: 'Lite',
-    name: 'Lite Cotton 60gr', category: 'Uso General',
-    image: '/images/products/litecotton60gr.png',
-    description: 'Guante de algodón de 60 gramos sin recubrimiento. Comodidad y transpirabilidad para tareas generales de mantenimiento y logística.',
-    primaryColor: '#7A6545', palmColor: '#5C4D36', cuffColor: '#3D3324',
-    accentColor: '#7A6545', accentGlow: 'rgba(122,101,69,0.25)',
-    specs: [
-      { label: 'Material', value: 'Algodón' }, { label: 'Peso', value: '60g' },
-      { label: 'Recubrimiento', value: 'Sin recubrimiento' }, { label: 'Certificación', value: 'ISO 9001' },
-    ],
-  },
-  {
-    id: 'lite-cotton-70', num: '12', line: 'Lite',
-    name: 'Lite Cotton 70gr', category: 'Uso General',
-    image: '/images/products/litecotton70gr.png',
-    description: 'Guante de algodón 70g con mayor resistencia al desgaste. Adecuado para jardinería, construcción ligera y logística.',
-    primaryColor: '#6B5A3E', palmColor: '#4D4230', cuffColor: '#3D3324',
-    accentColor: '#6B5A3E', accentGlow: 'rgba(107,90,62,0.25)',
-    specs: [
-      { label: 'Material', value: 'Algodón' }, { label: 'Peso', value: '70g' },
-      { label: 'Recubrimiento', value: 'Sin recubrimiento' }, { label: 'Certificación', value: 'ISO 9001' },
-    ],
-  },
-  {
-    id: 'lite-nylon-100', num: '13', line: 'Lite',
-    name: 'Lite Nylon 100', category: 'Precisión Táctil',
-    image: '/images/products/litenylon100.png',
-    description: 'Guante de nylon calibre 13 sin recubrimiento. Alta destreza y sensibilidad táctil para inspección de calidad y ensamblaje fino.',
-    primaryColor: '#3D6B4F', palmColor: '#2D5040', cuffColor: '#1D3328',
-    accentColor: '#3D6B4F', accentGlow: 'rgba(61,107,79,0.25)',
-    specs: [
-      { label: 'Material', value: 'Nylon' }, { label: 'Calibre', value: '13G' },
-      { label: 'Recubrimiento', value: 'Sin recubrimiento' }, { label: 'Certificación', value: 'ISO 9001' },
-    ],
-  },
-]
-
-const LINES = [
-  { key: 'Dexterity', label: 'Línea Dexterity', sub: 'Alta destreza y agarre para manufactura de precisión' },
-  { key: 'Edge', label: 'Línea Edge', sub: 'Anticorte certificado ANSI / CE para industrias de alto riesgo' },
-  { key: 'Lite', label: 'Línea Lite', sub: 'Destreza, uso general y protección básica para jornadas largas' },
-]
-
-type Product = typeof ALL_PRODUCTS[0]
 
 // ─── Modal ───────────────────────────────────────────────────────────────────
 
@@ -363,6 +130,20 @@ function Modal({ product, onClose, onPrev, onNext }: {
           >
             Solicitar muestra <ArrowUpRight size={15} />
           </motion.a>
+
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9, duration: 0.5 }}
+            className="mt-5 self-start"
+          >
+            <Link
+              to={`/productos/${product.id}`}
+              onClick={onClose}
+              className="inline-flex items-center gap-2 uppercase tracking-[0.18em] font-bold"
+              style={{ color: 'rgba(250,251,252,0.5)', fontSize: '0.66rem', textDecoration: 'none' }}
+            >
+              Ver ficha completa <ArrowUpRight size={12} />
+            </Link>
+          </motion.div>
         </motion.div>
 
         {/* Close */}
@@ -457,7 +238,11 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
       {product.image && (
         <img
           src={product.image}
-          alt={product.name}
+          alt={`Guante de seguridad ${product.name} — Handlove Mexico`}
+          width={600}
+          height={600}
+          loading="lazy"
+          decoding="async"
           style={{
             position: 'absolute', top: '6%', left: 0, right: 0, marginInline: 'auto',
             height: '70%', width: '82%',
@@ -499,6 +284,19 @@ function NetflixCard({ product, onOpen }: { product: Product; onOpen: () => void
         <h3 style={{ color: theme.fg, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1.1, fontSize: 'clamp(0.88rem, 1.6vw, 1.25rem)', wordBreak: 'break-word' }}>
           {product.name}
         </h3>
+        {/* Enlace real a la ficha: da a Google una URL rastreable por producto
+            sin quitarle al clic de la tarjeta su modal. */}
+        <Link
+          to={`/productos/${product.id}`}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '7px',
+            color: theme.label, fontSize: '0.58rem', fontWeight: 700,
+            textTransform: 'uppercase', letterSpacing: '0.14em', textDecoration: 'none',
+          }}
+        >
+          Ficha completa <ArrowUpRight size={11} />
+        </Link>
       </div>
 
       {/* Ícono de abrir — en hover */}
@@ -690,8 +488,8 @@ export function ProductsPage() {
   return (
     <>
       <Seo
-        title="Catálogo de guantes de seguridad industriales"
-        description="Catálogo completo de guantes de seguridad Handlove: líneas anticorte Edge (ANSI A3–A7, EN388), alta destreza Dexterity y uso general Lite. Solicita cotización al por mayor."
+        title="Catálogo de guantes de seguridad"
+        description="13 modelos de guantes de seguridad: anticorte Edge (ANSI A3–A7, EN388), alta destreza Dexterity y uso general Lite. Cotiza al por mayor en México."
         path="/productos"
         jsonLd={productsJsonLd}
       />
@@ -715,15 +513,19 @@ export function ProductsPage() {
                 Catálogo completo
               </p>
 
+              <h1 className="sr-only">
+                Catálogo de guantes de seguridad industriales — 13 modelos Handlove Mexico
+              </h1>
+
               <div className="overflow-hidden mb-6">
-                <h1
+                <p
                   className="hero-lcp font-black uppercase leading-[0.9] tracking-tight"
                   style={{ color: '#0c0c0c', fontSize: 'clamp(3.2rem, 7.5vw, 8rem)' }}
                 >
                   13 modelos.<br />
                   <span style={{ color: '#CD0032' }}>Una sola</span><br />
                   misión.
-                </h1>
+                </p>
               </div>
 
               <p

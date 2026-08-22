@@ -85,8 +85,8 @@ export function Navbar() {
         >
           {/* Logo */}
           <a href="/" onClick={(e) => handleLink(e, '/')} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '9px' }}>
-            <img src="/images/handlove.png" alt="" style={{ height: '36px', width: 'auto' }} />
-            <img src="/images/logo-white.png" alt="Handlove" style={{ height: '26px', width: 'auto' }} />
+            <img src="/images/handlove.png" alt="Handlove Mexico" width={118} height={109} style={{ height: '36px', width: 'auto' }} />
+            <img src="/images/logo-white.png" alt="" width={459} height={109} style={{ height: '26px', width: 'auto' }} />
           </a>
 
           {/* Desktop nav */}

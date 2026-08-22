@@ -1,0 +1,372 @@
+{
+  "_comment": "Contenido de las fichas tecnicas, transcrito de 'FICHAS TECNICAS HANDLOVE MEXICO (1).pdf' version 2026.1. Lo consumen src/data/products.ts (la app) y scripts/seo-prerender.mjs (el HTML estatico). Si cambia una ficha del PDF, se actualiza aqui y ambos lados quedan al dia.",
+
+  "ultra-grip": {
+    "tagline": "Guante de alta destreza diseñado para trabajos que requieren buen agarre y control.",
+    "overview": "El Dexterity Ultra Grip es un guante de poliéster calibre 15 con la palma recubierta de nitrilo liso. Está pensado para jornadas prolongadas: ofrece buena destreza, agarre confiable y resistencia al desgaste sin que la mano se canse. El puño elástico mantiene el guante en su sitio y facilita ponérselo y quitárselo muchas veces al día.",
+    "material": "Poliéster calibre 15 con recubrimiento de nitrilo liso en palma",
+    "color": "Rojo con puño negro",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "EN388", "value": "4121" },
+      { "label": "Abrasión (EN)", "value": "4" },
+      { "label": "Corte (EN)", "value": "1" },
+      { "label": "Desgarro (EN)", "value": "2" },
+      { "label": "Punción (EN)", "value": "1" }
+    ],
+    "uses": [
+      "Industria automotriz, logística y manufactura ligera",
+      "Ensamblaje de partes y mantenimiento",
+      "Manejo de herramientas manuales",
+      "Aplicaciones donde se requiere buen agarre y resistencia al desgaste"
+    ],
+    "industries": ["Automotriz", "Logística", "Manufactura ligera"],
+    "limitations": [
+      "No ofrece protección contra cortes, impacto ni sustancias químicas",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas o superficies calientes",
+      "Reemplazar si el guante presenta desgaste, roturas o pérdida del recubrimiento"
+    ]
+  },
+
+  "poly-sand": {
+    "tagline": "Guante de alta destreza con nitrilo arenoso, diseñado para trabajos que requieren buen agarre y control.",
+    "overview": "El Dexterity Poly Sand es un guante de poliéster calibre 15 con la palma recubierta de nitrilo arenoso. La textura arenosa multiplica el agarre en piezas lisas, aceitosas o húmedas, y mantiene la destreza necesaria para el ensamblaje fino. Diseñado para ofrecer comodidad durante jornadas prolongadas.",
+    "material": "Poliéster calibre 15 con recubrimiento de nitrilo arenoso en palma",
+    "color": "Negro con puño rojo",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "EN388", "value": "4121" },
+      { "label": "Abrasión (EN)", "value": "4" },
+      { "label": "Corte (EN)", "value": "1" },
+      { "label": "Desgarro (EN)", "value": "2" },
+      { "label": "Punción (EN)", "value": "1" }
+    ],
+    "uses": [
+      "Industria automotriz, logística y manufactura ligera",
+      "Ensamblaje de partes y mantenimiento",
+      "Manejo de herramientas manuales",
+      "Aplicaciones donde se requiere buen agarre y control"
+    ],
+    "industries": ["Automotriz", "Logística", "Manufactura ligera"],
+    "limitations": [
+      "No ofrece protección contra cortes, impacto ni sustancias químicas",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas o superficies calientes",
+      "Reemplazar si el guante presenta desgaste, roturas o pérdida del recubrimiento"
+    ]
+  },
+
+  "nanoflex": {
+    "tagline": "Guante premium de alta destreza diseñado para trabajos de precisión.",
+    "overview": "El Dexterity Nanoflex es el guante más fino del catálogo: nylon calibre 18 con palma recubierta de nitrilo microespumado. Ese calibre 18 es lo que permite sentir un tornillo pequeño o una pieza de electrónica a través del guante. Combina máxima sensibilidad táctil con agarre confiable durante jornadas prolongadas.",
+    "material": "Nylon calibre 18 con recubrimiento de nitrilo microespumado en palma",
+    "color": "Gris",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "EN388", "value": "4121" },
+      { "label": "Abrasión (EN)", "value": "4" },
+      { "label": "Corte (EN)", "value": "1" },
+      { "label": "Desgarro (EN)", "value": "2" },
+      { "label": "Punción (EN)", "value": "1" }
+    ],
+    "uses": [
+      "Manipulación de piezas y componentes pequeños",
+      "Industria automotriz, electrónica y manufactura ligera",
+      "Ensamblaje de partes, inspección y manejo de herramientas",
+      "Aplicaciones donde se requiere alta destreza, sensibilidad táctil y buen agarre"
+    ],
+    "industries": ["Automotriz", "Electrónica", "Manufactura ligera"],
+    "limitations": [
+      "No ofrece protección contra cortes, impacto ni sustancias químicas",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas o superficies calientes",
+      "Reemplazar si el guante presenta desgaste o roturas"
+    ]
+  },
+
+  "edge-plus-a7": {
+    "tagline": "Anticorte diseñado para jornadas de alto rendimiento.",
+    "overview": "El Edge Plus A7 es el guante de mayor protección del catálogo Handlove. Tejido en HPPE calibre 13 para alta destreza, con recubrimiento de nitrilo arenoso en palma y compatibilidad con pantallas táctiles. Alcanza nivel de corte ANSI A7 y cumple la norma europea EN 388 con código 4X42F, lo que lo hace apto para los entornos de mayor riesgo de corte sin obligar a quitarse el guante para usar una tablet o un escáner.",
+    "material": "HPPE calibre 13 con recubrimiento de nitrilo arenoso en palma",
+    "color": "Azul",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "ANSI CUT", "value": "A7" },
+      { "label": "ANSI Abrasión", "value": "4" },
+      { "label": "ANSI Punción", "value": "2" },
+      { "label": "EN 388", "value": "4X42F" },
+      { "label": "Norma", "value": "ANSI/ISEA 105 · CE" }
+    ],
+    "uses": [
+      "Manipulación de componentes con alto riesgo de corte",
+      "Industria del vidrio, automotriz y aeroespacial",
+      "Operaciones que requieren dispositivos táctiles",
+      "Ensamblaje de piezas con bordes afilados",
+      "Aplicaciones en ambientes donde se necesita agarre superior"
+    ],
+    "industries": ["Vidrio", "Automotriz", "Aeroespacial"],
+    "limitations": [
+      "La compatibilidad táctil puede reducirse con guantes húmedos o muy sucios",
+      "No ofrece protección térmica, eléctrica ni contra pinchazos extremos",
+      "El nivel A7 no garantiza inmunidad total ante cortes por herramientas rotativas",
+      "No utilizar en contacto con llamas directas",
+      "Reemplazar si el guante presenta desgaste o daño"
+    ]
+  },
+
+  "edge-plus-a3": {
+    "tagline": "Anticorte diseñado para jornadas de alto rendimiento.",
+    "overview": "El Edge Plus A3 es un guante de seguridad industrial anticorte tejido en HPPE calibre 13 para alta destreza, con recubrimiento de nitrilo arenoso en palma y compatibilidad con pantallas táctiles. Protege ante riesgo medio de corte manteniendo el agarre superior que da el nitrilo arenoso, y permite operar dispositivos táctiles sin descubrirse la mano.",
+    "material": "HPPE calibre 13 con recubrimiento de nitrilo arenoso en palma",
+    "color": "Gris",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "ANSI CUT", "value": "A3" },
+      { "label": "ANSI Abrasión", "value": "4" },
+      { "label": "ANSI Punción", "value": "2" },
+      { "label": "Calidad", "value": "ISO 9001" }
+    ],
+    "uses": [
+      "Manipulación de componentes con riesgo medio de corte",
+      "Industria metalmecánica, automotriz y mantenimiento",
+      "Operaciones que requieren dispositivos táctiles",
+      "Ensamblaje de piezas con bordes afilados",
+      "Aplicaciones en ambientes donde se necesita agarre superior"
+    ],
+    "industries": ["Metalmecánica", "Automotriz", "Mantenimiento industrial"],
+    "limitations": [
+      "La compatibilidad táctil puede reducirse con guantes húmedos o muy sucios",
+      "No ofrece protección térmica, eléctrica ni contra pinchazos extremos",
+      "El nivel A3 no garantiza inmunidad total ante cortes por herramientas rotativas",
+      "No utilizar en contacto con llamas directas",
+      "Reemplazar si el guante presenta desgaste o daño"
+    ]
+  },
+
+  "edge-lite-a4": {
+    "tagline": "Guante anticorte ligero diseñado para trabajos que requieren protección contra cortes y buena destreza.",
+    "overview": "El Edge Lite A4 está diseñado para ofrecer protección contra cortes de nivel medio manteniendo buena comodidad y movilidad. Su construcción en HPPE calibre 13 con recubrimiento de poliuretano permite manipular piezas con bordes filosos con mayor seguridad, sin sacrificar la destreza que exige el trabajo industrial. Es el nivel de protección más alto de la línea Lite.",
+    "material": "HPPE calibre 13 con recubrimiento de poliuretano",
+    "color": "Gris",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "ANSI CUT", "value": "A4" },
+      { "label": "ANSI Abrasión", "value": "6" },
+      { "label": "ANSI Punción", "value": "4" },
+      { "label": "Calidad", "value": "ISO 9001" }
+    ],
+    "uses": [
+      "Manipulación de componentes con riesgo medio de corte",
+      "Industria metalmecánica y mantenimiento industrial",
+      "Ensamblaje de piezas con bordes filosos y manejo de lámina ligera",
+      "Aplicaciones en ambientes donde existe riesgo moderado de corte"
+    ],
+    "industries": ["Metalmecánica", "Mantenimiento industrial", "Manejo de lámina"],
+    "limitations": [
+      "No ofrece protección térmica, eléctrica ni contra pinchazos extremos",
+      "El nivel A4 no garantiza inmunidad total ante cortes por herramientas rotativas",
+      "No utilizar en contacto con llamas directas",
+      "Reemplazar si el guante presenta desgaste o daño"
+    ]
+  },
+
+  "edge-lite-a3": {
+    "tagline": "Anticorte diseñado para jornadas de alto rendimiento.",
+    "overview": "El Edge Lite A3 es un guante de seguridad industrial anticorte tejido en HPPE calibre 13 para alta destreza, con recubrimiento de poliuretano y una protección adicional de nitrilo entre el pulgar y el dedo índice, que es justo la zona que más se desgasta al manipular piezas repetidamente.",
+    "material": "HPPE calibre 13 con recubrimiento de poliuretano y refuerzo de nitrilo entre pulgar e índice",
+    "color": "Gris",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "ANSI CUT", "value": "A3" },
+      { "label": "ANSI Abrasión", "value": "6" },
+      { "label": "ANSI Punción", "value": "4" },
+      { "label": "Calidad", "value": "ISO 9001" }
+    ],
+    "uses": [
+      "Manipulación de componentes con riesgo medio de corte",
+      "Industria metalmecánica, automotriz y mantenimiento",
+      "Ensamblaje de piezas con bordes afilados y carpintería",
+      "Aplicaciones en ambientes donde existe riesgo de corte"
+    ],
+    "industries": ["Metalmecánica", "Automotriz", "Carpintería"],
+    "limitations": [
+      "No ofrece protección térmica, eléctrica ni contra pinchazos extremos",
+      "El nivel A3 no garantiza inmunidad total ante cortes por herramientas rotativas",
+      "No utilizar en contacto con llamas directas",
+      "Reemplazar si el guante presenta desgaste o daño"
+    ]
+  },
+
+  "lite-pu-gris": {
+    "tagline": "Guante de alta destreza diseñado para trabajos de precisión.",
+    "overview": "El Lite PU Gris es un guante ligero de poliéster calibre 15 con la palma recubierta de poliuretano. Está pensado para trabajos que requieren buena destreza, sensibilidad táctil y comodidad durante jornadas prolongadas. El gris es el color más habitual en planta porque disimula el uso diario.",
+    "material": "Poliéster calibre 15 con recubrimiento de poliuretano en palma",
+    "color": "Gris",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "EN388", "value": "3131" },
+      { "label": "Abrasión (EN)", "value": "3" },
+      { "label": "Corte (EN)", "value": "1" },
+      { "label": "Desgarro (EN)", "value": "3" },
+      { "label": "Punción (EN)", "value": "1" },
+      { "label": "ANSI Abrasión", "value": "3" }
+    ],
+    "uses": [
+      "Manipulación de piezas y componentes",
+      "Industria automotriz, electrónica y manufactura ligera",
+      "Ensamblaje de partes y manejo de herramientas manuales",
+      "Aplicaciones donde se requiere alta destreza y control"
+    ],
+    "industries": ["Automotriz", "Electrónica", "Manufactura ligera"],
+    "limitations": [
+      "No ofrece protección contra cortes ni impactos",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas, superficies calientes o químicos agresivos",
+      "Reemplazar si el guante presenta desgaste, roturas o desprendimiento del recubrimiento"
+    ]
+  },
+
+  "lite-pu-blanco": {
+    "tagline": "Guante de alta destreza diseñado para trabajos de precisión.",
+    "overview": "El Lite PU Blanco es el mismo guante ligero de poliéster calibre 15 con palma de poliuretano, en color blanco. El blanco es el que se elige cuando la limpieza tiene que verse: ensamblaje electrónico, salas limpias y cualquier proceso donde un guante sucio es señal de que toca cambiarlo.",
+    "material": "Poliéster calibre 15 con recubrimiento de poliuretano en palma",
+    "color": "Blanco",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "EN388", "value": "3131" },
+      { "label": "Abrasión (EN)", "value": "3" },
+      { "label": "Corte (EN)", "value": "1" },
+      { "label": "Desgarro (EN)", "value": "3" },
+      { "label": "Punción (EN)", "value": "1" },
+      { "label": "ANSI Abrasión", "value": "3" }
+    ],
+    "uses": [
+      "Manipulación de piezas y componentes",
+      "Industria automotriz, electrónica y manufactura ligera",
+      "Ensamblaje de partes y manejo de herramientas manuales",
+      "Aplicaciones donde se requiere alta destreza y control"
+    ],
+    "industries": ["Electrónica", "Automotriz", "Manufactura ligera"],
+    "limitations": [
+      "No ofrece protección contra cortes ni impactos",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas, superficies calientes o químicos agresivos",
+      "Reemplazar si el guante presenta desgaste, roturas o desprendimiento del recubrimiento"
+    ]
+  },
+
+  "lite-pu-black": {
+    "tagline": "Guante de alta destreza diseñado para trabajos de precisión.",
+    "overview": "El Lite PU Black es la versión negra del Lite PU: poliéster calibre 15 con palma de poliuretano. Está pensado para ambientes donde la suciedad es constante y visible, como metalmecánica y automotriz, donde un guante claro se ve inservible a las dos horas aunque siga protegiendo igual.",
+    "material": "Poliéster calibre 15 con recubrimiento de poliuretano en palma",
+    "color": "Negro",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [
+      { "label": "EN388", "value": "3131" },
+      { "label": "Abrasión (EN)", "value": "3" },
+      { "label": "Corte (EN)", "value": "1" },
+      { "label": "Desgarro (EN)", "value": "3" },
+      { "label": "Punción (EN)", "value": "1" },
+      { "label": "ANSI Abrasión", "value": "3" }
+    ],
+    "uses": [
+      "Manipulación de piezas y componentes",
+      "Industria automotriz, electrónica y manufactura ligera",
+      "Ensamblaje de partes y manejo de herramientas manuales",
+      "Aplicaciones donde se requiere alta destreza y control"
+    ],
+    "industries": ["Metalmecánica", "Automotriz", "Manufactura ligera"],
+    "limitations": [
+      "No ofrece protección contra cortes ni impactos",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas, superficies calientes o químicos agresivos",
+      "Reemplazar si el guante presenta desgaste, roturas o desprendimiento del recubrimiento"
+    ]
+  },
+
+  "lite-cotton-60": {
+    "tagline": "Guante de algodón ligero diseñado para trabajos generales que requieren comodidad y buena transpirabilidad.",
+    "overview": "El Lite Cotton 60GR es un guante tejido de algodón ligero de 60 gramos, sin recubrimiento. Está diseñado para tareas de uso general donde lo que se necesita es comodidad, transpirabilidad y protección básica contra suciedad y fricción. Al no llevar recubrimiento, la mano respira durante toda la jornada.",
+    "material": "Algodón tejido de 60 g, sin recubrimiento",
+    "color": "Blanco",
+    "cuff": "Tejido elástico",
+    "sizes": "M, L",
+    "certifications": [{ "label": "Calidad", "value": "ISO 9001" }],
+    "uses": [
+      "Manipulación de materiales y piezas",
+      "Almacenes, logística y manejo de mercancía",
+      "Mantenimiento general, limpieza industrial y trabajos ligeros",
+      "Aplicaciones donde se requiere comodidad y protección básica contra suciedad y fricción"
+    ],
+    "industries": ["Almacén", "Logística", "Mantenimiento general"],
+    "limitations": [
+      "No ofrece protección contra cortes, impacto ni sustancias químicas",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas o superficies calientes",
+      "Reemplazar si el guante presenta desgaste o roturas"
+    ]
+  },
+
+  "lite-cotton-70": {
+    "tagline": "Guante de algodón diseñado para trabajos generales donde se requiere comodidad y protección básica.",
+    "overview": "El Lite Cotton 70GR es un guante tejido de algodón de peso medio, sin recubrimiento. Los 10 gramos extra frente al modelo de 60 se notan en durabilidad: aguanta mejor la abrasión leve manteniendo la comodidad y la transpirabilidad del algodón.",
+    "material": "Algodón tejido de 70 g, sin recubrimiento",
+    "color": "Gris",
+    "cuff": "Tejido elástico",
+    "sizes": "M, L",
+    "certifications": [{ "label": "Calidad", "value": "ISO 9001" }],
+    "uses": [
+      "Manipulación de materiales y piezas",
+      "Almacenes, logística y manejo de mercancía",
+      "Mantenimiento general, limpieza industrial y trabajos ligeros",
+      "Aplicaciones donde se requiere comodidad y protección básica contra suciedad y fricción"
+    ],
+    "industries": ["Almacén", "Logística", "Construcción ligera"],
+    "limitations": [
+      "No ofrece protección contra cortes, impacto ni sustancias químicas",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas o superficies calientes",
+      "Reemplazar si el guante presenta desgaste o roturas"
+    ]
+  },
+
+  "lite-nylon-100": {
+    "tagline": "Guante ligero de nylon diseñado para trabajos de precisión que requieren alta destreza y sensibilidad táctil.",
+    "overview": "El Lite Nylon 100 es un guante tejido de nylon calibre 13 sin recubrimiento, diseñado para tareas que exigen máxima destreza, buen ajuste y alta sensibilidad táctil. Su construcción ligera permite trabajar con comodidad durante jornadas prolongadas, y al no llevar recubrimiento no deja marca en las piezas que se manipulan.",
+    "material": "Nylon calibre 13, sin recubrimiento",
+    "color": "Blanco",
+    "cuff": "Elástico",
+    "sizes": "#7, #8, #9, #10",
+    "certifications": [{ "label": "Calidad", "value": "ISO 9001" }],
+    "uses": [
+      "Manipulación de piezas y componentes pequeños",
+      "Industria electrónica, automotriz y manufactura ligera",
+      "Ensamblaje de partes, inspección de calidad y manejo de componentes delicados",
+      "Aplicaciones donde se requiere alta sensibilidad táctil y control"
+    ],
+    "industries": ["Electrónica", "Automotriz", "Inspección de calidad"],
+    "limitations": [
+      "No ofrece protección contra cortes, impacto ni sustancias químicas",
+      "No brinda protección térmica ni eléctrica",
+      "No utilizar en contacto con llamas directas o superficies calientes",
+      "Reemplazar si el guante presenta desgaste o roturas"
+    ]
+  },
+
+  "_care": [
+    "Lavar con agua y jabón neutro",
+    "Secar al aire libre",
+    "Almacenar en un lugar fresco y seco"
+  ]
+}

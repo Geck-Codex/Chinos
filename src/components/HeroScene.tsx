@@ -74,6 +74,9 @@ export function HeroScene({ word, specs, modelUrl, theme = 'dark' }: {
       const link = document.createElement('link')
       link.rel = 'preload'
       link.as = 'fetch'
+      // Sin crossOrigin el preload queda en modo no-cors y NO casa con el fetch
+      // que hace despues GLTFLoader: el navegador se descarga el .glb dos veces.
+      link.crossOrigin = 'anonymous'
       link.href = modelUrl ?? HERO_MODEL_URL
       document.head.appendChild(link)
       setShow3D(true)

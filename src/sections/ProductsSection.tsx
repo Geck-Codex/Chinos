@@ -56,7 +56,7 @@ const PRODUCTS = [
     accentGlow: 'rgba(205,0,50,0.22)',
     model: '/images/models/dexterityultra.glb',
     modelTint: '',
-    image: '/images/products/dexterityultra.png',
+    image: '/images/products/dexterityultra.webp',
     specs: [
       { label: 'Material', value: 'Poliéster' },
       { label: 'Calibre', value: '15G' },
@@ -76,7 +76,7 @@ const PRODUCTS = [
     accentGlow: 'rgba(139,0,30,0.25)',
     model: '/images/models/polysand.glb',
     modelTint: '',
-    image: '/images/products/polysand.png',
+    image: '/images/products/polysand.webp',
     specs: [
       { label: 'Material', value: 'Poliéster' },
       { label: 'Calibre', value: '15G' },
@@ -96,7 +96,7 @@ const PRODUCTS = [
     accentGlow: 'rgba(107,122,141,0.22)',
     model: '/images/models/nanoflex1.glb',
     modelTint: '',
-    image: '/images/products/nanoflex.png',
+    image: '/images/products/nanoflex.webp',
     specs: [
       { label: 'Material', value: 'Nylon' },
       { label: 'Calibre', value: '18G' },
@@ -107,16 +107,16 @@ const PRODUCTS = [
 ]
 
 const CATALOG = [
-  { id: 'edge-lite-a4', name: 'Edge Lite A4', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A4'], accentColor: '#2C4A7C', image: '/images/products/edgelitea4.png' },
-  { id: 'edge-lite-a3', name: 'Edge Lite A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A3'], accentColor: '#2C4A7C', image: '/images/products/edgelitea3.png' },
-  { id: 'edge-plus-a7', name: 'Edge Plus A7', category: 'Anticorte Premium', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A7'], accentColor: '#1A3A6A', image: '/images/products/edgeplusa7.png' },
-  { id: 'edge-plus-a3', name: 'Edge Plus A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A3'], accentColor: '#1A3A6A', image: '/images/products/egeplusa3.png' },
-  { id: 'lite-pu-gris', name: 'Lite PU Gris', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#4A5568', image: '/images/products/litepugris.png' },
-  { id: 'lite-pu-blanco', name: 'Lite PU Blanco', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#718096', image: '/images/products/litepublanco.png' },
-  { id: 'lite-pu-black', name: 'Lite PU Black', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#2D3748', image: '/images/products/litepublack.png' },
-  { id: 'lite-cotton-60', name: 'Lite Cotton 60gr', category: 'Uso General', tags: ['Algodón · 60g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton60gr.png' },
-  { id: 'lite-cotton-70', name: 'Lite Cotton 70gr', category: 'Uso General', tags: ['Algodón · 70g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton70gr.png' },
-  { id: 'lite-nylon-100', name: 'Lite Nylon 100', category: 'Precisión Táctil', tags: ['Nylon · Cal.13', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#3D6B4F', image: '/images/products/litenylon100.png' },
+  { id: 'edge-lite-a4', name: 'Edge Lite A4', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A4'], accentColor: '#2C4A7C', image: '/images/products/edgelitea4.webp' },
+  { id: 'edge-lite-a3', name: 'Edge Lite A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Rec. Poliuretano', 'ANSI CUT A3'], accentColor: '#2C4A7C', image: '/images/products/edgelitea3.webp' },
+  { id: 'edge-plus-a7', name: 'Edge Plus A7', category: 'Anticorte Premium', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A7'], accentColor: '#1A3A6A', image: '/images/products/edgeplusa7.webp' },
+  { id: 'edge-plus-a3', name: 'Edge Plus A3', category: 'Anticorte', tags: ['HPPE · Cal.13', 'Nitrilo arenoso', 'ANSI CUT A3'], accentColor: '#1A3A6A', image: '/images/products/egeplusa3.webp' },
+  { id: 'lite-pu-gris', name: 'Lite PU Gris', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#4A5568', image: '/images/products/litepugris.webp' },
+  { id: 'lite-pu-blanco', name: 'Lite PU Blanco', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#718096', image: '/images/products/litepublanco.webp' },
+  { id: 'lite-pu-black', name: 'Lite PU Black', category: 'Alta Destreza', tags: ['Poliéster · Cal.15', 'Rec. Poliuretano', 'EN388: 3131'], accentColor: '#2D3748', image: '/images/products/litepublack.webp' },
+  { id: 'lite-cotton-60', name: 'Lite Cotton 60gr', category: 'Uso General', tags: ['Algodón · 60g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton60gr.webp' },
+  { id: 'lite-cotton-70', name: 'Lite Cotton 70gr', category: 'Uso General', tags: ['Algodón · 70g', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#7A6545', image: '/images/products/litecotton70gr.webp' },
+  { id: 'lite-nylon-100', name: 'Lite Nylon 100', category: 'Precisión Táctil', tags: ['Nylon · Cal.13', 'Sin recubrimiento', 'ISO 9001'], accentColor: '#3D6B4F', image: '/images/products/litenylon100.webp' },
 ]
 
 type Product = typeof PRODUCTS[0]
@@ -250,7 +250,11 @@ function ProductCard({ product, index, onClick }: { product: Product; index: num
 
         <img
           src={product.image}
-          alt={product.name}
+          alt={`Guante de seguridad ${product.name} — Handlove Mexico`}
+          width={600}
+          height={600}
+          loading="lazy"
+          decoding="async"
           className="product-shot group-hover:scale-[1.06]"
           style={{ position: 'absolute', left: '8%', right: '8%', top: '6%', width: '84%', height: '74%', objectFit: 'contain', objectPosition: 'center', filter: 'drop-shadow(0 18px 30px rgba(0,0,0,0.55))', transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)' }}
         />
@@ -349,7 +353,10 @@ function ProductCarousel() {
               <img
                 className="carousel-shot"
                 src={active.image}
-                alt={active.name}
+                alt={`Guante de seguridad ${active.name} — Handlove Mexico`}
+                width={600}
+                height={600}
+                decoding="async"
                 style={{ filter: t.shadow }}
               />
             )}
@@ -426,7 +433,11 @@ function ProductCarousel() {
             {item.image && (
               <img
                 src={item.image}
-                alt={item.name}
+                alt={`Guante de seguridad ${item.name} — Handlove Mexico`}
+                width={300}
+                height={300}
+                loading="lazy"
+                decoding="async"
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', padding: '5px', opacity: i === activeIdx ? 1 : 0.55, transition: 'opacity 0.25s' }}
               />
             )}

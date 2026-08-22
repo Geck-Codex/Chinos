@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/seo-prerender.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "optimize:models": "node scripts/optimize-models.mjs"
+    "optimize:models": "node scripts/optimize-models.mjs",
+    "og:image": "node scripts/og-image.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
+    "optimize:images": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@playwright/test": "^1.60.0",

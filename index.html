@@ -4,44 +4,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/images/logo.png" />
-    <link rel="canonical" href="https://handslove.netlify.app/" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href="https://handloves.mx/" />
 
-    <title>Handlove Mexico — Guantes de seguridad industriales al por mayor</title>
+    <title>Guantes de seguridad al por mayor | Handlove Mexico</title>
     <meta
       name="description"
-      content="Fabricante de guantes de seguridad industriales al por mayor: líneas anticorte (ANSI A3–A7, EN388), alta destreza y uso general. Certificación ISO 9001, personalización y entrega puntual en México."
+      content="Guantes de seguridad industriales al por mayor: anticorte ANSI A3–A7, alta destreza y uso general. ISO 9001, personalización y entrega puntual en México."
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <!--
+      Verificacion de buscadores. Lo recomendado es verificar por DNS TXT (cubre
+      todo el dominio, incluidos subdominios). Si prefieres el metodo de meta
+      tag, pega aqui la que te den y despliega:
+      <meta name="google-site-verification" content="..." />
+      <meta name="msvalidate.01" content="..." />
+    -->
     <meta name="theme-color" content="#080403" />
     <meta name="author" content="Handlove Mexico" />
-    <meta
-      name="keywords"
-      content="guantes de seguridad, guantes industriales, guantes anticorte, guantes al por mayor, ANSI A3, ANSI A7, EN388, guantes nitrilo, guantes poliuretano, Handlove Mexico"
-    />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Handlove Mexico" />
     <meta property="og:locale" content="es_MX" />
-    <meta property="og:title" content="Handlove Mexico — Guantes de seguridad industriales al por mayor" />
+    <meta property="og:title" content="Guantes de seguridad al por mayor | Handlove Mexico" />
     <meta
       property="og:description"
       content="Guantes de seguridad industriales al por mayor: anticorte (ANSI/EN388), alta destreza y uso general. ISO 9001, personalización y entrega puntual en México."
     />
-    <meta property="og:url" content="https://handslove.netlify.app/" />
-    <meta property="og:image" content="https://handslove.netlify.app/images/handlove.png" />
-    <meta property="og:image:alt" content="Handlove Mexico — guantes de seguridad" />
+    <meta property="og:url" content="https://handloves.mx/" />
+    <meta property="og:image" content="https://handloves.mx/images/og-handlove.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Handlove Mexico — guantes de seguridad industriales" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Handlove Mexico — Guantes de seguridad industriales al por mayor" />
+    <meta name="twitter:title" content="Guantes de seguridad al por mayor | Handlove Mexico" />
     <meta
       name="twitter:description"
       content="Guantes de seguridad industriales al por mayor: anticorte (ANSI/EN388), alta destreza y uso general. ISO 9001 y entrega puntual en México."
     />
-    <meta name="twitter:image" content="https://handslove.netlify.app/images/handlove.png" />
+    <meta name="twitter:image" content="https://handloves.mx/images/og-handlove.png" />
+    <meta name="twitter:image:alt" content="Handlove Mexico — guantes de seguridad industriales" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -61,46 +71,52 @@
         "@graph": [
           {
             "@type": "Organization",
-            "@id": "https://handslove.netlify.app/#organization",
+            "@id": "https://handloves.mx/#organization",
             "name": "Handlove Mexico",
-            "url": "https://handslove.netlify.app/",
-            "logo": "https://handslove.netlify.app/images/logo.png",
-            "description": "Fabricante y distribuidor de guantes de seguridad industriales al por mayor en México.",
-            "telephone": "+52 614 688 8300",
-            "areaServed": "MX",
-            "address": {
-              "@type": "PostalAddress",
-              "addressRegion": "Chihuahua",
-              "addressCountry": "MX"
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://handslove.netlify.app/#website",
-            "url": "https://handslove.netlify.app/",
-            "name": "Handlove Mexico",
-            "inLanguage": "es-MX",
-            "publisher": { "@id": "https://handslove.netlify.app/#organization" }
-          },
-          {
-            "@type": "LocalBusiness",
-            "@id": "https://handslove.netlify.app/#localbusiness",
-            "name": "Handlove Mexico",
-            "image": "https://handslove.netlify.app/images/logo.png",
-            "url": "https://handslove.netlify.app/",
-            "telephone": "+52 614 688 8300",
-            "priceRange": "$$",
+            "alternateName": "Handlove",
+            "url": "https://handloves.mx/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://handloves.mx/images/logo.png",
+              "width": 459,
+              "height": 109
+            },
+            "image": "https://handloves.mx/images/og-handlove.png",
+            "description": "Fabricante y distribuidor de guantes de seguridad industriales al por mayor en México: líneas anticorte (ANSI A3–A7, EN388), alta destreza y uso general.",
+            "foundingDate": "2002",
+            "areaServed": { "@type": "Country", "name": "México" },
             "address": {
               "@type": "PostalAddress",
               "addressRegion": "Chihuahua",
               "addressCountry": "MX"
             },
-            "openingHoursSpecification": {
-              "@type": "OpeningHoursSpecification",
-              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-              "opens": "09:00",
-              "closes": "17:00"
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "sales",
+              "telephone": "+52 614 688 8300",
+              "email": "contacto.mexico@handloves.com",
+              "availableLanguage": ["es", "en"],
+              "areaServed": "MX"
+            },
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Catálogo de guantes de seguridad Handlove Mexico",
+              "url": "https://handloves.mx/productos",
+              "itemListElement": [
+                { "@type": "OfferCatalog", "name": "Edge — guantes anticorte ANSI A3 a A7" },
+                { "@type": "OfferCatalog", "name": "Dexterity — guantes de alta destreza y agarre" },
+                { "@type": "OfferCatalog", "name": "Lite PU — guantes de uso general" },
+                { "@type": "OfferCatalog", "name": "Lite Basic — guantes de protección básica" }
+              ]
             }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://handloves.mx/#website",
+            "url": "https://handloves.mx/",
+            "name": "Handlove Mexico",
+            "inLanguage": "es-MX",
+            "publisher": { "@id": "https://handloves.mx/#organization" }
           }
         ]
       }

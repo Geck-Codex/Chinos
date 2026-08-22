@@ -37,12 +37,12 @@ export function FAQSection() {
       style={{ backgroundColor: '#FAFBFC' }}
     >
       <FadeIn y={20}>
-        <p
+        <h2
           className="uppercase tracking-[0.28em] font-bold mb-5 md:mb-7"
           style={{ color: '#CD0032', fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
         >
-          Tenemos las respuestas
-        </p>
+          Preguntas frecuentes sobre nuestros guantes
+        </h2>
       </FadeIn>
 
       {/* ── Desktop: dos columnas ── */}
@@ -70,14 +70,14 @@ export function FAQSection() {
                 >
                   {faq.num}
                 </motion.span>
-                <motion.span
+                <motion.h3
                   animate={{ color: active === i ? '#080403' : 'rgba(8,4,3,0.7)' }}
                   transition={{ duration: 0.25 }}
                   className="font-black uppercase flex-1 leading-tight"
                   style={{ fontSize: 'clamp(1rem, 2vw, 1.6rem)' }}
                 >
                   {faq.q}
-                </motion.span>
+                </motion.h3>
                 <motion.div
                   animate={{ rotate: active === i ? 90 : 0, color: active === i ? '#CD0032' : 'rgba(8,4,3,0.3)' }}
                   transition={{ duration: 0.35, ease: EASE }}
@@ -159,12 +159,12 @@ export function FAQSection() {
               >
                 {faq.num}
               </motion.span>
-              <span
+              <h3
                 className="font-black uppercase flex-1 leading-tight"
                 style={{ color: '#080403', fontSize: 'clamp(1rem, 5vw, 1.4rem)' }}
               >
                 {faq.q}
-              </span>
+              </h3>
               <motion.div
                 animate={{ rotate: active === i ? 90 : 0, color: active === i ? '#CD0032' : '#080403' }}
                 transition={{ duration: 0.35, ease: EASE }}

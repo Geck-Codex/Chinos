@@ -7,7 +7,7 @@ interface RevealTextProps {
   className?: string
   style?: CSSProperties
   delay?: number
-  as?: 'h1' | 'h2' | 'h3'
+  as?: 'h1' | 'h2' | 'h3' | 'p'
   playOnMount?: boolean
 }
 

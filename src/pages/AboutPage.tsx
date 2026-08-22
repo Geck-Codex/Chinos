@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { FadeIn } from '../components/FadeIn'
 import { RevealText } from '../components/RevealText'
@@ -217,6 +218,10 @@ function ParallaxImage({ src, alt, strength = 80 }: { src: string; alt: string; 
       <motion.img
         src={src}
         alt={alt}
+        width={1600}
+        height={900}
+        loading="lazy"
+        decoding="async"
         style={{
           y,
           width: '100%',
@@ -260,7 +265,7 @@ function CinematicBanner({ src, headline }: { src: string; headline: string[] })
   return (
     <section ref={ref} style={{ position: 'relative', height: 'clamp(380px, 60vh, 720px)', overflow: 'hidden' }}>
       <motion.div style={{ scale, width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
-        <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        <img src={src} alt="" width={1600} height={900} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </motion.div>
       <motion.div
         style={{ position: 'absolute', inset: 0, backgroundColor: '#080403', opacity }}
@@ -389,7 +394,11 @@ function PilarCard({ p }: { p: (typeof PILLARS)[number] }) {
               <div style={{ position: 'relative', overflow: 'hidden', minHeight: 'clamp(200px, 30vh, 320px)' }}>
                 <motion.img
                   src={p.img}
-                  alt={p.title}
+                  alt={`Handlove Mexico — ${p.title}`}
+                  width={800}
+                  height={600}
+                  loading="lazy"
+                  decoding="async"
                   variants={{ hover: { scale: 1.06 } }}
                   transition={{ duration: 0.55, ease: EASE }}
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
@@ -474,8 +483,8 @@ export function AboutPage() {
       style={{ backgroundColor: '#080403' }}
     >
       <Seo
-        title="Nosotros — Fabricante de guantes de seguridad"
-        description="Más de 22 años fabricando guantes de seguridad industriales para 15+ mercados internacionales. Instalaciones de 30.000 m², certificación ISO 9001 y control de calidad integral."
+        title="Fabricante de guantes de seguridad"
+        description="22 años fabricando guantes de seguridad industriales para 15+ mercados. Planta de 30.000 m², certificación ISO 9001 y control de calidad integral."
         path="/nosotros"
         jsonLd={aboutJsonLd}
       />
@@ -506,9 +515,13 @@ export function AboutPage() {
                 </span>
               </div>
             </FadeIn>
+            <h1 className="sr-only">
+              Fabricante de guantes de seguridad industriales en México — Handlove Mexico
+            </h1>
+
             <RevealText
               lines={['Guantes para', 'aferrarte a', 'tu futuro']}
-              as="h1"
+              as="p"
               className="font-black uppercase leading-[0.9] tracking-tight"
               style={{ color: '#0c0c0c', fontSize: 'clamp(2.6rem, 6vw, 6rem)' }}
               delay={0.08}
@@ -534,15 +547,15 @@ export function AboutPage() {
             </FadeIn>
             <FadeIn y={16} delay={0.72} duration={0.7} playOnMount>
               <div className="flex gap-4 mt-9 flex-wrap">
-                <a
-                  href="/productos"
+                <Link
+                  to="/productos"
                   className="uppercase tracking-widest font-bold px-8 py-4"
                   style={{ backgroundColor: '#CD0032', color: '#FAFBFC', fontSize: 'clamp(0.85rem, 1.2vw, 1rem)', borderRadius: '6px', textDecoration: 'none' }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#a80029')}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#CD0032')}
                 >
-                  Ver catálogo
-                </a>
+                  Ver catálogo de guantes de seguridad
+                </Link>
                 <a
                   href="/#contacto"
                   onClick={goToContact}

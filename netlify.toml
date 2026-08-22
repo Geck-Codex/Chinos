@@ -1,9 +1,44 @@
 [build]
-  command = "npx tsc -b && npx vite build"
+  command = "npx tsc -b && npx vite build && node scripts/seo-prerender.mjs"
   publish = "dist"
 
-# SPA: todas las rutas las resuelve React Router en index.html
+# Ya NO hay redirect catch-all: scripts/seo-prerender.mjs genera un archivo real
+# por ruta (/index.html, /productos/index.html, /nosotros/index.html y una por
+# producto), asi que Netlify los sirve como estaticos. Cualquier otra URL cae en
+# dist/404.html con status 404 de verdad, en vez de devolver 200 con la home.
+
+# ── Una sola version canonica del host ───────────────────────────────────────
+# Los canonical, el sitemap y el JSON-LD apuntan todos al apex (handloves.mx sin
+# www). Este 301 evita que Google indexe las dos versiones como contenido
+# duplicado. force = true para que gane sobre cualquier archivo estatico.
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  from = "https://www.handloves.mx/*"
+  to = "https://handloves.mx/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.handloves.mx/*"
+  to = "https://handloves.mx/:splat"
+  status = 301
+  force = true
+
+# ── Cabeceras de cache ───────────────────────────────────────────────────────
+# Los assets llevan hash en el nombre: cambian de nombre al cambiar de
+# contenido, asi que se pueden cachear indefinidamente.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/models/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# El HTML nunca se cachea de forma dura: es lo que permite publicar cambios y
+# que se vean al instante.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

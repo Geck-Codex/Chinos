@@ -15,6 +15,8 @@ const CTASection = lazy(() => import('./sections/CTASection').then((m) => ({ def
 
 const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })))
 const ProductsPage = lazy(() => import('./pages/ProductsPage').then((m) => ({ default: m.ProductsPage })))
+const ProductPage = lazy(() => import('./pages/ProductPage').then((m) => ({ default: m.ProductPage })))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })))
 
 const LANDING_FAQS = [
   {
@@ -73,6 +75,8 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/nosotros" element={<AboutPage />} />
             <Route path="/productos" element={<ProductsPage />} />
+            <Route path="/productos/:slug" element={<ProductPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </AnimatePresence>
       </Suspense>

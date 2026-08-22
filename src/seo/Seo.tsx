@@ -3,6 +3,10 @@ import {
   DEFAULT_DESCRIPTION,
   DEFAULT_TITLE,
   OG_IMAGE,
+  OG_IMAGE_ALT,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_TYPE,
+  OG_IMAGE_WIDTH,
   SITE_LOCALE,
   SITE_NAME,
   absoluteUrl,
@@ -14,6 +18,7 @@ interface SeoProps {
   path?: string
   image?: string
   type?: 'website' | 'article' | 'product'
+  noindex?: boolean
   jsonLd?: object | object[]
 }
 
@@ -43,6 +48,7 @@ export function Seo({
   path = '/',
   image = OG_IMAGE,
   type = 'website',
+  noindex = false,
   jsonLd,
 }: SeoProps) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE
@@ -51,6 +57,7 @@ export function Seo({
   useEffect(() => {
     document.title = fullTitle
     upsertMeta('name', 'description', description)
+    upsertMeta('name', 'robots', noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large')
     upsertLink('canonical', canonical)
 
     upsertMeta('property', 'og:type', type)
@@ -60,12 +67,17 @@ export function Seo({
     upsertMeta('property', 'og:description', description)
     upsertMeta('property', 'og:url', canonical)
     upsertMeta('property', 'og:image', image)
+    upsertMeta('property', 'og:image:width', OG_IMAGE_WIDTH)
+    upsertMeta('property', 'og:image:height', OG_IMAGE_HEIGHT)
+    upsertMeta('property', 'og:image:type', OG_IMAGE_TYPE)
+    upsertMeta('property', 'og:image:alt', OG_IMAGE_ALT)
 
     upsertMeta('name', 'twitter:card', 'summary_large_image')
     upsertMeta('name', 'twitter:title', fullTitle)
     upsertMeta('name', 'twitter:description', description)
     upsertMeta('name', 'twitter:image', image)
-  }, [fullTitle, description, canonical, image, type])
+    upsertMeta('name', 'twitter:image:alt', OG_IMAGE_ALT)
+  }, [fullTitle, description, canonical, image, type, noindex])
 
   useEffect(() => {
     if (!jsonLd) return

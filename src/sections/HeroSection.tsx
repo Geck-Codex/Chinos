@@ -28,15 +28,19 @@ export function HeroSection() {
             Handlove Mexico
           </p>
 
+          <h1 className="sr-only">
+            Guantes de seguridad industriales al por mayor en México — Handlove Mexico
+          </h1>
+
           <div className="overflow-hidden mb-6">
-            <h1
+            <p
               className="hero-lcp font-black uppercase leading-[0.9] tracking-tight"
               style={{ color: '#FAFBFC', fontSize: 'clamp(2.8rem, 7vw, 7rem)' }}
             >
               Seguridad<br />
               <span style={{ color: '#CD0032' }}>en cada</span><br />
               guante.
-            </h1>
+            </p>
           </div>
 
           <p

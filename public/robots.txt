@@ -1,4 +1,21 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://handslove.netlify.app/sitemap.xml
+# Rastreadores de IA: permitidos explícitamente para aparecer en respuestas
+# de ChatGPT, Perplexity, Claude y Gemini.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://handloves.mx/sitemap.xml

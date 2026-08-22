@@ -39,6 +39,10 @@ function BentoImages({ feature }: { feature: Feature }) {
         <img
           src={`/images/features/${feature.id}-1.webp`}
           alt={`Guantes de seguridad Handlove — ${feature.name}`}
+          width={800}
+          height={600}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
@@ -60,6 +64,10 @@ function BentoImages({ feature }: { feature: Feature }) {
         <img
           src={`/images/features/${feature.id}-2.webp`}
           alt={`Handlove — ${feature.name}, detalle`}
+          width={800}
+          height={600}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
@@ -74,6 +82,10 @@ function BentoImages({ feature }: { feature: Feature }) {
         <img
           src={`/images/features/${feature.id}-3.webp`}
           alt={`Handlove — ${feature.name}, aplicación`}
+          width={800}
+          height={600}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
@@ -185,14 +197,14 @@ export function FeaturesSection() {
     >
       {/* Header compact */}
       <div className="mb-5 md:mb-7">
-        <motion.p
+        <motion.h2
           animate={{ color: isDark ? 'rgba(205,0,50,0.7)' : '#CD0032' }}
           transition={{ duration: 0.4 }}
           className="uppercase tracking-[0.28em] font-bold"
           style={{ fontSize: 'clamp(0.95rem, 1.5vw, 1.2rem)' }}
         >
           Características principales
-        </motion.p>
+        </motion.h2>
       </div>
 
       {/* Feature list */}
