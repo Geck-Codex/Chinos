@@ -229,17 +229,13 @@ function routeJsonLd(route, canonical) {
         name: 'Catálogo de guantes de seguridad Handlove Mexico',
         url: canonical,
         numberOfItems: PRODUCTS.length,
+        // Formato de pagina resumen: cada elemento solo apunta a su ficha. Sin
+        // Product anidado, que exigiria offers/price y aqui no hay precio publico.
         itemListElement: PRODUCTS.map((p, i) => ({
           '@type': 'ListItem',
           position: i + 1,
-          item: {
-            '@type': 'Product',
-            name: p.name,
-            category: p.category,
-            description: p.description,
-            image: `${SITE_URL}${p.image}`,
-            brand: { '@type': 'Brand', name: 'Handlove Mexico' },
-          },
+          name: p.name,
+          url: `${SITE_URL}/productos/${p.id}/`,
         })),
       },
     ]
@@ -334,7 +330,7 @@ function renderRoute(route) {
   const jsonLd = routeJsonLd(route, canonical)
   html = html.replace(
     '</head>',
-    `  <script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n    </script>\n  </head>`,
+    `  <script type="application/ld+json" data-seo="route">\n${JSON.stringify(jsonLd, null, 2)}\n    </script>\n  </head>`,
   )
 
   if (!html.includes('<div id="root"></div>')) {

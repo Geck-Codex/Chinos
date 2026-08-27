@@ -457,15 +457,8 @@ const productsJsonLd = {
   itemListElement: ALL_PRODUCTS.map((p, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    item: {
-      '@type': 'Product',
-      name: p.name,
-      category: p.category,
-      description: p.description,
-      image: `${SITE_URL}${p.image}`,
-      brand: { '@type': 'Brand', name: 'Handlove Mexico' },
-      url: `${SITE_URL}/productos?producto=${p.id}`,
-    },
+    name: p.name,
+    url: `${SITE_URL}/productos/${p.id}/`,
   })),
 }
 

@@ -81,6 +81,9 @@ export function Seo({
 
   useEffect(() => {
     if (!jsonLd) return
+    // El prerender ya dejo un bloque data-seo="route" en el HTML estatico: se
+    // retira para no publicar dos JSON-LD de la misma ruta al hidratar.
+    document.head.querySelectorAll('script[data-seo="route"]').forEach((el) => el.remove())
     const script = document.createElement('script')
     script.type = 'application/ld+json'
     script.dataset.seo = 'route'
